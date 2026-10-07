@@ -449,7 +449,10 @@
     padding: 10px 14px;
     user-select: all;
     word-break: break-all;
+    text-decoration: none;
+    display: inline-block;
   }
+  .mail:hover { border-color: var(--amber); color: var(--amber); }
   .copied { font-family: var(--mono); font-size: 11.5px; color: var(--green); letter-spacing: 0.07em; }
 
   footer {
@@ -1171,7 +1174,7 @@
       like to hear about it.
     </p>
     <div class="mailrow">
-      <span class="mail" id="email">adityabothe46@gmail.com</span>
+      <a class="mail" id="email" href="mailto:botheaditya46@gmail.com">botheaditya46@gmail.com</a>
       <button class="btn" id="copy" type="button">Copy email</button>
       <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer">LinkedIn ↗</a>
         <a class="btn" href="https://github.com/Adityabothe46" target="_blank" rel="noreferrer">GitHub ↗</a>
