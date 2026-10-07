@@ -1,0 +1,1475 @@
+<title>Aditya Bothe</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  /* Layout: left-aligned spec-sheet column. Hairline rules and tick marks
+     stand in for decoration, mono labels carry the data, and the numbers get
+     the largest type on the page. Committed single dark theme: the subject is
+     a warehouse-automation engineer, so the palette is carbon + hi-vis amber. */
+  :root {
+    --bg: #0b0d0f;
+    --bg-2: #101316;
+    --panel: #14181c;
+    --panel-2: #191e23;
+    --rule: rgb(255 255 255 / 0.09);
+    --rule-2: rgb(255 255 255 / 0.16);
+    --ink: #eceef0;
+    --ink-2: #b4bcc4;
+    --ink-3: #7d8891;
+    --ink-4: #5a646d;
+    --amber: #f5a524;
+    --amber-dim: #a86f12;
+    --steel: #7aa7d9;
+    --green: #4ec9a0;
+    --display: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15.5px;
+    line-height: 1.6;
+    padding-inline: 22px;
+    padding-block: 0 0;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(48rem 22rem at 78% -6%, rgb(245 165 36 / 0.07), transparent 65%),
+      linear-gradient(rgb(255 255 255 / 0.016) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.016) 1px, transparent 1px);
+    background-size: auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+
+  .wrap { max-width: 68rem; margin: 0 auto; }
+
+  a { color: var(--amber); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  /* ---------- shared bits ---------- */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: 0;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  section { padding-block: 60px 0; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    border-top: 1px solid var(--rule-2);
+    padding-top: 14px;
+    margin-bottom: 26px;
+  }
+  .sec-head h2 {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0;
+  }
+  .sec-head .note {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-4);
+    margin: 0 0 0 auto;
+    text-align: right;
+  }
+
+  /* ---------- hero ---------- */
+  header { padding-block: 70px 10px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 44px;
+    align-items: start;
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(42px, 8.5vw, 86px);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+    margin: 16px 0 0;
+    text-wrap: balance;
+  }
+  .role {
+    font-family: var(--display);
+    font-size: clamp(17px, 2.5vw, 23px);
+    font-weight: 600;
+    color: var(--amber);
+    letter-spacing: -0.01em;
+    margin: 16px 0 0;
+  }
+  .pitch {
+    font-size: clamp(16px, 2vw, 18px);
+    color: var(--ink-2);
+    max-width: 54ch;
+    margin: 18px 0 0;
+  }
+  .pitch strong { color: var(--ink); font-weight: 600; }
+
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid var(--rule-2);
+    background: var(--panel);
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 11px 17px;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .btn:hover { border-color: var(--amber); color: var(--amber); }
+  .btn-primary {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: #140d00;
+  }
+  .btn-primary:hover { background: #ffb43d; border-color: #ffb43d; color: #140d00; }
+
+  /* spec panel in the hero */
+  .spec {
+    border: 1px solid var(--rule);
+    background: linear-gradient(180deg, var(--panel), var(--bg-2));
+    border-radius: 2px;
+    padding: 4px 0;
+  }
+  .spec-row {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 12px;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    padding-top: 2px;
+  }
+  .spec-row dd { margin: 0; font-size: 14px; color: var(--ink-2); min-width: 0; }
+  .spec-row dd b { color: var(--ink); font-weight: 600; }
+  .avail { color: var(--green); font-weight: 600; }
+
+  /* ---------- impact metrics ---------- */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .metric { background: var(--bg-2); padding: 22px 20px; position: relative; }
+  /* measurement ticks along the top edge */
+  .metric::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 5px;
+    background-image: linear-gradient(90deg, var(--rule-2) 1px, transparent 1px);
+    background-size: 7px 100%;
+    opacity: 0.8;
+  }
+  .metric b {
+    display: block;
+    font-family: var(--display);
+    font-size: clamp(28px, 4.2vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .metric span {
+    display: block;
+    margin-top: 10px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+  .metric em {
+    display: block;
+    margin-top: 7px;
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+
+  /* ---------- project cards ---------- */
+  .project {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .project-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px 16px;
+    padding: 22px 24px 0;
+  }
+  .project-head h3 {
+    font-family: var(--display);
+    font-size: clamp(20px, 3vw, 27px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid var(--amber-dim);
+    border-radius: 2px;
+    padding: 3px 8px;
+  }
+  .tag-quiet { color: var(--ink-3); border-color: var(--rule-2); }
+  .project-body { padding: 14px 24px 24px; }
+  .project-body p { margin: 0 0 14px; color: var(--ink-2); max-width: 70ch; }
+  .project-body p:last-child { margin-bottom: 0; }
+  .shot {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 4px 0 0;
+  }
+  .bullets { margin: 0; padding-left: 0; list-style: none; }
+  .bullets li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 9px;
+    color: var(--ink-2);
+    max-width: 72ch;
+  }
+  .bullets li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 10px;
+    width: 8px;
+    height: 1px;
+    background: var(--amber);
+  }
+  .bullets li:last-child { margin-bottom: 0; }
+  .bullets strong { color: var(--ink); font-weight: 600; }
+
+  .stackline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--rule);
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    background: var(--panel-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 4px 9px;
+  }
+
+  .mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
+  .mini {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    border-radius: 2px;
+    padding: 22px 22px;
+    min-width: 0;
+  }
+  .mini h3 {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+
+  /* ---------- experience ---------- */
+  .job { border-top: 1px solid var(--rule); padding: 26px 0; }
+  .job:first-of-type { border-top: none; padding-top: 6px; }
+  .job-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 20px;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .job-head h3 {
+    font-family: var(--display);
+    font-size: clamp(19px, 2.6vw, 24px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .job-meta {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-4);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .employer {
+    font-size: 15px;
+    color: var(--amber);
+    font-weight: 500;
+    margin: 0 0 16px;
+  }
+  .employer span { color: var(--ink-4); font-weight: 400; }
+
+  /* ---------- skills ---------- */
+  .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .skill { background: var(--bg-2); padding: 20px; min-width: 0; }
+  .skill h3 {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 12px;
+  }
+  .skill ul { margin: 0; padding: 0; list-style: none; }
+  .skill li {
+    font-size: 14px;
+    color: var(--ink-2);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .skill li:last-child { border-bottom: none; }
+
+  /* ---------- education / certs ---------- */
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 18px; }
+  .edu { border: 1px solid var(--rule); background: var(--panel); padding: 20px 22px; border-radius: 2px; min-width: 0; }
+  .edu h3 { font-family: var(--display); font-size: 16.5px; font-weight: 700; margin: 0 0 3px; color: var(--ink); }
+  .edu .school { color: var(--amber); font-size: 14px; margin: 0 0 6px; }
+  .edu .meta { font-family: var(--mono); font-size: 11.5px; color: var(--ink-4); letter-spacing: 0.05em; margin: 0; }
+  .certs { margin: 0; padding: 0; list-style: none; }
+  .certs li {
+    font-size: 14px;
+    color: var(--ink-2);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: 11px;
+    align-items: baseline;
+  }
+  .certs li:last-child { border-bottom: none; }
+  .certs li::before {
+    content: "✓";
+    color: var(--green);
+    font-size: 12px;
+    flex: none;
+  }
+
+  /* ---------- contact ---------- */
+  .contact {
+    border: 1px solid var(--rule-2);
+    background: linear-gradient(135deg, var(--panel), var(--bg-2));
+    border-radius: 2px;
+    padding: 38px 34px;
+    margin-top: 62px;
+  }
+  .contact h2 {
+    font-family: var(--display);
+    font-size: clamp(26px, 4.5vw, 38px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 10px 0 10px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .contact p { color: var(--ink-2); max-width: 58ch; margin: 0 0 24px; }
+  .mailrow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .mail {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--rule-2);
+    border-radius: 2px;
+    padding: 10px 14px;
+    user-select: all;
+    word-break: break-all;
+  }
+  .copied { font-family: var(--mono); font-size: 11.5px; color: var(--green); letter-spacing: 0.07em; }
+
+  footer {
+    margin-top: 44px;
+    padding: 22px 0 54px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    color: var(--ink-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    justify-content: space-between;
+  }
+
+  /* ---------- scroll progress ---------- */
+  #progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+    z-index: 60;
+    transition: width 0.08s linear;
+  }
+
+  /* ---------- entrance + reveal ----------
+     Both are opt-in: the hidden state is only applied once JS confirms it can
+     animate, so with JS off or reduced motion on, everything renders visible. */
+  .js-anim .enter { opacity: 0; transform: translateY(14px); }
+  .js-anim .enter.in {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.55s cubic-bezier(.22,.68,.36,1), transform 0.55s cubic-bezier(.22,.68,.36,1);
+  }
+
+  /* ---------- hover lift ---------- */
+  .project, .mini, .edu {
+    transition: transform 0.22s cubic-bezier(.22,.68,.36,1), border-color 0.22s;
+  }
+  .project:hover, .mini:hover, .edu:hover {
+    transform: translateY(-3px);
+    border-color: var(--rule-2);
+  }
+  .metric { transition: background 0.22s; }
+  .metric:hover { background: var(--panel-2); }
+  .metric:hover::before { opacity: 1; }
+  .chip { transition: color 0.18s, border-color 0.18s; }
+  .chip:hover { color: var(--amber); border-color: var(--amber-dim); }
+
+  /* ---------- screenshot lightbox ---------- */
+  .shot { cursor: zoom-in; transition: filter 0.25s; }
+  .shot:hover { filter: brightness(1.08); }
+  /* `display:flex` would otherwise beat the `hidden` attribute. */
+  #lightbox[hidden] { display: none; }
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: rgb(5 6 8 / 0.93);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    cursor: zoom-out;
+    animation: fade 0.2s ease both;
+  }
+  #lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid var(--rule-2);
+    box-shadow: 0 24px 70px -20px rgb(0 0 0 / 0.9);
+  }
+  #lightbox .hint {
+    position: absolute;
+    bottom: 22px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+  }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+
+  /* ---------- line simulator ---------- */
+  .sim {
+    border: 1px solid var(--rule);
+    background: linear-gradient(180deg, var(--panel), var(--bg-2));
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .sim-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: 1px;
+    background: var(--rule);
+  }
+  .sim-cell { background: var(--bg-2); padding: 18px 20px; min-width: 0; }
+  .sim-cell label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 10px;
+  }
+  .sim-cell .val {
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .sim-out { background: var(--bg-2); padding: 18px 20px; }
+  .sim-out .big {
+    font-family: var(--display);
+    font-size: clamp(30px, 5vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .sim-out .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4); margin-top: 8px; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--rule-2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--amber);
+    border: 2px solid var(--bg);
+    cursor: grab;
+    box-shadow: 0 0 0 1px var(--amber-dim);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--amber);
+    border: 2px solid var(--bg);
+    cursor: grab;
+    box-shadow: 0 0 0 1px var(--amber-dim);
+  }
+
+  /* conveyor */
+  .belt {
+    position: relative;
+    height: 96px;
+    background:
+      repeating-linear-gradient(90deg, var(--rule) 0 1px, transparent 1px 16px),
+      var(--bg);
+    border-top: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .belt-rail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 26px;
+    height: 2px;
+    background: var(--rule-2);
+  }
+  .belt-rail::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(90deg, var(--amber-dim) 0 6px, transparent 6px 18px);
+    opacity: 0.55;
+    animation: rail 1s linear infinite;
+  }
+  @keyframes rail { to { transform: translateX(18px) } }
+  .box {
+    position: absolute;
+    bottom: 28px;
+    width: 22px;
+    height: 22px;
+    background: var(--panel-2);
+    border: 1px solid var(--amber-dim);
+    border-radius: 1px;
+    will-change: transform;
+  }
+  .box::before {
+    content: "";
+    position: absolute;
+    inset: 4px 3px auto 3px;
+    height: 1px;
+    background: var(--amber);
+    opacity: 0.5;
+  }
+  .sim-note {
+    padding: 16px 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 13.5px;
+    color: var(--ink-3);
+    background: var(--bg-2);
+  }
+  .sim-note b { color: var(--ink-2); font-weight: 600; }
+  .sim-note code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--amber);
+    background: rgb(245 165 36 / 0.08);
+    border: 1px solid var(--rule);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  /* ---------- metric "How+" stories ---------- */
+  .more {
+    margin-top: 12px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.18s;
+  }
+  .more:hover { color: var(--amber); }
+  .more span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-size: 11px;
+    line-height: 1;
+    transition: transform 0.25s;
+  }
+  .more[aria-expanded="true"] { color: var(--amber); }
+  .more[aria-expanded="true"] span { transform: rotate(45deg); }
+  .story[hidden] { display: none; }
+  .story {
+    margin: 12px 0 0;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-3);
+    animation: storyIn 0.3s ease both;
+  }
+  @keyframes storyIn { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+
+  /* ---------- before/after gauges ---------- */
+  .gauges { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--rule); display: grid; gap: 11px; }
+  .gauge { display: grid; grid-template-columns: 7.6rem minmax(0, 1fr) 3.4rem; gap: 11px; align-items: center; }
+  .g-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-4); }
+  .g-track { height: 6px; background: var(--bg); border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+  .g-track i {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--amber-dim), var(--amber));
+    transition: width 1s cubic-bezier(.2,.7,.3,1);
+  }
+  .g-delta { font-family: var(--mono); font-size: 12px; color: var(--ink-3); text-align: right; }
+  .g-delta.up { color: var(--green); }
+  .g-delta.down { color: var(--steel); }
+
+  /* ---------- experience timeline ---------- */
+  .timeline { position: relative; padding-left: 30px; }
+  .rail {
+    position: absolute;
+    left: 5px;
+    top: 10px;
+    bottom: 10px;
+    width: 1px;
+    background: var(--rule-2);
+  }
+  .rail-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, var(--amber), var(--amber-dim));
+    box-shadow: 0 0 10px rgb(245 165 36 / 0.45);
+  }
+  .job { position: relative; }
+  .node {
+    position: absolute;
+    left: -30px;
+    top: 30px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--rule-2);
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .job:first-of-type .node { top: 10px; }
+  .node.lit {
+    background: var(--amber);
+    border-color: var(--amber);
+    box-shadow: 0 0 0 4px rgb(245 165 36 / 0.14);
+  }
+  .job .bullets li { transition: color 0.18s; }
+  .job .bullets li:hover { color: var(--ink); }
+  .job .bullets li:hover::before { width: 14px; background: var(--amber); transition: width 0.18s; }
+
+  /* ---------- skills stagger + hover ---------- */
+  .js-anim .skills.in .skill li { animation: skillIn 0.4s ease both; }
+  @keyframes skillIn { from { opacity: 0; transform: translateX(-6px) } to { opacity: 1; transform: none } }
+  .skill li { transition: color 0.16s, padding-left 0.16s; }
+  .skill li:hover { color: var(--amber); padding-left: 6px; }
+
+  /* ---------- certification tick draw ---------- */
+  .certs li::before { content: none; }
+  .tick {
+    width: 15px;
+    height: 15px;
+    flex: none;
+    fill: none;
+    stroke: var(--green);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .tick path { stroke-dasharray: 26; stroke-dashoffset: 26; }
+  .js-anim .two.in .tick path { animation: draw 0.5s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0 } }
+
+  /* ---------- spec rows ---------- */
+  .spec-row { transition: background 0.18s, box-shadow 0.18s; }
+  .spec-row:hover { background: var(--panel-2); box-shadow: inset 2px 0 0 var(--amber); }
+
+  @media (max-width: 760px) {
+    .timeline { padding-left: 22px; }
+    .node { left: -22px; }
+    .rail { left: 1px; }
+    .gauge { grid-template-columns: 6.6rem minmax(0, 1fr) 3rem; gap: 8px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+    .job-head { grid-template-columns: 1fr; }
+    .job-meta { text-align: left; }
+    .contact { padding: 28px 22px; }
+    .sim-top { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+    .js-anim .enter { opacity: 1; transform: none; }
+  }
+</style>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <header>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow enter">Industrial Engineer &nbsp;/&nbsp; Supply Chain &amp; Warehouse Automation</p>
+        <h1 class="enter">Aditya<br>Bothe</h1>
+        <p class="role enter">I make automated fulfillment centers run better.</p>
+        <p class="pitch enter">
+          Most recently a Supply Chain IE co-op at <strong>Staples</strong>, where I fixed a
+          fault that was taking down a fleet of <strong>1,000+ AGVs</strong>, designed a
+          <strong>$3M cost-avoidance</strong> alternative to a blocked facility build, and
+          migrated <strong>650+ Power BI reports</strong> off a server being decommissioned.
+          I like problems where nobody has written the runbook yet.
+        </p>
+        <div class="cta enter">
+          <a class="btn btn-primary" href="#contact">Get in touch</a>
+          <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <a class="btn" href="#work">See the work ↓</a>
+        </div>
+      </div>
+
+      <dl class="spec enter">
+        <div class="spec-row">
+          <dt>Status</dt>
+          <dd><span class="avail">Available Jan 2027</span><br>Full-time, open to relocation</dd>
+        </div>
+        <div class="spec-row">
+          <dt>Education</dt>
+          <dd><b>MS Industrial Engineering</b><br>Northeastern University · Dec 2026 · 3.62 GPA</dd>
+        </div>
+        <div class="spec-row">
+          <dt>Based</dt>
+          <dd>Boston, MA</dd>
+        </div>
+        <div class="spec-row">
+          <dt>Focus</dt>
+          <dd>Warehouse automation, AGV fleets, WMS, supply chain analytics</dd>
+        </div>
+        <div class="spec-row">
+          <dt>Experience</dt>
+          <dd>4+ years across manufacturing and automated fulfillment</dd>
+        </div>
+      </dl>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <h2>Measured Impact</h2>
+      <p class="note">Verified outcomes, Staples &amp; AB Enterprises</p>
+    </div>
+    <div class="metrics enter">
+      <div class="metric">
+        <b class="num"><span data-count="1000" data-suffix="+">1,000+</span></b>
+        <span>AGVs restored by a fleet-wide redundancy fix</span>
+        <em>Staples · Multi-FC</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-0">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-0" hidden>The whole fleet hung off a single NTP time server. When it drifted, robots stopped. I traced the dependency, then deployed a three-server redundancy configuration across the fleet myself using the AGV platform tool.</p>
+      </div>
+      <div class="metric">
+        <b class="num"><span data-count="3" data-prefix="$" data-suffix="M">$3M</span></b>
+        <span>Cost avoided on a blocked facility constraint</span>
+        <em>Adopted, in implementation</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-1">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-1" hidden>A floor elevation difference blocked the planned ladder deployment. Rather than re-pour the floor, I proposed staggered rack heights plus AGV recalibration to absorb the difference. Adopted, and now in implementation.</p>
+      </div>
+      <div class="metric">
+        <b class="num"><span data-count="650" data-suffix="+">650+</span></b>
+        <span>Power BI reports migrated off a dying server</span>
+        <em>4 database platforms</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-2">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-2" hidden>A SQL Server was being decommissioned with hundreds of live Power BI reports still pointed at it. I rebuilt broken views for 400+ reports and redirected the rest, across SQL Server, PostgreSQL, Snowflake and MySQL.</p>
+      </div>
+      <div class="metric">
+        <b class="num"><span data-count="500" data-prefix="$" data-suffix="K">$500K</span><span style="font-size:.6em">/day</span></b>
+        <span>Downtime loss prevented during system stabilization</span>
+        <em>Sole on-site engineer</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-3">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-3" hidden>During Fridley's Ladder stabilization I was the only engineer on site. Recurring Kafka and Redis pipeline failures would have stopped outbound. I cleared them and wrote the training documentation so support could handle it without me.</p>
+      </div>
+      <div class="metric">
+        <b class="num"><span data-count="30" data-suffix="%">30%</span></b>
+        <span>Fewer replenishment trips after min/max recalibration</span>
+        <em>Fridley FC</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-4">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-4" hidden>Min/max thresholds were set conservatively, so replenishment runs fired more often than they needed to. Recalculating them against real demand cut trip frequency by roughly a third.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="sec-head">
+      <h2>Selected Work</h2>
+      <p class="note">Built, shipped, measured</p>
+    </div>
+
+    <article class="project enter">
+      <div class="project-head">
+        <h3>Job Tracker</h3>
+        <span class="tag">Built from scratch</span>
+        <span class="tag tag-quiet">Next.js · TypeScript · SQLite · AI</span>
+      </div>
+      <div class="project-body">
+        <p>
+          A desktop app I built to run my own job search. It tracks every application on a
+          board, and it goes out and finds new openings on its own, filtered down to roles I
+          am actually eligible for. It currently manages a live pipeline of
+          <strong>369 roles across 5 countries</strong>.
+        </p>
+      </div>
+      <img class="shot" src="job-tracker.png" alt="The Job Tracker board, showing pipeline columns, KPI tiles and discovered job cards" width="1600" height="1000">
+      <div class="project-body">
+        <ul class="bullets">
+          <li><strong>It searches for me.</strong> Checks company career sites first, then runs broad discovery for employers I have not seen. Every result is re-validated in code, not trusted: postings older than 30 days, senior titles, roles that refuse visa sponsorship and anything I previously rejected all get dropped automatically.</li>
+          <li><strong>It measures the search like a process.</strong> Daily goal tracking, streaks, a 30-day activity chart, interview and offer conversion rates, and average response time. The same instinct as putting KPIs on a production line.</li>
+          <li><strong>It runs on zero budget.</strong> No paid API. It drives the Claude CLI already installed on my machine, so there is no per-token bill. When one run started consuming 60% of my available usage, I traced the cost to session count rather than prompt size, merged six search sessions into one and cut it by roughly 70%.</li>
+          <li><strong>It respects privacy.</strong> Everything is local. No account, no server, no analytics. My resume and application history never leave my disk.</li>
+        </ul>
+        <div class="stackline">
+          <span class="chip">Next.js App Router</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">SQLite (node:sqlite)</span>
+          <span class="chip">Tailwind</span>
+          <span class="chip">dnd-kit</span>
+          <span class="chip">Claude CLI</span>
+          <span class="chip">Readability</span>
+        </div>
+      </div>
+    </article>
+
+    <div class="mini-grid enter">
+      <article class="mini">
+        <h3>Cost Optimization: Philips LED Back Panels</h3>
+        <p class="eyebrow" style="margin:6px 0 12px">Manufacturing · Fixture design</p>
+        <ul class="bullets">
+          <li>Led the design of multi-section jigs for 3-meter aluminum profiles, increasing batch capacity <strong>40%</strong> and cutting per-piece cost <strong>18%</strong>.</li>
+        </ul>
+        <div class="gauges">
+          <div class="gauge"><span class="g-label">Batch capacity</span><div class="g-track"><i data-fill="100"></i></div><span class="g-delta up">+40%</span></div>
+          <div class="gauge"><span class="g-label">Per-piece cost</span><div class="g-track"><i data-fill="82"></i></div><span class="g-delta down">&minus;18%</span></div>
+        </div>
+      </article>
+      <article class="mini">
+        <h3>Quality Recovery: Tata Marcopolo</h3>
+        <p class="eyebrow" style="margin:6px 0 12px">Customer escalation · On-site</p>
+        <ul class="bullets">
+          <li>Led on-site inspection of a rejected 2-ton order, isolated defects in <strong>5%</strong> of material, completed rework and recovered <strong>100% of payment</strong>.</li>
+        </ul>
+        <div class="gauges">
+          <div class="gauge"><span class="g-label">Material defective</span><div class="g-track"><i data-fill="5"></i></div><span class="g-delta">5%</span></div>
+          <div class="gauge"><span class="g-label">Payment recovered</span><div class="g-track"><i data-fill="100"></i></div><span class="g-delta up">100%</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Line Simulator</h2>
+      <p class="note">Little's Law · drag the sliders</p>
+    </div>
+
+    <div class="sim enter">
+      <div class="sim-top">
+        <div class="sim-cell">
+          <label for="rate">
+            <span>Throughput</span>
+            <span class="val"><span id="rate-val" class="num">220</span> units/hr</span>
+          </label>
+          <input id="rate" type="range" min="40" max="600" step="10" value="220">
+        </div>
+        <div class="sim-cell">
+          <label for="cycle">
+            <span>Cycle time</span>
+            <span class="val"><span id="cycle-val" class="num">45</span> min</span>
+          </label>
+          <input id="cycle" type="range" min="5" max="180" step="5" value="45">
+        </div>
+        <div class="sim-out">
+          <div class="big num" id="wip">165</div>
+          <div class="sub">Units in system (WIP)</div>
+        </div>
+      </div>
+
+      <div class="belt" id="belt" aria-hidden="true">
+        <div class="belt-rail"></div>
+      </div>
+
+      <p class="sim-note">
+        <b>Little's Law:</b> <code>WIP = Throughput × Cycle Time</code>. Push the rate up or
+        let the cycle time slip, and inventory on the floor climbs with it. That is cash
+        sitting on a conveyor, longer lead times, and more places for a defect to hide.
+        Most of the wins on my resume came from attacking one side of this equation.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Experience</h2>
+      <p class="note">2020 — present</p>
+    </div>
+
+    <div class="timeline">
+    <div class="rail"><div class="rail-fill" id="railFill"></div></div>
+    <div class="job enter">
+      <span class="node" aria-hidden="true"></span>
+      <div class="job-head">
+        <h3>Supply Chain Industrial Engineer, Co-op</h3>
+        <p class="job-meta">Jan 2026 — Sep 2026</p>
+      </div>
+      <p class="employer">Staples Inc., Multi-FC <span>· Framingham, MA</span></p>
+      <ul class="bullets">
+        <li>Resolved a fleet-wide AGV failure caused by a single-point NTP dependency by independently deploying a <strong>3-server redundancy fix across 1,000+ AGVs</strong>.</li>
+        <li>Devised a <strong>$3M cost-avoidance solution</strong> to an FC elevation constraint blocking ladder deployment, using staggered rack heights and AGV recalibration. Adopted and now in implementation.</li>
+        <li>Completed migration of <strong>650+ Power BI reports</strong> off a decommissioning SQL Server, rebuilding views for 400+ of them and redirecting the rest.</li>
+        <li>Updated AGV mapping at Charlotte FC so <strong>200+ cart and picking AGVs</strong> recognized newly added pick locations from an aisle expansion, unlocking capacity for 40+ additional pallets of SKUs.</li>
+        <li>Sole on-site engineer resolving recurring pipeline issues during Fridley Ladder system stabilization using <strong>Kafka and Redis</strong>, preventing an estimated <strong>$500K/day</strong> downtime loss, and authored the support team training documentation.</li>
+        <li>Recalibrated SKU min/max thresholds at Fridley FC, reducing replenishment trip frequency by approximately <strong>30%</strong>.</li>
+      </ul>
+    </div>
+
+    <div class="job enter">
+      <span class="node" aria-hidden="true"></span>
+      <div class="job-head">
+        <h3>Manufacturing Engineer</h3>
+        <p class="job-meta">Dec 2021 — Aug 2024</p>
+      </div>
+      <p class="employer">AB Enterprises <span>· Ahilyanagar, India</span></p>
+      <ul class="bullets">
+        <li>Optimized raw material and inventory planning, reducing holding costs <strong>30%</strong> while maintaining safety stock.</li>
+        <li>Reduced unplanned machine downtime <strong>25%</strong> through rapid breakdown response and preventive maintenance.</li>
+        <li>Ran root cause analysis on coating inefficiencies, cutting rework frequency <strong>10%</strong>.</li>
+        <li>Built production schedules from customer orders, priorities and processing time, hitting on-time delivery on <strong>95%+</strong> of orders.</li>
+        <li>Developed Power BI dashboards to monitor production KPIs and drive corrective action.</li>
+      </ul>
+    </div>
+
+    <div class="job enter">
+      <span class="node" aria-hidden="true"></span>
+      <div class="job-head">
+        <h3>Manufacturing Intern</h3>
+        <p class="job-meta">Nov 2020 — Nov 2021</p>
+      </div>
+      <p class="employer">TechnoTrak Engineers <span>· Ahilyanagar, India</span></p>
+      <ul class="bullets">
+        <li>Analyzed machining and assembly line workflows, identifying bottlenecks and recommending adjustments that improved line efficiency.</li>
+        <li>Supported calibration and validation activities, improving process reliability and reducing defect rates.</li>
+      </ul>
+    </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Capabilities</h2>
+      <p class="note">Hands-on, in production</p>
+    </div>
+    <div class="skills enter">
+      <div class="skill">
+        <h3>Warehouse &amp; Automation</h3>
+        <ul>
+          <li>Manhattan Active WMS (MAWM)</li>
+          <li>AGV fleet management</li>
+          <li>WMS migration</li>
+          <li>Kafka · Redis pipelines</li>
+          <li>Layout commissioning</li>
+          <li>SOP development</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h3>Data &amp; Reporting</h3>
+        <ul>
+          <li>Power BI · DAX · report migration</li>
+          <li>SQL Server</li>
+          <li>PostgreSQL</li>
+          <li>Snowflake</li>
+          <li>MySQL</li>
+          <li>Advanced Excel</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h3>Industrial Engineering</h3>
+        <ul>
+          <li>Process optimization</li>
+          <li>Lean manufacturing</li>
+          <li>Root cause analysis</li>
+          <li>Inventory optimization</li>
+          <li>Time &amp; motion study</li>
+          <li>Project management</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h3>Tools &amp; Build</h3>
+        <ul>
+          <li>DBeaver · Azure Data Studio</li>
+          <li>SolidWorks · Minitab</li>
+          <li>TypeScript · Next.js</li>
+          <li>SQLite · SQL</li>
+          <li>Git</li>
+          <li>MS Office</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Education &amp; Certifications</h2>
+    </div>
+    <div class="two enter">
+      <div>
+        <div class="edu" style="margin-bottom:18px">
+          <h3>MS, Industrial Engineering</h3>
+          <p class="school">Northeastern University, Boston</p>
+          <p class="meta">Dec 2026 · 3.62 GPA</p>
+        </div>
+        <div class="edu">
+          <h3>BE, Mechanical Engineering</h3>
+          <p class="school">Savitribai Phule Pune University, India</p>
+          <p class="meta">Jul 2020 · 3.3 GPA</p>
+        </div>
+      </div>
+      <div class="edu">
+        <h3 style="margin-bottom:12px">Certifications</h3>
+        <ul class="certs">
+          <li><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5.2 5.2L20 7"/></svg><span>Six Sigma Green Belt Specialization</span></li>
+          <li><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5.2 5.2L20 7"/></svg><span>Operations Management: Quality and Supply Chain</span></li>
+          <li><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5.2 5.2L20 7"/></svg><span>Supply Chain Logistics</span></li>
+          <li><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5.2 5.2L20 7"/></svg><span>Foundations of Project Management</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact enter" id="contact">
+    <p class="eyebrow">Open to full-time roles from January 2027</p>
+    <h2>Let's talk about your operation.</h2>
+    <p>
+      I am looking for industrial engineering, supply chain and warehouse automation roles
+      in the US and internationally. If you have a process that is not behaving, I would
+      like to hear about it.
+    </p>
+    <div class="mailrow">
+      <span class="mail" id="email">adityabothe46@gmail.com</span>
+      <button class="btn" id="copy" type="button">Copy email</button>
+      <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+      <span class="copied" id="copied" hidden>Copied</span>
+    </div>
+  </div>
+
+  <footer>
+    <span>Aditya Harish Bothe · Boston, MA</span>
+    <span>Portfolio built and designed by me · 2026</span>
+  </footer>
+
+</div>
+
+<div id="lightbox" hidden>
+  <img alt="Job Tracker board, enlarged">
+  <span class="hint">Click anywhere or press Esc to close</span>
+</div>
+
+<script>
+  (function () {
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var root = document.documentElement;
+
+    /* ---- scroll plumbing ----
+       Listen on window and on document (capture) so this keeps working
+       whichever element is doing the scrolling, and read the position through
+       document.scrollingElement rather than assuming documentElement. */
+    var scrollSubscribers = [];
+    function onAnyScroll() {
+      for (var i = 0; i < scrollSubscribers.length; i++) scrollSubscribers[i]();
+    }
+    function scroller() { return document.scrollingElement || root; }
+    function scrollTop() {
+      return window.scrollY || scroller().scrollTop || 0;
+    }
+    window.addEventListener("scroll", onAnyScroll, { passive: true });
+    document.addEventListener("scroll", onAnyScroll, { passive: true, capture: true });
+    window.addEventListener("resize", onAnyScroll);
+    // Some embedded viewers never dispatch a scroll event we can hear, so a
+    // cheap rAF watcher drives the same subscribers whenever the offset moves.
+    if (!reduced) {
+      var lastTop = -1;
+      (function watch() {
+        var t = scrollTop();
+        if (t !== lastTop) {
+          lastTop = t;
+          onAnyScroll();
+        }
+        requestAnimationFrame(watch);
+      })();
+    }
+
+    /* ---- scroll progress ---- */
+    var bar = document.getElementById("progress");
+    function onScroll() {
+      var max = scroller().scrollHeight - window.innerHeight;
+      bar.style.width = (max > 0 ? Math.min(100, (scrollTop() / max) * 100) : 0) + "%";
+    }
+    scrollSubscribers.push(onScroll);
+    onScroll();
+
+    /* ---- entrance + scroll reveal ----
+       The hidden state only switches on when we know we can animate and
+       observe, so the page is never left invisible if either is missing. */
+    var items = Array.prototype.slice.call(document.querySelectorAll(".enter"));
+    if (!reduced && "IntersectionObserver" in window) {
+      root.classList.add("js-anim");
+      // Hero items play immediately, staggered; the rest wait for scroll.
+      var hero = items.filter(function (el) { return el.closest("header"); });
+      hero.forEach(function (el, i) {
+        el.style.transitionDelay = i * 70 + "ms";
+        requestAnimationFrame(function () { el.classList.add("in"); });
+      });
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("in");
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+      items.forEach(function (el) { if (!el.closest("header")) io.observe(el); });
+      // Safety net: if anything is still hidden after 3s, reveal it.
+      setTimeout(function () {
+        items.forEach(function (el) { el.classList.add("in"); });
+      }, 3000);
+    }
+
+    /* ---- count-up on the impact numbers ---- */
+    var counters = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
+    function runCount(el) {
+      var target = parseFloat(el.getAttribute("data-count"));
+      var prefix = el.getAttribute("data-prefix") || "";
+      var suffix = el.getAttribute("data-suffix") || "";
+      var dur = 1100;
+      var start = 0;
+      function frame(now) {
+        if (!start) start = now;
+        var p = Math.min(1, (now - start) / dur);
+        // ease-out so it decelerates into the final figure
+        var eased = 1 - Math.pow(1 - p, 3);
+        var v = Math.round(target * eased);
+        el.textContent = prefix + v.toLocaleString("en-US") + suffix;
+        if (p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+    if (!reduced && "IntersectionObserver" in window) {
+      var cio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          runCount(e.target);
+          cio.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      counters.forEach(function (el) { cio.observe(el); });
+    }
+
+    /* ---- line simulator (Little's Law) ---- */
+    var rate = document.getElementById("rate");
+    var cycle = document.getElementById("cycle");
+    var belt = document.getElementById("belt");
+    if (rate && cycle && belt) {
+      var rateVal = document.getElementById("rate-val");
+      var cycleVal = document.getElementById("cycle-val");
+      var wipOut = document.getElementById("wip");
+      var boxes = [];
+      var MAX_BOXES = 26;
+
+      function layout(wip) {
+        // One box per ~8 units of WIP, so the belt reads as "fuller" without
+        // trying to draw hundreds of items.
+        var want = Math.max(1, Math.min(MAX_BOXES, Math.round(wip / 8)));
+        while (boxes.length < want) {
+          var b = document.createElement("div");
+          b.className = "box";
+          belt.appendChild(b);
+          boxes.push(b);
+        }
+        while (boxes.length > want) belt.removeChild(boxes.pop());
+        boxes.forEach(function (b, i) { b.dataset.slot = i / want; });
+      }
+
+      function update() {
+        var r = parseInt(rate.value, 10);
+        var c = parseInt(cycle.value, 10);
+        var wip = Math.round(r * (c / 60)); // units = units/hr × hours
+        rateVal.textContent = r.toLocaleString("en-US");
+        cycleVal.textContent = c;
+        wipOut.textContent = wip.toLocaleString("en-US");
+        layout(wip);
+      }
+
+      rate.addEventListener("input", update);
+      cycle.addEventListener("input", update);
+      update();
+
+      // Belt animation: speed scales with throughput.
+      if (!reduced) {
+        var pos = 0;
+        var last = 0;
+        (function tick(now) {
+          if (!last) last = now;
+          var dt = Math.min(64, now - last);
+          last = now;
+          var speed = parseInt(rate.value, 10) / 2800; // fraction of belt per ms
+          pos = (pos + (speed * dt) / 100) % 1;
+          var w = belt.clientWidth + 30;
+          boxes.forEach(function (b) {
+            var t = (parseFloat(b.dataset.slot) + pos) % 1;
+            b.style.transform = "translateX(" + (t * w - 24) + "px)";
+          });
+          requestAnimationFrame(tick);
+        })(0);
+      }
+    }
+
+    /* ---- expandable "How+" stories on the impact tiles ---- */
+    document.querySelectorAll(".more").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var story = document.getElementById(btn.getAttribute("aria-controls"));
+        if (!story) return;
+        var open = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+        story.hidden = open;
+      });
+    });
+
+    /* ---- before/after gauges fill when their card is revealed ---- */
+    var gaugeFills = Array.prototype.slice.call(document.querySelectorAll(".g-track i"));
+    function fillGauges() {
+      gaugeFills.forEach(function (el) { el.style.width = el.getAttribute("data-fill") + "%"; });
+    }
+    if (!reduced && "IntersectionObserver" in window && gaugeFills.length) {
+      var gio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.style.width = e.target.getAttribute("data-fill") + "%";
+          gio.unobserve(e.target);
+        });
+      }, { threshold: 0.6 });
+      gaugeFills.forEach(function (el) { gio.observe(el); });
+      setTimeout(fillGauges, 3000); // safety net
+    } else {
+      fillGauges();
+    }
+
+    /* ---- experience timeline: rail fills with scroll, nodes light up ---- */
+    var timeline = document.querySelector(".timeline");
+    var railFill = document.getElementById("railFill");
+    var nodes = Array.prototype.slice.call(document.querySelectorAll(".node"));
+    function updateRail() {
+      if (!timeline || !railFill) return;
+      var r = timeline.getBoundingClientRect();
+      var mark = window.innerHeight * 0.55; // the "playhead" sits just above centre
+      var p = (mark - r.top) / r.height;
+      p = Math.max(0, Math.min(1, p));
+      railFill.style.height = p * 100 + "%";
+      var reached = r.height * p;
+      nodes.forEach(function (n) {
+        // .job is positioned inside .timeline, so offsetTop is already
+        // relative to the rail. Subtracting the timeline's own offset here
+        // made every value negative and lit all the nodes at once.
+        var top = n.parentElement.offsetTop + 10;
+        n.classList.toggle("lit", top <= reached + 12);
+      });
+    }
+    if (timeline) {
+      if (reduced) {
+        railFill.style.height = "100%";
+        nodes.forEach(function (n) { n.classList.add("lit"); });
+      } else {
+        scrollSubscribers.push(updateRail);
+        updateRail();
+        // Belt and braces: some embedded viewers never dispatch scroll events,
+        // so light each node from an observer as well. Whichever fires first
+        // wins and the result is the same.
+        if ("IntersectionObserver" in window) {
+          var nodeWatch = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) {
+                var n = e.target.querySelector(".node");
+                if (n) n.classList.add("lit");
+                var last = null;
+                nodes.forEach(function (x) { if (x.classList.contains("lit")) last = x; });
+                if (last) {
+                  var h = (last.parentElement.offsetTop + 10) / timeline.offsetHeight;
+                  var cur = parseFloat(railFill.style.height) || 0;
+                  var want = Math.min(100, h * 100 + 6);
+                  if (want > cur) railFill.style.height = want + "%";
+                }
+              }
+            });
+          }, { rootMargin: "0px 0px -45% 0px" });
+          nodes.forEach(function (n) { nodeWatch.observe(n.parentElement); });
+        }
+      }
+    }
+
+    /* ---- skill lists stagger in ---- */
+    document.querySelectorAll(".skill").forEach(function (group) {
+      group.querySelectorAll("li").forEach(function (li, i) {
+        li.style.animationDelay = i * 45 + "ms";
+      });
+    });
+
+    /* ---- screenshot lightbox ---- */
+    var shot = document.querySelector(".shot");
+    var box = document.getElementById("lightbox");
+    if (shot && box) {
+      var boxImg = box.querySelector("img");
+      shot.addEventListener("click", function () {
+        boxImg.src = shot.src;
+        box.hidden = false;
+      });
+      box.addEventListener("click", function () { box.hidden = true; });
+      window.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") box.hidden = true;
+      });
+    }
+
+    /* ---- smooth in-page links ---- */
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var t = document.querySelector(a.getAttribute("href"));
+        if (!t) return;
+        e.preventDefault();
+        t.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+      });
+    });
+  })();
+
+  (function () {
+    var btn = document.getElementById("copy");
+    var email = document.getElementById("email");
+    var flag = document.getElementById("copied");
+    if (!btn || !email) return;
+    btn.addEventListener("click", function () {
+      var text = email.textContent.trim();
+      function done() {
+        if (!flag) return;
+        flag.hidden = false;
+        setTimeout(function () { flag.hidden = true; }, 2200);
+      }
+      // Clipboard access is refused in some embedded views; fall back to
+      // selecting the address so it can be copied by hand.
+      try {
+        navigator.clipboard.writeText(text).then(done, select);
+      } catch (e) {
+        select();
+      }
+      function select() {
+        var r = document.createRange();
+        r.selectNodeContents(email);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+    });
+  })();
+</script>
