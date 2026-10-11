@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anodizing Line Process Analysis</title>
+<meta name="description" content="Process risk analysis of a 10-tank aluminium anodizing line, documented using PFMEA and control plan methodology.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Anodizing Line Process Analysis">
+<meta property="og:description" content="PFMEA and control plan for a 10-tank aluminium anodizing line.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://adityabothe46.github.io/anodizing/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root {
+    --bg: #0b0d0f;
+    --bg-2: #101316;
+    --panel: #14181c;
+    --panel-2: #191e23;
+    --rule: rgb(255 255 255 / 0.09);
+    --rule-2: rgb(255 255 255 / 0.16);
+    --ink: #eceef0;
+    --ink-2: #b4bcc4;
+    --ink-3: #7d8891;
+    --ink-4: #5a646d;
+    --amber: #f5a524;
+    --amber-dim: #a86f12;
+    --steel: #7aa7d9;
+    --green: #4ec9a0;
+    --display: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15.5px;
+    line-height: 1.6;
+    padding-inline: 22px;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(48rem 22rem at 78% -6%, rgb(245 165 36 / 0.07), transparent 65%),
+      linear-gradient(rgb(255 255 255 / 0.016) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.016) 1px, transparent 1px);
+    background-size: auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+
+  .wrap { max-width: 68rem; margin: 0 auto; }
+
+  a { color: var(--amber); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: 0;
+  }
+
+  /* ---------- masthead ---------- */
+  .back {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-3);
+    padding: 26px 0 0;
+  }
+  .back:hover { color: var(--amber); }
+
+  header { padding: 26px 0 34px; border-bottom: 1px solid var(--rule); }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(30px, 5.2vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 14px 0 10px;
+  }
+  .sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--amber);
+    margin: 0 0 16px;
+  }
+  .lede { color: var(--ink-2); max-width: 46rem; margin: 0; }
+
+  /* ---------- sections ---------- */
+  section { padding: 38px 0; border-bottom: 1px solid var(--rule); }
+  section:last-of-type { border-bottom: 0; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(21px, 3vw, 27px);
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 26px 0 8px;
+  }
+  p { color: var(--ink-2); max-width: 48rem; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  ol, ul { color: var(--ink-2); max-width: 48rem; padding-left: 20px; }
+  li { margin: 4px 0; }
+
+  /* ---------- tables ---------- */
+  /* Each table scrolls inside its own box so the page body never scrolls
+     sideways on a phone. Font size stays readable and no columns are hidden. */
+  .tscroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--panel);
+    margin: 16px 0;
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    white-space: normal;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--panel-2);
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td strong { color: var(--amber); }
+  /* Keep the narrow score columns from wrapping to one character per line. */
+  .score { text-align: center; font-family: var(--mono); white-space: nowrap; }
+  .wide td:first-child, .wide th:first-child { min-width: 9rem; }
+  .wide td:nth-child(2), .wide td:nth-child(3),
+  .wide td:nth-child(5), .wide td:nth-child(7) { min-width: 15rem; }
+  .scrollhint {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: -6px 0 0;
+  }
+
+  /* ---------- download ---------- */
+  .dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--panel-2);
+    border: 1px solid var(--rule-2);
+    border-radius: 3px;
+    padding: 11px 15px;
+    margin: 14px 0 4px;
+  }
+  .dl:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ---------- callout ---------- */
+  .callout {
+    border-left: 2px solid var(--amber-dim);
+    background: var(--panel);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 3px 3px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-4);
+    padding: 30px 0 46px;
+    border-top: 1px solid var(--rule);
+    margin-top: 10px;
+  }
+
+  @media (max-width: 640px) {
+    body { padding-inline: 16px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../">&larr; Aditya Bothe</a>
+
+  <header>
+    <p class="eyebrow">Process engineering &nbsp;/&nbsp; Case study</p>
+    <h1>Anodizing Line<br>Process Analysis</h1>
+    <p class="sub">PFMEA and Control Plan, AB Enterprises</p>
+    <p class="lede">
+      Process analysis of an aluminium anodizing line I ran from 2021 to 2024, documented
+      using PFMEA and control plan methodology.
+    </p>
+  </header>
+
+  <section>
+    <h2>About the operation</h2>
+    <p>
+      AB Enterprises is an aluminium anodizing job shop in Ahmednagar, Maharashtra. Customers
+      send aluminium extrusions and specify a finish, a coating thickness in microns, and a
+      colour. We process to that spec and ship back.
+    </p>
+    <p>
+      I set up the newer of the two plants and ran production across both. That covered sourcing
+      raw material, scheduling orders, setting process parameters, checking bath chemistry,
+      verifying coating thickness, maintaining the equipment, and training the people on the floor.
+    </p>
+    <p>The line has ten tanks, each 21 feet long, 2.5 feet wide and 5 feet deep.</p>
+
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Tank</th><th>Contents</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="score">1</td><td>Caustic</td><td>Clean and etch</td></tr>
+          <tr><td class="score">2</td><td>DM water</td><td>Rinse</td></tr>
+          <tr><td class="score">3</td><td>Nitric</td><td>Oil removal and brightening</td></tr>
+          <tr><td class="score">4</td><td>DM water</td><td>Rinse</td></tr>
+          <tr><td class="score">5</td><td>Sulfuric</td><td>Anodize, micron build</td></tr>
+          <tr><td class="score">6</td><td>DM water</td><td>Rinse</td></tr>
+          <tr><td class="score">7</td><td>Colour</td><td>Dye</td></tr>
+          <tr><td class="score">8</td><td>DM water</td><td>Rinse</td></tr>
+          <tr><td class="score">9</td><td>Cold seal</td><td>Close the pores</td></tr>
+          <tr><td class="score">10</td><td>DM water</td><td>Rinse</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Supporting equipment is a 9 ton chiller with a cooling tower, an anodizing rectifier running
+      13 to 17 volts at 1600 to 1700 amps, a colour rectifier rated 500 amps and 200 volts, two
+      buffing machines, an overhead crane, and a packing machine.
+    </p>
+    <p>
+      DM water is held at a TDS of 2 to 3. The chiller and cooling tower exist because the
+      anodizing reaction puts a lot of heat into the sulfuric bath, and if the bath gets too warm
+      the coating comes out soft and porous instead of hard.
+    </p>
+  </section>
+
+  <section>
+    <h2>Three process routes</h2>
+    <p>
+      The finish the customer asks for changes the route, and in one case changes the tank order.
+      This matters because it is the main thing that can go wrong before any chemistry is involved.
+    </p>
+
+    <h3>Glossy</h3>
+    <p>Buff first, then jig, then into the tanks.</p>
+    <ol>
+      <li>Buffing, polish buff</li>
+      <li>Jigging, tie sections to vertical rods using 12.5 to 13 gauge aluminium wire</li>
+      <li>Caustic, short dwell</li>
+      <li>Nitric</li>
+      <li>Anodize</li>
+      <li>Colour</li>
+      <li>Cutting, cut the wire and release the sections</li>
+      <li>Drying</li>
+      <li>Polishing on the buffing machine with a polish buff</li>
+      <li>Packing</li>
+    </ol>
+
+    <h3>Normal matte</h3>
+    <p>
+      Same sequence, with two differences. Surfin buff instead of polish buff at the start, longer
+      dwell in caustic, and no polishing after drying.
+    </p>
+
+    <h3>Hard matte</h3>
+    <p>No buffing at any point, and the first two tanks run in reverse order.</p>
+    <ol>
+      <li>Jigging</li>
+      <li>Nitric, 5 minutes, oil removal</li>
+      <li>Caustic, 45 to 60 minutes</li>
+      <li>Nitric again, 15 minutes, oil removal and brightening</li>
+      <li>Anodize</li>
+      <li>Colour</li>
+      <li>Cutting</li>
+      <li>Drying</li>
+      <li>Packing</li>
+    </ol>
+
+    <p>
+      Silver skips the colour tank entirely, since the natural anodized finish is already silver.
+    </p>
+    <p>
+      The caustic dwell time is what separates glossy from matte. Short dwell leaves the surface
+      smooth enough to polish to a shine. Long dwell etches it to a matte texture, and once that is
+      done you cannot polish it back.
+    </p>
+  </section>
+
+  <section>
+    <h2>Cycle time and throughput</h2>
+    <p>Measured on a glossy order, 16 sections per load, 12 micron coating.</p>
+
+    <div class="tscroll">
+      <table>
+        <thead><tr><th>Stage</th><th>Time</th></tr></thead>
+        <tbody>
+          <tr><td>Buffing</td><td class="score">8 min</td></tr>
+          <tr><td>Jigging</td><td class="score">5 min</td></tr>
+          <tr><td>Caustic</td><td class="score">3 min</td></tr>
+          <tr><td>Nitric</td><td class="score">10 min</td></tr>
+          <tr><td>Anodize, 12 microns</td><td class="score">25 min</td></tr>
+          <tr><td>Colour</td><td class="score">2 min</td></tr>
+          <tr><td>Seal</td><td class="score">5 min</td></tr>
+          <tr><td>All rinses combined</td><td class="score">2.5 min</td></tr>
+          <tr><td>Cutting</td><td class="score">2 min</td></tr>
+          <tr><td>Drying</td><td class="score">30 min</td></tr>
+          <tr><td>Polishing</td><td class="score">4 min</td></tr>
+          <tr><td>Packing</td><td class="score">2 min</td></tr>
+          <tr><td><strong>Total lead time</strong></td><td class="score"><strong>98.5 min</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Loads run in parallel. While one sits in anodizing, another is in caustic and a third is
+      being jigged. So throughput is not set by the 98.5 minute lead time, it is set by whichever
+      station takes longest. That is anodizing at 25 minutes.
+    </p>
+    <p>
+      Over a 12 hour shift that works out to roughly 29 loads, which matches the 992 to 1050 kg we
+      actually produced. Running two shifts gets us to about 2 tons a day. The older plant managed
+      around 700 kg on an 8 hour shift with smaller tanks.
+    </p>
+
+    <h3>Micron spec drives capacity</h3>
+    <p>
+      Because anodizing is the constraint, and anodizing time scales with the coating thickness,
+      the customer's micron spec sets how much we can put through the line.
+    </p>
+
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Coating spec</th><th>Anodize time</th><th>Loads per 12 h</th><th>Approx output</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>12 microns</td><td class="score">25 min</td><td class="score">29</td><td class="score">1000 kg</td></tr>
+          <tr><td>18 microns</td><td class="score">45 min</td><td class="score">16</td><td class="score">560 kg</td></tr>
+          <tr><td>20 microns</td><td class="score">60 min</td><td class="score">12</td><td class="score">420 kg</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <p>
+        A 20 micron order takes more than half the capacity out of the line compared to a 12 micron
+        order. We charged a flat rate of about 50 rupees per kg regardless, which meant thick
+        coating work earned the same per kilo while consuming far more of the bottleneck. Looking
+        at it this way, the rate card should have been tied to micron spec rather than weight alone.
+      </p>
+    </div>
+
+    <p>
+      Drying takes 30 minutes, nearly a third of the lead time, and it varies with weather. It does
+      not limit throughput because loads dry in parallel, but it does drive how much material is
+      sitting on the floor at any time.
+    </p>
+  </section>
+
+  <section id="pfmea">
+    <h2>PFMEA</h2>
+    <p>
+      Scored using AIAG VDA methodology. Severity is the effect on the customer. Occurrence is how
+      often the cause arises. Detection is inverted, where 1 means the defect cannot escape and 10
+      means it cannot be caught in house.
+    </p>
+    <p>
+      Occurrence ratings are based on actual production records rather than estimates. Rejection
+      rate ran at 2 to 3 loads per 100, and colour mismatch was the main cause.
+    </p>
+
+    <a class="dl" href="Aditya_Bothe_PFMEA_ControlPlan_Anodizing.xlsx" download>
+      Download the full PFMEA and control plan (XLSX)
+    </a>
+
+    <p class="scrollhint">Wide table &middot; scroll sideways</p>
+    <div class="tscroll">
+      <table class="wide">
+        <thead>
+          <tr>
+            <th>Process step</th><th>Failure mode</th><th>Effect</th><th>S</th>
+            <th>Cause</th><th>O</th><th>Detection control</th><th>D</th><th>RPN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Anodize, Tank 5</td>
+            <td>Soft, porous coating from bath temperature excursion</td>
+            <td>Passes thickness and visual check, fails in service at customer</td>
+            <td class="score">9</td>
+            <td>Chiller underperforming, cooling tower fouled, bath above working range under sustained load</td>
+            <td class="score">3</td>
+            <td>None. Thickness and appearance are unaffected, softness cannot be seen or measured on a DFT meter</td>
+            <td class="score">8</td>
+            <td class="score"><strong>216</strong></td>
+          </tr>
+          <tr>
+            <td>Colour, Tank 7</td>
+            <td>Shade outside customer tolerance</td>
+            <td>Batch rejected. Light shade can be re-dipped, dark shade needs full strip and re-anodize</td>
+            <td class="score">7</td>
+            <td>Dwell time error, rectifier current not set for shade, dye bath depleted over successive loads</td>
+            <td class="score">6</td>
+            <td>Visual comparison against retained master sample before packing</td>
+            <td class="score">5</td>
+            <td class="score"><strong>210</strong></td>
+          </tr>
+          <tr>
+            <td>Jigging</td>
+            <td>Loose or oxidised wire contact</td>
+            <td>No coating or partial coating on affected section, piece is scrap</td>
+            <td class="score">8</td>
+            <td>Inconsistent tie-down, oxidised contact surface, too many sections per rod</td>
+            <td class="score">5</td>
+            <td>Visual inspection after cutting</td>
+            <td class="score">5</td>
+            <td class="score"><strong>200</strong></td>
+          </tr>
+          <tr>
+            <td>Anodize, Tank 5</td>
+            <td>Coating thickness below specification</td>
+            <td>Batch rejected by customer, full re-anodize</td>
+            <td class="score">7</td>
+            <td>Dwell time short, current below target, load surface area miscalculated against rectifier output</td>
+            <td class="score">4</td>
+            <td>DFT meter, 2 to 3 sections on the first few loads of the day only</td>
+            <td class="score">6</td>
+            <td class="score"><strong>168</strong></td>
+          </tr>
+          <tr>
+            <td>Caustic, Tank 1</td>
+            <td>Over-etch, excessive metal removal</td>
+            <td>Dimensional loss on tolerance-critical sections, dull finish. Cannot be reversed</td>
+            <td class="score">7</td>
+            <td>Dwell exceeded, concentration high after fresh makeup, load left soaking during a stoppage</td>
+            <td class="score">4</td>
+            <td>Visual check of finish, dimensional check only where customer specifies tolerance</td>
+            <td class="score">6</td>
+            <td class="score"><strong>168</strong></td>
+          </tr>
+          <tr>
+            <td>Seal, Tank 9</td>
+            <td>Incomplete or partial seal</td>
+            <td>Colour bleeds or fades in service, corrosion resistance compromised, shows up weeks later</td>
+            <td class="score">9</td>
+            <td>Bath chemistry or pH outside working range, dwell short, contamination from rinse carryover</td>
+            <td class="score">2</td>
+            <td>None. A sealed and an unsealed part look identical and read identically on a DFT meter</td>
+            <td class="score">9</td>
+            <td class="score"><strong>162</strong></td>
+          </tr>
+          <tr>
+            <td>Dispatch</td>
+            <td>Material shipped before cold seal aging completes</td>
+            <td>Seal still developing in transit, corrosion resistance not assured at delivery</td>
+            <td class="score">9</td>
+            <td>Cold seal keeps reacting for roughly 24 to 48 hours after immersion, same day dispatch does not allow completion</td>
+            <td class="score">2</td>
+            <td>None. Seal state cannot be verified at dispatch</td>
+            <td class="score">9</td>
+            <td class="score"><strong>162</strong></td>
+          </tr>
+          <tr>
+            <td>Routing</td>
+            <td>Wrong process route applied for the specified finish</td>
+            <td>Glossy order comes out matte or the reverse. Cannot be corrected once caustic has etched the surface</td>
+            <td class="score">8</td>
+            <td>Finish type not carried clearly with the load, operator works from memory</td>
+            <td class="score">3</td>
+            <td>Visible at polishing stage, after all tank processing is complete</td>
+            <td class="score">4</td>
+            <td class="score"><strong>96</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>What the analysis showed</h3>
+    <p>
+      The two seal rows score high on severity and detection but low on occurrence. We had no
+      customer complaints about fading, bleeding or corrosion across the whole period. That tells
+      me the seal process was running well, not that we had it under control. There was no way to
+      verify a seal before material left the floor. The process held because the chemistry and
+      timings were stable, which is a reasonable position while nothing changes, and a real
+      exposure if volume, chemistry or staffing shifted.
+    </p>
+    <p>
+      Bath temperature carries the same shape of risk. The chiller worked, so it rarely bit, but
+      there was no logged temperature record per load and no alarm. A soft coating passes every
+      check we had.
+    </p>
+    <p>
+      Colour sits near the top on evidence rather than judgment. Our actual rejections were mostly
+      colour, and I set occurrence to 6 to reflect that rather than the 4 I would have guessed.
+    </p>
+
+    <h3>The one escape we had</h3>
+    <p>
+      A commercial vehicle manufacturer's order came back with both thickness and colour out of
+      spec. I went to the site, investigated, and recovered the full payment.
+    </p>
+    <p>
+      Working through it afterwards, the two defects were probably one problem. Colour uptake
+      depends on the pore structure the anodizing step creates. Thin coating means shallow pores,
+      shallow pores absorb less dye, and the result reads as a light or off shade. So the colour
+      complaint may have been downstream evidence of the thickness problem rather than a colour
+      tank failure.
+    </p>
+    <p>
+      That matters for the rejection data. Some share of the colour rejections we were writing off
+      at 2 to 3 percent could have been anodizing issues showing up at the colour stage.
+    </p>
+    <p>
+      It also exposed the sampling scheme. We checked 2 to 3 sections on the first few loads of the
+      day, and once the readings came back good we stopped checking for the rest of the shift. That
+      design verifies the setup. It does not catch anything that develops during the day, such as
+      bath temperature climbing through the afternoon, concentration drifting as loads accumulate,
+      or a load with unusually high surface area getting the standard current.
+    </p>
+  </section>
+
+  <section>
+    <h2>Control plan</h2>
+    <p>
+      Each characteristic traces back to a PFMEA row. Product characteristics are measured on the
+      finished part. Process characteristics are the settings that produce them.
+    </p>
+
+    <p class="scrollhint">Wide table &middot; scroll sideways</p>
+    <div class="tscroll">
+      <table class="wide">
+        <thead>
+          <tr>
+            <th>No.</th><th>Process step</th><th>Characteristic</th><th>Type</th>
+            <th>Specification</th><th>Measurement</th><th>Frequency</th>
+            <th>Reaction plan</th><th>PFMEA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="score">1</td><td>Caustic, Tank 1</td><td>Immersion dwell time</td><td>Process</td><td>Short for glossy, 45 to 60 min for hard matte</td><td>Timer and operator log</td><td>Every load</td><td>Pull the load. Inspect finish and dimensions. Quarantine if over-etch suspected</td><td>Over-etch</td></tr>
+          <tr><td class="score">2</td><td>Caustic, Tank 1</td><td>Bath concentration</td><td>Process</td><td>Working range per process standard</td><td>Hydrometer</td><td>Weekly, and after replenishment</td><td>Correct to target before the next load. Check more often until stable</td><td>Over-etch</td></tr>
+          <tr><td class="score">3</td><td>Jigging</td><td>Wire gauge and contact integrity</td><td>Process</td><td>12.5 to 13 gauge aluminium wire, all sections firmly tied, contact surfaces clean</td><td>Visual at jigging and after cutting</td><td>Every load</td><td>Re-jig affected sections and reprocess. Clean contact surfaces</td><td>Loose contact</td></tr>
+          <tr><td class="score">4</td><td>Nitric, Tank 3</td><td>Immersion dwell time</td><td>Process</td><td>10 min standard route, 5 min then 15 min for hard matte</td><td>Timer</td><td>Every load</td><td>Re-immerse if oil residue found at anodizing</td><td>Over-etch</td></tr>
+          <tr><td class="score">5</td><td>Anodize, Tank 5</td><td>Coating thickness</td><td>Product</td><td>Customer spec in microns, 12 typical</td><td>DFT meter, one section per load, measured at the lowest point on the rack</td><td>Every load, recorded</td><td>Re-anodize if below spec. Verify rectifier output and load area calculation</td><td>Thickness</td></tr>
+          <tr><td class="score">6</td><td>Anodize, Tank 5</td><td>Rectifier voltage and current</td><td>Process</td><td>13 to 17 V, 15 V nominal, 1600 to 1700 A</td><td>Panel instrumentation</td><td>Each load at start and mid cycle</td><td>Stop the load. Recalculate load surface area and reset. Check contacts</td><td>Thickness</td></tr>
+          <tr><td class="score">7</td><td>Anodize, Tank 5</td><td>Bath temperature</td><td>Process</td><td>Within working range, upper alarm limit set</td><td>Temperature probe, logged</td><td>Logged per load</td><td>Halt the line. Hold affected loads for hardness and seal verification. Service chiller and cooling tower</td><td>Soft coating</td></tr>
+          <tr><td class="score">8</td><td>Colour, Tank 7</td><td>Shade match</td><td>Product</td><td>Match to retained master sample within customer tolerance</td><td>Visual comparison under consistent lighting</td><td>Every load</td><td>Light shade, re-dip. Dark shade, strip and re-anodize. Check dye depletion</td><td>Colour</td></tr>
+          <tr><td class="score">9</td><td>Colour, Tank 7</td><td>Dwell time and current</td><td>Process</td><td>Per shade, 90 to 120 sec typical, rectifier 500 A and 200 V</td><td>Timer and panel</td><td>Every load</td><td>Adjust to standard. Check dye concentration if drift repeats</td><td>Colour</td></tr>
+          <tr><td class="score">10</td><td>Seal, Tank 9</td><td>Seal quality</td><td>Product</td><td>Complete pore closure, no dye bleed</td><td>ASTM B136 dye stain or ASTM B680 acid dissolution</td><td>Sampled per batch</td><td>Quarantine. Re-seal if viable. Investigate bath chemistry</td><td>Seal</td></tr>
+          <tr><td class="score">11</td><td>Seal, Tank 9</td><td>Bath chemistry and pH</td><td>Process</td><td>Ambient temperature, concentration and pH per supplier range</td><td>Hydrometer and pH meter</td><td>Weekly</td><td>Halt sealing. Correct chemistry. Hold affected batches</td><td>Seal</td></tr>
+          <tr><td class="score">12</td><td>Dispatch</td><td>Seal aging hold</td><td>Process</td><td>Minimum hold per supplier aging time, 24 to 48 h typical for cold seal</td><td>Seal and dispatch time recorded</td><td>Every batch</td><td>Hold until the period elapses. Do not release early under schedule pressure</td><td>Aging</td></tr>
+          <tr><td class="score">13</td><td>Rinse tanks</td><td>DM water quality</td><td>Process</td><td>TDS 2 to 3</td><td>TDS meter</td><td>Weekly</td><td>Replace or regenerate. Inspect prior loads for staining</td><td>Over-etch, Colour</td></tr>
+          <tr><td class="score">14</td><td>Order entry</td><td>Finish route assignment</td><td>Process</td><td>Glossy, normal matte or hard matte marked on the job card</td><td>Job card check at jigging</td><td>Every order</td><td>Stop before caustic. Confirm with the customer order</td><td>Routing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Changes this analysis points to</h2>
+
+    <p>
+      <strong>Thickness checks spread across the shift.</strong> One section per load, every load,
+      instead of 2 to 3 sections clustered on the first few loads. That is barely more work and it
+      covers the whole day instead of just the setup. Recording the readings also turns inspection
+      into trend data, which would show drift before it becomes a reject.
+    </p>
+    <p>
+      <strong>Measure at the worst case.</strong> Lowest point on the rack or furthest from the
+      cathode, where current density is weakest, rather than wherever is easiest to reach.
+    </p>
+    <p>
+      <strong>Log bath temperature per load with an alarm limit.</strong> This is the single
+      highest value change. It takes the detection score on soft coating from 8 down to around 3
+      and moves the risk from 216 to roughly 81.
+    </p>
+    <p>
+      <strong>Sampled seal testing.</strong> ASTM B136 or B680 on a per batch basis. We had no
+      complaints, but we also had no way to know.
+    </p>
+    <p>
+      <strong>Hold period after sealing.</strong> Cold seal keeps reacting for a day or two after
+      the tank. Recording the seal completion date on the batch record and releasing only after the
+      hold would close that gap.
+    </p>
+    <p>
+      <strong>Finish route on the job card.</strong> Carrying the finish type with the load rather
+      than relying on operator memory. Cheap to do, and the failure it prevents cannot be corrected
+      once caustic has etched the surface.
+    </p>
+    <p>
+      <strong>Price against the constraint.</strong> Anodizing time scales with micron spec, and
+      anodizing is the bottleneck. A flat per kilo rate undercharges thick coating work relative to
+      what it costs in capacity.
+    </p>
+  </section>
+
+  <section>
+    <h2>Notes on method</h2>
+    <p>
+      Severity is set by the effect on the customer and cannot be lowered without changing the spec
+      or the design. Occurrence comes down through prevention controls. Detection comes down
+      through detection controls. The two are listed separately because they act on different
+      columns.
+    </p>
+    <p>
+      Detection is scored inversely. A 1 means the defect cannot escape, a 10 means it cannot be
+      caught in house.
+    </p>
+    <p>
+      The current AIAG VDA handbook uses an Action Priority rating rather than RPN. RPN is kept
+      here because it is still what most plants talk in, and the ranking comes out the same either
+      way.
+    </p>
+    <p>
+      Occurrence scores were revised after reviewing actual rejection records. My initial judgment
+      put colour mid-table. The production data put it near the top, and the scores were corrected
+      to match.
+    </p>
+  </section>
+
+  <footer>
+    <span>Aditya Harish Bothe &middot; Boston, MA</span>
+    <span><a href="../">Back to portfolio</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
