@@ -391,9 +391,11 @@
     <div class="callout">
       <p>
         A 20 micron order takes more than half the capacity out of the line compared to a 12 micron
-        order. We charged a flat rate of about 50 rupees per kg regardless, which meant thick
-        coating work earned the same per kilo while consuming far more of the bottleneck. Looking
-        at it this way, the rate card should have been tied to micron spec rather than weight alone.
+        order. Our rate did move with the spec, around 50 rupees per kg at 12 microns and higher
+        for thicker coatings. What we never did was check whether the uplift matched the capacity
+        the order consumed. A kilo at 20 microns takes roughly 2.4 times the tank time of a kilo at
+        12. Nobody worked out whether the price difference covered that, because the rate card was
+        built on what the market would bear rather than on what the bottleneck cost.
       </p>
     </div>
 
@@ -545,6 +547,16 @@
       Colour sits near the top on evidence rather than judgment. Our actual rejections were mostly
       colour, and I set occurrence to 6 to reflect that rather than the 4 I would have guessed.
     </p>
+    <p>
+      Colour also sits on the most expensive work. Natural silver skips the dye tank entirely,
+      while dyed and electro-coloured work costs more to produce and sells for more. So the defect
+      we saw most often was concentrated on the product we were paid most for. The recovery path
+      makes it worse: the PFMEA row says a light shade can be re-dipped, but a dark one needs a
+      full strip and re-anodize. A dark shade colour reject does not just lose the dye, it sends
+      the load back through the anodizing tank, which is the constraint. At 2 to 3 rejects per
+      hundred loads with colour the main cause, some share of our lost capacity was the bottleneck
+      being paid for twice.
+    </p>
 
     <h3>The one escape we had</h3>
     <p>
@@ -641,9 +653,10 @@
       once caustic has etched the surface.
     </p>
     <p>
-      <strong>Price against the constraint.</strong> Anodizing time scales with micron spec, and
-      anodizing is the bottleneck. A flat per kilo rate undercharges thick coating work relative to
-      what it costs in capacity.
+      <strong>Measure the rate against bottleneck minutes.</strong> The rate already moved with
+      the spec. What was missing was the check: rupees per kilo divided by tank minutes per kilo,
+      compared across specs and colours. Without that number there is no way to know which orders
+      are worth taking when the line is full, and that is exactly when the question matters.
     </p>
   </section>
 
