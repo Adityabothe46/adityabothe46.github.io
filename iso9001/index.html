@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 9001 Gap Analysis</title>
+<meta name="description" content="Gap analysis of an unregistered aluminium anodizing job shop against ISO 9001, clause by clause, based on four years running the operation.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="ISO 9001 Gap Analysis">
+<meta property="og:description" content="Where an uncertified ten-person job shop met the standard in practice, and where it did not.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://adityabothe46.github.io/iso9001/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root {
+    --bg: #0b0d0f;
+    --bg-2: #101316;
+    --panel: #14181c;
+    --panel-2: #191e23;
+    --rule: rgb(255 255 255 / 0.09);
+    --rule-2: rgb(255 255 255 / 0.16);
+    --ink: #eceef0;
+    --ink-2: #b4bcc4;
+    --ink-3: #7d8891;
+    --ink-4: #5a646d;
+    --amber: #f5a524;
+    --amber-dim: #a86f12;
+    --steel: #7aa7d9;
+    --green: #4ec9a0;
+    --display: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15.5px;
+    line-height: 1.6;
+    padding-inline: 22px;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(48rem 22rem at 78% -6%, rgb(245 165 36 / 0.07), transparent 65%),
+      linear-gradient(rgb(255 255 255 / 0.016) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.016) 1px, transparent 1px);
+    background-size: auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+
+  .wrap { max-width: 68rem; margin: 0 auto; }
+
+  a { color: var(--amber); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: 0;
+  }
+
+  /* ---------- masthead ---------- */
+  .back {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-3);
+    padding: 26px 0 0;
+  }
+  .back:hover { color: var(--amber); }
+
+  header { padding: 26px 0 34px; border-bottom: 1px solid var(--rule); }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(30px, 5.2vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 14px 0 10px;
+  }
+  .sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--amber);
+    margin: 0 0 16px;
+  }
+  .lede { color: var(--ink-2); max-width: 46rem; margin: 0; }
+
+  /* ---------- sections ---------- */
+  section { padding: 38px 0; border-bottom: 1px solid var(--rule); }
+  section:last-of-type { border-bottom: 0; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(21px, 3vw, 27px);
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 26px 0 8px;
+  }
+  p { color: var(--ink-2); max-width: 48rem; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  ol, ul { color: var(--ink-2); max-width: 48rem; padding-left: 20px; }
+  li { margin: 4px 0; }
+
+  /* ---------- tables ---------- */
+  /* Each table scrolls inside its own box so the page body never scrolls
+     sideways on a phone. Font size stays readable and no columns are hidden. */
+  .tscroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--panel);
+    margin: 16px 0;
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    white-space: normal;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--panel-2);
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td strong { color: var(--amber); }
+  /* Keep the narrow score columns from wrapping to one character per line. */
+  .score { text-align: center; font-family: var(--mono); white-space: nowrap; }
+  .wide td:first-child, .wide th:first-child { min-width: 9rem; }
+  .wide td:nth-child(2), .wide td:nth-child(3),
+  .wide td:nth-child(5), .wide td:nth-child(7) { min-width: 15rem; }
+  .scrollhint {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: -6px 0 0;
+  }
+
+  /* ---------- download ---------- */
+  .dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--panel-2);
+    border: 1px solid var(--rule-2);
+    border-radius: 3px;
+    padding: 11px 15px;
+    margin: 14px 0 4px;
+  }
+  .dl:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ---------- callout ---------- */
+  .callout {
+    border-left: 2px solid var(--amber-dim);
+    background: var(--panel);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 3px 3px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-4);
+    padding: 30px 0 46px;
+    border-top: 1px solid var(--rule);
+    margin-top: 10px;
+  }
+
+  @media (max-width: 640px) {
+    body { padding-inline: 16px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+<style>
+  .finding { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  .met { color: var(--green); }
+  .partial { color: var(--amber); }
+  .gap { color: #e0756b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../">&larr; Aditya Bothe</a>
+
+  <header>
+    <p class="eyebrow">Quality systems &nbsp;/&nbsp; Case study</p>
+    <h1>ISO 9001<br>Gap Analysis</h1>
+    <p class="sub">Aluminium anodizing job shop, AB Enterprises</p>
+    <p class="lede">
+      An assessment of an unregistered job shop operation against ISO 9001 requirements, based on
+      direct experience running the process from 2021 to 2024. The operation was not certified and
+      did not maintain a formal quality management system. This analysis identifies where existing
+      practice aligned with clause requirements and where it fell short.
+    </p>
+  </header>
+
+  <section>
+    <h2>Why this is worth writing</h2>
+    <p>
+      Most small manufacturers are not certified and have no intention of becoming certified. That
+      does not mean they have no quality system. It means the system lives in people rather than
+      documents.
+    </p>
+    <p>
+      AB Enterprises ran on about ten people, with the owner on site daily and one engineer holding
+      the process knowledge. Quality was the main selling point of the business, and the commitment
+      behind that was real. Customers came back because the finish was consistent.
+    </p>
+    <p>
+      What the operation did not have was the structure that lets a system survive without the
+      people currently holding it. That is the gap this analysis describes, and it is a more useful
+      thing to understand than a list of boxes ticked.
+    </p>
+
+    <h3>Scope and basis</h3>
+    <p>
+      This covers selected clauses across 4 to 10. Findings are based on recollection of operating
+      practice rather than on retained evidence, since records were discarded after their retention
+      period. Where a finding rests on practice I ran personally, it is stated as such. Where
+      structure was absent, it is stated plainly.
+    </p>
+    <div class="callout">
+      <p>
+        Assessed against ISO 9001:2015, the edition in force during the period described.
+        ISO 9001:2026 was published in September 2026 and supersedes it, with a three year
+        transition. Clause 8.3, design and development, is scoped out: the shop worked to
+        customer specification and carried out no design.
+      </p>
+    </div>
+    <p>
+      The conclusion is not that the operation was conformant. It was not. The conclusion is that a
+      number of clause intents were being met through practice, and a smaller number were not being
+      met at all.
+    </p>
+  </section>
+
+  <section>
+    <h2>Summary</h2>
+    <div class="tscroll">
+      <table>
+        <thead><tr><th>Clause</th><th>Requirement</th><th>Finding</th></tr></thead>
+        <tbody>
+          <tr><td>4.1 to 4.4</td><td>Context, scope, process interactions documented</td><td class="finding gap">Gap</td></tr>
+          <tr><td>5.1</td><td>Leadership and commitment</td><td class="finding met">Met in practice</td></tr>
+          <tr><td>5.2</td><td>Quality policy as documented information</td><td class="finding partial">Partial</td></tr>
+          <tr><td>5.3</td><td>Roles and responsibilities</td><td class="finding partial">Partial</td></tr>
+          <tr><td>6.1</td><td>Actions to address risks and opportunities</td><td class="finding gap">Gap at the time</td></tr>
+          <tr><td>6.2</td><td>Quality objectives, measurable and tracked</td><td class="finding partial">Partial</td></tr>
+          <tr><td>7.1.5</td><td>Monitoring and measuring resources</td><td class="finding met">Met</td></tr>
+          <tr><td>7.1.5.2</td><td>Measurement traceability and calibration</td><td class="finding met">Met</td></tr>
+          <tr><td>7.2</td><td>Competence</td><td class="finding met">Met in practice</td></tr>
+          <tr><td>7.3</td><td>Awareness of the policy</td><td class="finding met">Met in practice</td></tr>
+          <tr><td>7.5</td><td>Documented information, control and retention</td><td class="finding partial">Partial</td></tr>
+          <tr><td>8.2.3</td><td>Review of customer requirements</td><td class="finding met">Met</td></tr>
+          <tr><td>8.4</td><td>Control of external providers</td><td class="finding partial">Partial</td></tr>
+          <tr><td>8.5.1</td><td>Controlled conditions for production</td><td class="finding met">Met</td></tr>
+          <tr><td>8.5.2</td><td>Identification and traceability</td><td class="finding partial">Partial</td></tr>
+          <tr><td>8.5.3</td><td>Property belonging to customers</td><td class="finding met">Met</td></tr>
+          <tr><td>8.7</td><td>Control of nonconforming output</td><td class="finding met">Met</td></tr>
+          <tr><td>9.1</td><td>Monitoring, measurement and analysis</td><td class="finding partial">Partial</td></tr>
+          <tr><td>9.2</td><td>Internal audit</td><td class="finding partial">Partial</td></tr>
+          <tr><td>9.3</td><td>Management review</td><td class="finding partial">Partial</td></tr>
+          <tr><td>10.2</td><td>Nonconformity and corrective action</td><td class="finding met">Met</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where the operation was genuinely strong</h2>
+
+    <h3>7.1.5.2 Measurement traceability</h3>
+    <p>
+      The standard requires that measuring equipment used to verify conformity be calibrated or
+      verified at defined intervals against traceable standards, with records retained.
+    </p>
+    <p>
+      The DFT meter, hydrometer and TDS meter were all returned to the supplier for calibration at
+      set intervals. This was the practice throughout, not something introduced after a problem.
+    </p>
+    <p>
+      This is the finding I would lead with, because it is the control most small shops skip.
+      Coating thickness was the single characteristic customers paid for, and the instrument that
+      measured it was verified rather than trusted.
+    </p>
+
+    <h3>8.5.3 Property belonging to customers</h3>
+    <p>
+      Most orders ran on extrusions from our own plant. A minority came in on material the customer
+      had bought from an extruder of their choice, and that material stayed their property through
+      all ten tanks.
+    </p>
+    <p>
+      Incoming customer material was checked on arrival for surface condition, dimensions and
+      visible defects. Where something was wrong we flagged it before processing and gave the
+      customer the choice of going ahead on their material or having us source a replacement.
+      Material from the two sources was held as separate inventory.
+    </p>
+    <p>
+      The check and the customer's decision were written on the job card, and we called the
+      customer to tell them what we had found before going ahead. That is what the clause asks for,
+      including the requirement to report when property is found unsuitable. Retention of those job
+      cards falls under the 7.5.3 finding below, where the period was de facto rather than defined.
+    </p>
+    <p>
+      The exposure sits in the process rather than the control. Over-etch cannot be reversed, so a
+      process failure on a customer's own extrusions destroys their property rather than ours.
+      <a href="../anodizing/#pfmea">The PFMEA ranks that failure mode at RPN 168</a>.
+    </p>
+
+    <h3>Vertical integration as a quality control</h3>
+    <p>
+      Owning the extrusion plant meant the main input was made to our own standard rather than
+      bought on spec. We did not compromise on quality at the extrusion stage either, and the
+      anodizing line inherited the benefit. Where a customer chose their own extruder we had no
+      such control, and that showed up as more quality problems on those orders.
+    </p>
+
+    <h3>8.7 and 10.2 Nonconforming output and corrective action</h3>
+    <p>
+      Every rejected load was written up. What failed, why, what was done with the material, and
+      what would change to stop it happening again.
+    </p>
+    <p>
+      The clearest example was a customer order returned for thickness and colour non-conformance.
+      I went to the customer site, investigated, produced a written report for the owner, and
+      recovered the payment. Working through it afterwards, both defects traced to a single
+      probable cause in the anodizing step, since thin coating produces shallow pores and shallow
+      pores take up less dye.
+    </p>
+    <p>
+      That is what 10.2 asks for. Review the nonconformity, determine the cause, evaluate whether
+      similar nonconformities exist, and act.
+    </p>
+
+    <h3>8.2.3 Review of customer requirements</h3>
+    <p>
+      A job card was raised for every order carrying the finish type, micron specification and
+      colour. Requirements were established and recorded before work started, which is the
+      substance of this clause.
+    </p>
+
+    <h3>8.5.1 Controlled conditions</h3>
+    <p>
+      Production ran to defined parameters. Dwell times per tank and per finish route, rectifier
+      settings against calculated load surface area, bath chemistry checked weekly by hydrometer,
+      DM water held at a defined TDS. Operators worked to checkpoints they had been trained on.
+    </p>
+
+    <h3>7.2 and 7.3 Competence and awareness</h3>
+    <p>
+      Associates and supervisors were trained on what to look for at each stage and on the quality
+      commitment behind it. Cross training across skill areas was deliberate.
+    </p>
+  </section>
+
+  <section>
+    <h2>Where practice existed but structure did not</h2>
+    <p>
+      This is the largest category, and it is the honest description of the operation. The intent
+      behind each clause was being served. The form the standard asks for was not there.
+    </p>
+
+    <h3>5.2 Quality policy</h3>
+    <p>
+      There was a real quality commitment, and it was communicated. The company motto was best in
+      business, and the position was that quality would not be compromised even at the cost of
+      taking a loss on an order. People were trained to it.
+    </p>
+    <p>
+      What was missing is the policy as a controlled document. Clause 5.2 asks for a policy that
+      includes specific commitments, including to satisfying applicable requirements and to
+      continual improvement, maintained as documented information, available to interested parties.
+    </p>
+    <p>A commitment people understand is not the same as a document an auditor can read.</p>
+
+    <h3>9.2 Internal audit</h3>
+    <p>A review of the operation was carried out annually and findings were written up.</p>
+    <p>
+      Clause 9.2 asks for more than that. An audit programme covering frequency, methods and
+      responsibilities. Defined criteria and scope for each audit. Auditors selected to ensure
+      objectivity, which in practice means not auditing your own work. Results reported to relevant
+      management and records retained.
+    </p>
+    <p>I audited a process I ran myself. That is useful and it is not independent.</p>
+
+    <h3>9.3 Management review</h3>
+    <p>
+      Performance was reported to the owner, who is my elder brother, including business
+      performance, customer feedback and resource needs. Being a two person leadership team with
+      daily contact, that conversation happened constantly.
+    </p>
+    <p>
+      Clause 9.3 asks for review at planned intervals against a defined set of inputs, with
+      documented outputs covering improvement opportunities, system changes and resource needs.
+      Continuous informal review between two people is not the same thing, and it leaves no record.
+    </p>
+
+    <h3>8.4 Control of external providers</h3>
+    <p>
+      The main input, the aluminium itself, came mostly from our own extrusion plant rather than an
+      external provider, so this clause applied mainly to chemicals, consumables and calibration
+      services.
+    </p>
+    <p>
+      Those suppliers were selected on price, quality and material availability. Those are
+      reasonable criteria and they were applied consistently.
+    </p>
+    <p>
+      What was absent is documented criteria for evaluation, selection and re-evaluation, and
+      records of supplier performance. The judgement was sound. It was not written down, and it was
+      not transferable.
+    </p>
+
+    <h3>7.5.3 Control of documented information</h3>
+    <p>
+      Job cards and rejection reports were kept for roughly two to five years and then discarded.
+      That is a de facto retention practice rather than a defined one. The clause asks for
+      retention periods to be determined and applied, with control over storage, protection and
+      disposition.
+    </p>
+
+    <h3>6.2 Quality objectives</h3>
+    <p>
+      The objective was consistent quality, and rejection rate was known to run at two to three
+      loads per hundred. That number was tracked in practice.
+    </p>
+    <p>
+      Clause 6.2 asks for objectives that are measurable, monitored, communicated and updated, with
+      a plan stating what will be done, with what resources, by whom, by when, and how results will
+      be evaluated. Knowing a number is not the same as managing against a target.
+    </p>
+
+    <h3>9.1 Monitoring, measurement and analysis</h3>
+    <p>
+      Thickness was verified, chemistry was checked, rejections were counted. What was not in place
+      was analysis of that data over time. Thickness readings were taken on the first few loads of
+      a day and not recorded load to load, so there was no trend data and no way to see drift
+      before it became a reject.
+    </p>
+  </section>
+
+  <section>
+    <h2>Where there was no structure at all</h2>
+
+    <h3>4.1 to 4.4 Context of the organisation</h3>
+    <p>
+      Nothing documented. No stated scope of the quality system, no identification of interested
+      parties and their requirements, no map of the processes and how they interact.
+    </p>
+    <p>The process was understood. It was not written down as a system.</p>
+
+    <h3>6.1 Actions to address risks and opportunities</h3>
+    <p>
+      Risk was handled by judgement. Experienced people knew which steps were fragile and watched
+      them.
+    </p>
+    <p>
+      No structured risk analysis existed at the time.
+      <a href="../anodizing/">The PFMEA covering this process</a> was produced later as a separate
+      exercise, and the fact that it surfaced findings I had not previously identified is itself
+      evidence that judgement alone was not reaching everything. Two of the highest ranked failure
+      modes were ones nobody was watching for, because they could not be detected before the
+      material left the floor.
+    </p>
+
+    <h3>8.5.2 Identification and traceability</h3>
+    <p>
+      Job cards identified the order. Beyond that there was no traceability from a finished batch
+      back to the specific bath conditions, chemistry readings or operator on that load.
+    </p>
+    <p>
+      If a customer had come back six months later with a complaint, there would have been no way
+      to reconstruct what happened to that batch.
+    </p>
+  </section>
+
+  <section>
+    <h2>What this says about the operation</h2>
+    <p>
+      The pattern is consistent. Where a control protected the product directly and the benefit was
+      immediate, it was in place and it was maintained. Calibration, parameter control, rejection
+      analysis, customer specification capture, incoming checks on customer material.
+    </p>
+    <p>
+      Where a control protected the system rather than the product, and the benefit was only
+      visible over time or to someone outside the business, it was absent or informal. Documented
+      scope, independent audit, structured review, supplier evaluation records, traceability.
+    </p>
+    <p>
+      That is a rational allocation of effort for a ten person shop with the owner on site. The
+      things that stop bad material reaching a customer were covered. The things that let a system
+      run without the people currently holding it were not.
+    </p>
+    <p>
+      The exposure is specific rather than general. The operation worked because two people held
+      the whole picture between them and were present every day. It would not have survived either
+      of them leaving, a doubling in volume, or a customer requiring documented evidence rather
+      than a good finish.
+    </p>
+  </section>
+
+  <section>
+    <h2>What I would do differently</h2>
+    <p>
+      <strong>Record thickness readings load to load.</strong> The single highest value change. It
+      converts inspection into trend data, makes drift visible before it becomes a reject, and
+      creates the traceability that 8.5.2 asks for. Barely more work than the sampling scheme that
+      was in place.
+    </p>
+    <p>
+      <strong>Write the quality policy down.</strong> The commitment was real and people understood
+      it. Putting it in a controlled document costs an afternoon and turns a culture into something
+      transferable.
+    </p>
+    <p>
+      <strong>Separate the auditor from the process.</strong> Even in a small shop, having the owner
+      audit the engineer's process and the engineer audit the owner's would have been more honest
+      than auditing my own work.
+    </p>
+    <p>
+      <strong>Document supplier criteria.</strong> Price, quality and availability were already the
+      basis. Writing them down with a performance record makes the next person's decisions as good
+      as mine were.
+    </p>
+    <p>
+      <strong>Hold management review on a schedule.</strong> The conversation was happening anyway.
+      Putting a date on it, covering a defined agenda and writing down what was decided would have
+      cost almost nothing.
+    </p>
+  </section>
+
+  <section>
+    <h2>Notes on method</h2>
+    <p>
+      This is a gap analysis, not an audit. An audit verifies against retained evidence. The records
+      here were discarded after their retention period, so findings rest on recollection of practice
+      I ran personally. Where that is the case the document says so rather than implying evidence
+      exists.
+    </p>
+    <p>
+      The purpose was to understand how an operation I know well maps onto a standard I did not know
+      at the time, and specifically to see which clause intents were being met without the
+      vocabulary attached. More were than I expected. The ones that were not are the ones that would
+      have mattered as the business grew.
+    </p>
+  </section>
+
+  <footer>
+    <span>Aditya Harish Bothe &middot; Boston, MA</span>
+    <span><a href="../anodizing/">PFMEA case study</a> &middot; <a href="../">Back to portfolio</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
