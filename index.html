@@ -819,15 +819,213 @@
     * { transition: none !important; animation: none !important; }
     .js-anim .enter { opacity: 1; transform: none; }
   }
+
+  /* ---------- hero: fulfillment centre floor ---------- */
+  /* A top-down FC behind the name. Racks are static, AGVs path between
+     them. Kept at low contrast so it reads as texture, not decoration
+     competing with the headline. Pauses when scrolled out of view. */
+  header { position: relative; }
+  #fc {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
+  }
+  header > .hero-grid { position: relative; z-index: 1; }
+  .fc-hud {
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .fc-hud b { color: var(--ink-3); font-weight: 500; }
+  .fc-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+
+  /* ---------- scroll progress as a conveyor ---------- */
+  #progress-track {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    z-index: 59;
+    background:
+      repeating-linear-gradient(90deg,
+        rgb(255 255 255 / 0.10) 0 1px,
+        transparent 1px 9px),
+      rgb(255 255 255 / 0.035);
+  }
+  #progress { height: 3px; top: 1px; }
+  #progress-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 9px;
+    height: 7px;
+    z-index: 61;
+    background: var(--amber);
+    border-radius: 1px;
+    box-shadow: 0 0 7px rgb(245 165 36 / 0.55);
+    transform: translateX(-50%);
+    transition: left 0.08s linear;
+  }
+
+  /* ---------- anodizing line ---------- */
+  .anod { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 20px; }
+  .route-pick { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .route-btn {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-2);
+    background: var(--panel-2);
+    border: 1px solid var(--rule-2);
+    border-radius: 3px;
+    padding: 8px 13px;
+    cursor: pointer;
+  }
+  .route-btn:hover { border-color: var(--amber-dim); color: var(--ink); }
+  .route-btn[aria-pressed="true"] {
+    border-color: var(--amber);
+    color: var(--amber);
+    background: rgb(245 165 36 / 0.08);
+  }
+
+  .line-wrap { position: relative; overflow-x: auto; padding-top: 34px; }
+  .gantry { position: absolute; left: 0; right: 0; top: 16px; height: 2px; background: var(--rule-2); min-width: 640px; }
+  .crane {
+    position: absolute;
+    top: 16px;
+    width: 2px;
+    height: 20px;
+    background: var(--amber-dim);
+    transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .crane::before {
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: -5px;
+    width: 16px;
+    height: 7px;
+    background: var(--amber);
+    border-radius: 1px;
+  }
+  .crane .rack {
+    position: absolute;
+    left: -9px;
+    bottom: -9px;
+    width: 20px;
+    height: 11px;
+    background: var(--steel);
+    border-radius: 1px;
+    transition: transform 0.5s ease;
+  }
+  .tanks { display: flex; gap: 5px; min-width: 640px; }
+  .tank {
+    flex: 1;
+    min-width: 54px;
+    border: 1px solid var(--rule);
+    border-top: 0;
+    border-radius: 0 0 3px 3px;
+    background: var(--bg-2);
+    padding: 6px 4px 7px;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .tank .bath {
+    height: 30px;
+    border-radius: 0 0 2px 2px;
+    background: rgb(255 255 255 / 0.05);
+    margin-bottom: 6px;
+    transition: background 0.25s;
+  }
+  .tank .tno { font-family: var(--mono); font-size: 10px; color: var(--ink-4); }
+  .tank .tname { font-size: 10.5px; color: var(--ink-3); line-height: 1.3; }
+  .tank.active { border-color: var(--amber); background: rgb(245 165 36 / 0.06); }
+  .tank.active .tname { color: var(--ink); }
+  .tank.active .bath { background: rgb(245 165 36 / 0.3); }
+  .tank.done .bath { background: rgb(122 167 217 / 0.18); }
+  .tank.skip { opacity: 0.32; }
+
+  .step-read {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-2);
+    border-left: 2px solid var(--amber-dim);
+    padding: 9px 13px;
+    margin-top: 18px;
+    background: var(--bg-2);
+    border-radius: 0 3px 3px 0;
+    min-height: 40px;
+  }
+  .step-read b { color: var(--amber); font-weight: 500; }
+
+  /* ---------- micron capacity ---------- */
+  .micron { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--rule); }
+  .micron-out {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .mo { background: var(--bg-2); border: 1px solid var(--rule); border-radius: 3px; padding: 11px 13px; }
+  .mo .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .mo .v { font-family: var(--display); font-weight: 700; font-size: 21px; color: var(--ink); }
+  .mo .v.down { color: #e0756b; }
+
+  @media (max-width: 640px) {
+    #fc { opacity: 0.35; }
+    .fc-hud { position: static; margin-top: 16px; }
+  }
+
 </style>
 </head>
 <body>
 
+<div id="progress-track" aria-hidden="true"></div>
 <div id="progress"></div>
+<div id="progress-box" aria-hidden="true"></div>
 
 <div class="wrap">
 
   <header>
+    <canvas id="fc" aria-hidden="true"></canvas>
+    <p class="fc-hud" aria-hidden="true">
+      <span><span class="fc-dot"></span>Fleet <b id="fc-n">0</b> active</span>
+      <span>Picks <b id="fc-picks">0</b></span>
+      <span>NTP sync <b>OK</b></span>
+    </p>
     <div class="hero-grid">
       <div>
         <p class="eyebrow enter">Industrial Engineer &nbsp;/&nbsp; Supply Chain &amp; Warehouse Automation</p>
@@ -1045,6 +1243,111 @@
         sitting on a conveyor, longer lead times, and more places for a defect to hide.
         Most of the wins on my resume came from attacking one side of this equation.
       </p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="sec-head enter">
+      <h2>Anodizing Line</h2>
+      <p class="note">AB Enterprises &middot; pick a finish and watch the route</p>
+    </div>
+
+    <div class="anod enter">
+      <div class="route-pick" role="group" aria-label="Finish type">
+        <button class="route-btn" type="button" data-route="glossy" aria-pressed="true">Glossy</button>
+        <button class="route-btn" type="button" data-route="matte" aria-pressed="false">Normal matte</button>
+        <button class="route-btn" type="button" data-route="hard" aria-pressed="false">Hard matte</button>
+      </div>
+
+      <div class="line-wrap">
+        <div class="gantry" aria-hidden="true"></div>
+        <div class="crane" id="crane" aria-hidden="true"><span class="rack"></span></div>
+        <div class="tanks" id="tanks">
+          <div class="tank" data-tank="1">
+            <div class="bath"></div>
+            <span class="tno">1</span>
+            <div class="tname">Caustic</div>
+          </div>
+          <div class="tank" data-tank="2">
+            <div class="bath"></div>
+            <span class="tno">2</span>
+            <div class="tname">Rinse</div>
+          </div>
+          <div class="tank" data-tank="3">
+            <div class="bath"></div>
+            <span class="tno">3</span>
+            <div class="tname">Nitric</div>
+          </div>
+          <div class="tank" data-tank="4">
+            <div class="bath"></div>
+            <span class="tno">4</span>
+            <div class="tname">Rinse</div>
+          </div>
+          <div class="tank" data-tank="5">
+            <div class="bath"></div>
+            <span class="tno">5</span>
+            <div class="tname">Anodize</div>
+          </div>
+          <div class="tank" data-tank="6">
+            <div class="bath"></div>
+            <span class="tno">6</span>
+            <div class="tname">Rinse</div>
+          </div>
+          <div class="tank" data-tank="7">
+            <div class="bath"></div>
+            <span class="tno">7</span>
+            <div class="tname">Colour</div>
+          </div>
+          <div class="tank" data-tank="8">
+            <div class="bath"></div>
+            <span class="tno">8</span>
+            <div class="tname">Rinse</div>
+          </div>
+          <div class="tank" data-tank="9">
+            <div class="bath"></div>
+            <span class="tno">9</span>
+            <div class="tname">Cold seal</div>
+          </div>
+          <div class="tank" data-tank="10">
+            <div class="bath"></div>
+            <span class="tno">10</span>
+            <div class="tname">Rinse</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="step-read" id="step-read" aria-live="polite">&nbsp;</p>
+
+      <p class="sim-note">
+        The finish decides the route, and hard matte runs the first two tanks in reverse: nitric
+        for oil removal before the long caustic etch, then nitric again. Caustic dwell is what
+        separates glossy from matte. Short dwell leaves a surface you can polish to a shine, long
+        dwell etches it, and once etched you cannot polish it back.
+      </p>
+
+      <div class="micron">
+        <div class="sim-cell">
+          <label for="micron">
+            <span>Coating spec</span>
+            <span class="val"><span id="micron-val" class="num">12</span> &micro;m</span>
+          </label>
+          <input id="micron" type="range" min="12" max="20" step="1" value="12">
+        </div>
+
+        <div class="micron-out">
+          <div class="mo"><span class="k">Anodize time</span><span class="v num" id="m-time">25</span> min</div>
+          <div class="mo"><span class="k">Loads per 12 h</span><span class="v num" id="m-loads">29</span></div>
+          <div class="mo"><span class="k">Output</span><span class="v num" id="m-kg">1000</span> kg</div>
+          <div class="mo"><span class="k">Revenue at 50/kg</span><span class="v num" id="m-rev">50000</span></div>
+        </div>
+
+        <p class="sim-note">
+          Anodizing is the constraint and its time scales with the spec, so the customer's micron
+          number sets what the line can do that day. We charged a flat rate per kilo either way,
+          which meant a 20 micron order earned the same per kilo while taking more than twice the
+          capacity of a 12 micron one. The rate card should have been tied to the spec, not the weight.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -1516,6 +1819,335 @@
       }
     });
   })();
+
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* ---- hero: top-down fulfillment centre ---------------------------- */
+    /* Racks are fixed, AGVs walk the aisles between them. Drawn on a canvas
+       rather than with DOM nodes because a few dozen moving things as
+       elements thrashes layout. Stops entirely when the hero is off screen
+       or the viewer asked for reduced motion. */
+    (function () {
+      var cv = document.getElementById("fc");
+      if (!cv) return;
+      var ctx = cv.getContext("2d");
+      var header = cv.parentElement;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var W = 0, H = 0;
+      var COL = 86, ROW = 54, RW = 46, RH = 15;
+      var agvs = [], picks = 0, visible = true, running = false;
+      var nEl = document.getElementById("fc-n");
+      var pickEl = document.getElementById("fc-picks");
+
+      function size() {
+        var r = header.getBoundingClientRect();
+        W = Math.max(r.width, 320);
+        H = Math.max(r.height, 260);
+        cv.width = W * dpr;
+        cv.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        seed();
+      }
+
+      function seed() {
+        var cols = Math.max(2, Math.floor(W / COL));
+        var rows = Math.max(2, Math.floor(H / ROW));
+        // Aisles sit between rack rows; an AGV lives on one aisle and
+        // crosses to another now and then, which is what a real floor
+        // looks like from above.
+        var aisles = [];
+        for (var r = 0; r < rows; r++) aisles.push(r * ROW + ROW - 9);
+        var want = Math.min(10, Math.max(4, Math.round(W / 150)));
+        agvs = [];
+        for (var i = 0; i < want; i++) {
+          agvs.push({
+            x: Math.random() * W,
+            lane: Math.floor(Math.random() * aisles.length),
+            y: 0,
+            v: 0.22 + Math.random() * 0.32,
+            dir: Math.random() < 0.5 ? -1 : 1,
+            hold: Math.random() * 240,
+            pod: Math.random() < 0.55
+          });
+          agvs[i].y = aisles[agvs[i].lane];
+        }
+        agvs.cols = cols; agvs.rows = rows; agvs.aisles = aisles;
+        if (nEl) nEl.textContent = String(agvs.length);
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+
+        // racks
+        ctx.fillStyle = "rgba(255,255,255,0.045)";
+        for (var r = 0; r < agvs.rows; r++) {
+          for (var c = 0; c < agvs.cols; c++) {
+            ctx.fillRect(c * COL + 10, r * ROW + 8, RW, RH);
+          }
+        }
+
+        for (var i = 0; i < agvs.length; i++) {
+          var a = agvs[i];
+          if (a.hold > 0) {
+            a.hold -= 1;
+            if (a.hold <= 0) {
+              picks++;
+              if (pickEl) pickEl.textContent = String(picks);
+              a.pod = !a.pod;
+              // occasionally change aisle, so the pattern never settles
+              if (Math.random() < 0.45) {
+                a.lane = Math.floor(Math.random() * agvs.aisles.length);
+                a.y = agvs.aisles[a.lane];
+                a.dir = Math.random() < 0.5 ? -1 : 1;
+              }
+            }
+          } else {
+            a.x += a.v * a.dir;
+            if (a.x < -24) a.x = W + 20;
+            if (a.x > W + 24) a.x = -20;
+            if (Math.random() < 0.0016) a.hold = 60 + Math.random() * 200;
+          }
+
+          // body, brighter while stopped at a pick
+          ctx.fillStyle = a.hold > 0 ? "rgba(245,165,36,0.85)" : "rgba(245,165,36,0.45)";
+          ctx.fillRect(a.x, a.y, 9, 6);
+          if (a.pod) {
+            ctx.fillStyle = "rgba(122,167,217,0.5)";
+            ctx.fillRect(a.x + 1, a.y - 4, 7, 4);
+          }
+          // travel trail
+          ctx.fillStyle = "rgba(245,165,36,0.1)";
+          ctx.fillRect(a.x - a.dir * 15, a.y + 2, 14, 1.5);
+        }
+      }
+
+      function loop() {
+        if (!running) return;
+        draw();
+        requestAnimationFrame(loop);
+      }
+      function start() {
+        if (running || reduced || !visible) return;
+        running = true;
+        // Paint one frame synchronously before handing off to rAF. Hidden
+        // panes and background tabs throttle rAF to nothing, and without
+        // this the hero renders as an empty rectangle rather than a floor.
+        draw();
+        requestAnimationFrame(loop);
+      }
+      function stop() { running = false; }
+
+      size();
+      window.addEventListener("resize", size);
+
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (es) {
+          visible = es[0].isIntersecting;
+          if (visible) start(); else stop();
+        }, { threshold: 0.01 }).observe(header);
+      }
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) stop(); else start();
+      });
+
+      if (reduced) {
+        draw(); // one static frame, so it is still a floor plan
+        if (nEl) nEl.textContent = String(agvs.length);
+      } else {
+        start();
+      }
+    })();
+
+    /* ---- conveyor box rides the scroll progress bar ------------------- */
+    (function () {
+      var box = document.getElementById("progress-box");
+      var bar = document.getElementById("progress");
+      if (!box || !bar) return;
+      function place() {
+        box.style.left = (parseFloat(bar.style.width) || 0) + "%";
+      }
+      window.addEventListener("scroll", place, { passive: true });
+      place();
+    })();
+
+    /* ---- anodizing line ---------------------------------------------- */
+    (function () {
+      var tanksEl = document.getElementById("tanks");
+      var crane = document.getElementById("crane");
+      var read = document.getElementById("step-read");
+      if (!tanksEl || !crane || !read) return;
+      var tanks = Array.prototype.slice.call(tanksEl.querySelectorAll(".tank"));
+
+      // Each step is [tank number, label, detail]. Tank 0 means off the line.
+      var ROUTES = {
+        glossy: [
+          [0, "Buffing", "Polish buff, 8 min"],
+          [0, "Jigging", "Tie to rods, 12.5 to 13 gauge aluminium wire"],
+          [1, "Caustic", "Short dwell, stays smooth enough to polish"],
+          [2, "Rinse", ""],
+          [3, "Nitric", "10 min, oil removal and brightening"],
+          [4, "Rinse", ""],
+          [5, "Anodize", "25 min at 12 microns, 15 V, 1600 to 1700 A"],
+          [6, "Rinse", ""],
+          [7, "Colour", "90 to 120 sec against the master sample"],
+          [8, "Rinse", ""],
+          [9, "Cold seal", "5 min, closes the pores"],
+          [10, "Rinse", ""],
+          [0, "Cut, dry, polish, pack", "Drying is 30 min and varies with weather"]
+        ],
+        matte: [
+          [0, "Buffing", "Surfin buff, not polish buff"],
+          [0, "Jigging", "Tie to rods"],
+          [1, "Caustic", "Longer dwell, etches to a matte texture"],
+          [2, "Rinse", ""],
+          [3, "Nitric", "10 min"],
+          [4, "Rinse", ""],
+          [5, "Anodize", "Micron build to spec"],
+          [6, "Rinse", ""],
+          [7, "Colour", "Dye to shade"],
+          [8, "Rinse", ""],
+          [9, "Cold seal", ""],
+          [10, "Rinse", ""],
+          [0, "Cut, dry, pack", "No polishing after drying"]
+        ],
+        hard: [
+          [0, "Jigging", "No buffing at any point on this route"],
+          [3, "Nitric", "5 min, oil removal. This route runs nitric first"],
+          [1, "Caustic", "45 to 60 min, the long etch"],
+          [3, "Nitric", "15 min, oil removal and brightening"],
+          [4, "Rinse", ""],
+          [5, "Anodize", "Micron build to spec"],
+          [6, "Rinse", ""],
+          [7, "Colour", "Silver skips this tank entirely"],
+          [8, "Rinse", ""],
+          [9, "Cold seal", ""],
+          [10, "Rinse", ""],
+          [0, "Cut, dry, pack", ""]
+        ]
+      };
+
+      var route = "glossy", step = 0, timer = null;
+
+      function centreOf(n) {
+        if (!n) return null;
+        var t = tanks[n - 1];
+        if (!t) return null;
+        return t.offsetLeft + t.offsetWidth / 2;
+      }
+
+      function render() {
+        var seq = ROUTES[route];
+        var cur = seq[step];
+        var used = {};
+        for (var i = 0; i < seq.length; i++) if (seq[i][0]) used[seq[i][0]] = true;
+
+        tanks.forEach(function (t, i) {
+          var n = i + 1;
+          t.classList.remove("active", "done", "skip");
+          if (!used[n]) { t.classList.add("skip"); return; }
+          if (cur[0] === n) t.classList.add("active");
+          else {
+            for (var j = 0; j < step; j++) if (seq[j][0] === n) { t.classList.add("done"); break; }
+          }
+        });
+
+        var x = centreOf(cur[0]);
+        if (x !== null) {
+          crane.style.opacity = "1";
+          crane.style.left = x + "px";
+        } else {
+          crane.style.opacity = "0.25";
+        }
+
+        read.innerHTML = "<b>" + cur[1] + "</b>" + (cur[2] ? " &middot; " + cur[2] : "");
+      }
+
+      function advance() {
+        step = (step + 1) % ROUTES[route].length;
+        render();
+      }
+
+      function play() {
+        if (timer) clearInterval(timer);
+        if (reduced) return;
+        timer = setInterval(advance, 1500);
+      }
+
+      document.querySelectorAll(".route-btn").forEach(function (b) {
+        b.addEventListener("click", function () {
+          document.querySelectorAll(".route-btn").forEach(function (o) {
+            o.setAttribute("aria-pressed", String(o === b));
+          });
+          route = b.getAttribute("data-route");
+          step = 0;
+          render();
+          play();
+        });
+      });
+
+      // Start straight away and let the observer only PAUSE it when the
+      // section scrolls away. Gating the start on an observer callback means
+      // the line sits frozen in any viewer that never fires one, which is a
+      // real case: embedded panes and background tabs do exactly that.
+      render();
+      play();
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting) play();
+          else if (timer) { clearInterval(timer); timer = null; }
+        }, { threshold: 0.2 }).observe(tanksEl);
+      }
+    })();
+
+    /* ---- micron spec drives capacity ---------------------------------- */
+    (function () {
+      var sl = document.getElementById("micron");
+      if (!sl) return;
+      var out = {
+        val: document.getElementById("micron-val"),
+        time: document.getElementById("m-time"),
+        loads: document.getElementById("m-loads"),
+        kg: document.getElementById("m-kg"),
+        rev: document.getElementById("m-rev")
+      };
+      // Anchored on the three measured points: 12 um / 25 min, 18 / 45, 20 / 60.
+      // Between them time rises faster than linearly, which is why the curve is
+      // interpolated piecewise rather than fitted to a straight line.
+      function minutesFor(um) {
+        if (um <= 12) return 25;
+        if (um <= 18) return 25 + (um - 12) * (20 / 6);
+        return 45 + (um - 18) * (15 / 2);
+      }
+      var SHIFT_MIN = 12 * 60;
+      // Output is interpolated between the three measured days rather than
+      // derived from a kg-per-load constant. Deriving it drifted off the
+      // published table (28 loads and 966 kg at 12 um against the measured
+      // 29 and 1000), and the case study page states those figures, so the
+      // slider has to agree with them.
+      var KG = { 12: 1000, 18: 560, 20: 420 };
+      function kgFor(um) {
+        if (um <= 12) return KG[12];
+        if (um <= 18) return KG[12] + (um - 12) * (KG[18] - KG[12]) / 6;
+        return KG[18] + (um - 18) * (KG[20] - KG[18]) / 2;
+      }
+      function update() {
+        var um = Number(sl.value);
+        var t = minutesFor(um);
+        var loads = Math.round(SHIFT_MIN / t);
+        var kg = Math.round(kgFor(um));
+        out.val.textContent = String(um);
+        out.time.textContent = String(Math.round(t));
+        out.loads.textContent = String(loads);
+        out.kg.textContent = String(kg);
+        out.rev.textContent = (kg * 50).toLocaleString("en-IN");
+        var down = um > 12;
+        [out.loads, out.kg, out.rev].forEach(function (e) {
+          e.classList.toggle("down", down);
+        });
+      }
+      sl.addEventListener("input", update);
+      update();
+    })();
 </script>
 </body>
 </html>
