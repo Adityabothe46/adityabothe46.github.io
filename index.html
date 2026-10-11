@@ -829,14 +829,17 @@
   /* A top-down FC behind the name. Racks are static, AGVs path between
      them. Kept at low contrast so it reads as texture, not decoration
      competing with the headline. Pauses when scrolled out of view. */
-  header { position: relative; }
+  header { position: relative; cursor: crosshair; }
+  header a, header button, header input, header label,
+  header .spec, header h1 { cursor: auto; }
+  header a, header button { cursor: pointer; }
   #fc {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
-    cursor: crosshair;
+    pointer-events: none;
     opacity: 0.9;
     mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
@@ -1177,6 +1180,74 @@
   }
   @keyframes wfloor { to { transform: translate(54px, 54px); } }
 
+  /* Two slow colour fields drifting behind the greeting, blurred hard enough
+     that they read as light in the room rather than as shapes. */
+  #welcome .aura {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  #welcome .aura.a1 {
+    width: 46vmax; height: 46vmax;
+    left: -10vmax; top: -14vmax;
+    background: radial-gradient(circle, rgb(245 165 36 / 0.5), transparent 68%);
+    animation: wdrift1 13s ease-in-out infinite alternate;
+  }
+  #welcome .aura.a2 {
+    width: 40vmax; height: 40vmax;
+    right: -12vmax; bottom: -12vmax;
+    background: radial-gradient(circle, rgb(122 167 217 / 0.45), transparent 68%);
+    animation: wdrift2 17s ease-in-out infinite alternate;
+  }
+  @keyframes wdrift1 { to { transform: translate(14vmax, 10vmax) scale(1.15); } }
+  @keyframes wdrift2 { to { transform: translate(-12vmax, -8vmax) scale(1.1); } }
+
+  /* A belt running under the greeting, same motif as the rest of the site. */
+  #welcome .wbelt {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 124px;
+    height: 20px;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  #welcome .wbelt i {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rule-2) 14%, var(--rule-2) 86%, transparent);
+  }
+  #welcome .wbelt::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 2px;
+    height: 7px;
+    background: radial-gradient(circle at 5px 3.5px, var(--rule-2) 0 2.6px, transparent 2.8px);
+    background-size: 22px 7px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  }
+  #welcome .wagv {
+    position: absolute;
+    bottom: 9px;
+    width: 26px; height: 13px;
+    background: var(--amber);
+    border-radius: 2px;
+    box-shadow: 0 0 14px rgb(245 165 36 / 0.55);
+    animation: wride 6.5s linear infinite;
+  }
+  #welcome .wagv::before {
+    content: "";
+    position: absolute;
+    left: 3px; top: -7px;
+    width: 20px; height: 6px;
+    background: var(--steel);
+    border-radius: 1px;
+  }
+  @keyframes wride { from { left: -8%; } to { left: 104%; } }
+
   #welcome .word {
     position: relative;
     font-family: var(--display);
@@ -1240,6 +1311,8 @@
   }
 
   /* ---------- language slider ---------- */
+  /* Every language is listed rather than hidden behind a two letter tag, so
+     a visitor can see what is on offer without dragging to find out. */
   .langbar {
     position: fixed;
     left: 14px;
@@ -1247,45 +1320,87 @@
     transform: translateY(-50%);
     z-index: 70;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
-    padding: 14px 9px;
-    background: rgb(20 24 28 / 0.86);
+    padding: 12px 12px 12px 9px;
+    background: rgb(20 24 28 / 0.9);
     border: 1px solid var(--rule);
-    border-radius: 999px;
-    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    backdrop-filter: blur(7px);
   }
   .langbar .cap {
     font-family: var(--mono);
-    font-size: 9.5px;
-    letter-spacing: 0.12em;
+    font-size: 9px;
+    letter-spacing: 0.16em;
     color: var(--ink-4);
     writing-mode: vertical-rl;
+    align-self: center;
   }
-  .langbar .cur {
-    font-family: var(--mono);
-    font-size: 11px;
+  .lang-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lang-list button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--body);
+    font-size: 11.5px;
+    line-height: 1.25;
+    color: var(--ink-4);
+    background: none;
+    border: 0;
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+  }
+  .lang-list button:hover { color: var(--ink); background: rgb(255 255 255 / 0.05); }
+  .lang-list button[aria-current="true"] {
     color: var(--amber);
-    letter-spacing: 0.08em;
+    background: rgb(245 165 36 / 0.1);
+    font-weight: 600;
   }
   #lang {
     -webkit-appearance: slider-vertical;
     appearance: slider-vertical;
     writing-mode: vertical-lr;
     direction: rtl;
-    width: 20px;
-    height: 118px;
+    width: 18px;
     accent-color: var(--amber);
     cursor: pointer;
     background: transparent;
+    margin: 0;
   }
-  @media (max-width: 900px) {
-    .langbar { flex-direction: row; left: 50%; top: auto; bottom: 14px;
-               transform: translateX(-50%); border-radius: 999px; padding: 8px 14px; }
+  @media (max-width: 1100px) {
+    .langbar {
+      left: 0; right: 0; top: auto; bottom: 0;
+      transform: none;
+      border-radius: 0;
+      border-left: 0; border-right: 0; border-bottom: 0;
+      padding: 7px 12px;
+      align-items: center;
+      gap: 8px;
+    }
     .langbar .cap { writing-mode: horizontal-tb; }
-    #lang { -webkit-appearance: auto; appearance: auto; writing-mode: horizontal-tb;
-            direction: ltr; width: 112px; height: 20px; }
+    #lang { display: none; }
+    .lang-list {
+      flex-direction: row;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex: 1;
+    }
+    .lang-list::-webkit-scrollbar { display: none; }
+    .lang-list button { padding: 5px 10px; font-size: 12px; }
+    /* the bar is fixed to the bottom edge, so the page needs clearance or it
+       permanently covers the last 40px of the footer */
+    body { padding-bottom: 52px; }
   }
 
 </style>
@@ -1293,6 +1408,9 @@
 <body>
 
 <div id="welcome" aria-hidden="true">
+  <span class="aura a1"></span>
+  <span class="aura a2"></span>
+  <div class="wbelt"><i></i><span class="wagv"></span></div>
   <div class="word" id="welcome-word"></div>
   <div class="lang-name" id="welcome-lang"></div>
   <div class="sub">Aditya Bothe</div>
@@ -1302,9 +1420,9 @@
 
 <div class="langbar" id="langbar">
   <span class="cap" data-i18n="t113">LANG</span>
-  <input id="lang" type="range" min="0" max="5" step="1" value="0"
+  <input id="lang" type="range" min="0" max="11" step="1" value="0"
          aria-label="Site language" title="Slide to change language">
-  <span class="cur" id="lang-cur">EN</span>
+  <div class="lang-list" id="lang-list" role="group" aria-label="Choose a language"></div>
 </div>
 
 <div id="progress-track" aria-hidden="true"></div>
@@ -2243,9 +2361,17 @@
         }
       }
 
-      cv.addEventListener("click", function (e) {
+      // The canvas sits at z-index 0 under the hero content, so a listener on
+      // the canvas itself never fires: elementFromPoint returns h1, p.pitch,
+      // dt or div.cta everywhere across the hero. Listen on the header and
+      // convert into canvas space instead, skipping anything the visitor
+      // might actually be trying to click.
+      header.addEventListener("click", function (e) {
+        if (e.target.closest("a, button, input, label, select")) return;
         var r = cv.getBoundingClientRect();
-        dispatch(e.clientX - r.left, e.clientY - r.top);
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        if (x < 0 || y < 0 || x > r.width || y > r.height) return;
+        dispatch(x, y);
         // Repaint at once so the marker appears on the click rather than on
         // the next animation frame. Matters on a throttled tab, and it makes
         // the floor feel responsive rather than laggy even when it isn't.
@@ -2754,7 +2880,7 @@
        drift apart as the copy is edited. */
     (function () {
       var sl = document.getElementById("lang");
-      var cur = document.getElementById("lang-cur");
+      var list = document.getElementById("lang-list");
       if (!sl) return;
 
       var LANGS = [
@@ -2776,6 +2902,25 @@
       var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n]"));
       nodes.forEach(function (n) { n.setAttribute("data-en", n.innerHTML); });
 
+      // One button per language, named in its own script. The slider and the
+      // list are two views of the same index, so either can drive it.
+      var buttons = [];
+      if (list) {
+        LANGS.forEach(function (L, i) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.textContent = L.name;
+          b.setAttribute("lang", L.code);
+          if (L.rtl) b.setAttribute("dir", "rtl");
+          b.addEventListener("click", function () {
+            sl.value = String(i);
+            apply(i);
+          });
+          list.appendChild(b);
+          buttons.push(b);
+        });
+      }
+
       var cache = { en: null };
 
       function paint(dict, L) {
@@ -2790,7 +2935,9 @@
         // tank line are physical layouts, not text, so they stay put.
         if (L.rtl) root.setAttribute("dir", "rtl");
         else root.removeAttribute("dir");
-        if (cur) cur.textContent = L.tag;
+        buttons.forEach(function (b, i) {
+          b.setAttribute("aria-current", String(LANGS[i].code === L.code));
+        });
         sl.setAttribute("title", L.name);
         sl.setAttribute("aria-valuetext", L.name);
       }
@@ -2800,7 +2947,6 @@
         try { localStorage.setItem("portfolioLang", String(idx)); } catch (e) {}
         if (L.code === "en") { paint(null, L); return; }
         if (cache[L.code]) { paint(cache[L.code], L); return; }
-        if (cur) cur.textContent = "\u2026";
         fetch("lang/" + L.code + ".json")
           .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
           .then(function (d) { cache[L.code] = d; paint(d, L); })
@@ -2808,7 +2954,6 @@
             // A missing or broken file must not strip the page: fall back to
             // the English already sitting in the markup.
             paint(null, L);
-            if (cur) cur.textContent = L.tag;
           });
       }
 
