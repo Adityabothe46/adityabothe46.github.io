@@ -831,8 +831,8 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    pointer-events: none;
-    opacity: 0.55;
+    cursor: crosshair;
+    opacity: 0.9;
     mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
   }
@@ -852,6 +852,9 @@
     flex-wrap: wrap;
   }
   .fc-hud b { color: var(--ink-3); font-weight: 500; }
+  .fc-hud .tip { color: var(--amber-dim); }
+  @keyframes fcpulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+  .fc-hud .tip { animation: fcpulse 2.6s ease-in-out infinite; }
   .fc-dot {
     display: inline-block;
     width: 6px;
@@ -1005,7 +1008,7 @@
   .mo .v.down { color: #e0756b; }
 
   @media (max-width: 640px) {
-    #fc { opacity: 0.35; }
+    #fc { opacity: 0.6; }
     .fc-hud { position: static; margin-top: 16px; }
   }
 
@@ -1025,6 +1028,7 @@
       <span><span class="fc-dot"></span>Fleet <b id="fc-n">0</b> active</span>
       <span>Picks <b id="fc-picks">0</b></span>
       <span>NTP sync <b>OK</b></span>
+      <span class="tip">Click the floor to dispatch a pick</span>
     </p>
     <div class="hero-grid">
       <div>
@@ -1338,7 +1342,7 @@
           <div class="mo"><span class="k">Anodize time</span><span class="v num" id="m-time">25</span> min</div>
           <div class="mo"><span class="k">Loads per 12 h</span><span class="v num" id="m-loads">29</span></div>
           <div class="mo"><span class="k">Output</span><span class="v num" id="m-kg">1000</span> kg</div>
-          <div class="mo"><span class="k">Revenue at 50/kg</span><span class="v num" id="m-rev">50000</span></div>
+          <div class="mo"><span class="k">Capacity used per kg</span><span class="v num" id="m-cap">1.00</span>&times;</div>
         </div>
 
         <p class="sim-note">
@@ -1822,11 +1826,11 @@
 
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* ---- hero: top-down fulfillment centre ---------------------------- */
-    /* Racks are fixed, AGVs walk the aisles between them. Drawn on a canvas
-       rather than with DOM nodes because a few dozen moving things as
-       elements thrashes layout. Stops entirely when the hero is off screen
-       or the viewer asked for reduced motion. */
+    /* ---- hero: top-down fulfillment centre --------------------------- */
+    /* A working floor rather than a backdrop. Racks are fixed, AGVs run the
+       aisles, and clicking dispatches a pick that the nearest free unit
+       drives to. Canvas rather than DOM nodes because a few dozen moving
+       things as elements thrash layout every frame. */
     (function () {
       var cv = document.getElementById("fc");
       if (!cv) return;
@@ -1834,8 +1838,9 @@
       var header = cv.parentElement;
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
       var W = 0, H = 0;
-      var COL = 86, ROW = 54, RW = 46, RH = 15;
-      var agvs = [], picks = 0, visible = true, running = false;
+      var COL = 78, ROW = 50, RW = 40, RH = 16;
+      var agvs = [], aisles = [], tasks = [], picks = 0;
+      var visible = true, running = false, t = 0;
       var nEl = document.getElementById("fc-n");
       var pickEl = document.getElementById("fc-picks");
 
@@ -1850,88 +1855,167 @@
       }
 
       function seed() {
-        var cols = Math.max(2, Math.floor(W / COL));
         var rows = Math.max(2, Math.floor(H / ROW));
-        // Aisles sit between rack rows; an AGV lives on one aisle and
-        // crosses to another now and then, which is what a real floor
-        // looks like from above.
-        var aisles = [];
-        for (var r = 0; r < rows; r++) aisles.push(r * ROW + ROW - 9);
-        var want = Math.min(10, Math.max(4, Math.round(W / 150)));
+        aisles = [];
+        for (var r = 0; r < rows; r++) aisles.push(r * ROW + ROW - 10);
+        var want = Math.min(9, Math.max(4, Math.round(W / 170)));
         agvs = [];
         for (var i = 0; i < want; i++) {
+          var lane = Math.floor(Math.random() * aisles.length);
           agvs.push({
-            x: Math.random() * W,
-            lane: Math.floor(Math.random() * aisles.length),
-            y: 0,
-            v: 0.22 + Math.random() * 0.32,
+            x: Math.random() * W, lane: lane, y: aisles[lane],
+            v: 0.3 + Math.random() * 0.4,
             dir: Math.random() < 0.5 ? -1 : 1,
-            hold: Math.random() * 240,
-            pod: Math.random() < 0.55
+            hold: 0, pod: Math.random() < 0.5, task: null, flash: 0
           });
-          agvs[i].y = aisles[agvs[i].lane];
         }
-        agvs.cols = cols; agvs.rows = rows; agvs.aisles = aisles;
         if (nEl) nEl.textContent = String(agvs.length);
+      }
+
+      function nearestLane(y) {
+        var best = 0, d = 1e9;
+        for (var i = 0; i < aisles.length; i++) {
+          var dd = Math.abs(aisles[i] - y);
+          if (dd < d) { d = dd; best = i; }
+        }
+        return best;
+      }
+
+      function dispatch(x, y) {
+        var lane = nearestLane(y);
+        var task = { x: x, y: aisles[lane], lane: lane, age: 0, taken: false };
+        tasks.push(task);
+        // nearest unit with nothing on, measured along its own aisle
+        var pick = null, best = 1e9;
+        for (var i = 0; i < agvs.length; i++) {
+          var a = agvs[i];
+          if (a.task) continue;
+          var d = Math.abs(a.x - x) + Math.abs(a.y - task.y) * 1.4;
+          if (d < best) { best = d; pick = a; }
+        }
+        if (pick) {
+          pick.task = task;
+          task.taken = true;
+          pick.lane = lane;
+          pick.y = task.y;
+          pick.dir = task.x > pick.x ? 1 : -1;
+          pick.hold = 0;
+        }
+      }
+
+      cv.addEventListener("click", function (e) {
+        var r = cv.getBoundingClientRect();
+        dispatch(e.clientX - r.left, e.clientY - r.top);
+        // Repaint at once so the marker appears on the click rather than on
+        // the next animation frame. Matters on a throttled tab, and it makes
+        // the floor feel responsive rather than laggy even when it isn't.
+        draw();
+      });
+
+      function drawAgv(a) {
+        var w = 13, h = 8;
+        // pod on the back
+        if (a.pod) {
+          ctx.fillStyle = "rgba(122,167,217,0.65)";
+          ctx.fillRect(a.x + 1, a.y - 5, w - 2, 5);
+        }
+        ctx.fillStyle = a.flash > 0 ? "rgba(78,201,160,0.95)"
+          : a.hold > 0 ? "rgba(245,165,36,0.95)" : "rgba(245,165,36,0.6)";
+        ctx.fillRect(a.x, a.y, w, h);
+        // nose, so direction of travel reads at a glance
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.fillRect(a.dir > 0 ? a.x + w - 2 : a.x, a.y + 2, 2, 4);
+        // trail
+        ctx.fillStyle = "rgba(245,165,36,0.14)";
+        ctx.fillRect(a.x - a.dir * 20, a.y + 3, 18, 2);
       }
 
       function draw() {
         ctx.clearRect(0, 0, W, H);
+        t++;
 
-        // racks
-        ctx.fillStyle = "rgba(255,255,255,0.045)";
-        for (var r = 0; r < agvs.rows; r++) {
-          for (var c = 0; c < agvs.cols; c++) {
-            ctx.fillRect(c * COL + 10, r * ROW + 8, RW, RH);
-          }
+        var rows = aisles.length;
+        var cols = Math.max(2, Math.floor(W / COL));
+        ctx.fillStyle = "rgba(255,255,255,0.06)";
+        for (var r = 0; r < rows; r++) {
+          for (var c = 0; c < cols; c++) ctx.fillRect(c * COL + 10, r * ROW + 6, RW, RH);
+        }
+        // aisle centre lines
+        ctx.strokeStyle = "rgba(255,255,255,0.035)";
+        ctx.lineWidth = 1;
+        for (var i = 0; i < aisles.length; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, aisles[i] + 4.5);
+          ctx.lineTo(W, aisles[i] + 4.5);
+          ctx.stroke();
         }
 
-        for (var i = 0; i < agvs.length; i++) {
-          var a = agvs[i];
-          if (a.hold > 0) {
-            a.hold -= 1;
-            if (a.hold <= 0) {
+        // open pick tasks
+        for (var k = tasks.length - 1; k >= 0; k--) {
+          var tk = tasks[k];
+          tk.age++;
+          if (tk.done && tk.age > tk.doneAt + 40) { tasks.splice(k, 1); continue; }
+          if (tk.age > 1600) { tasks.splice(k, 1); continue; }
+          var pulse = 3 + Math.sin(t / 7) * 1.6;
+          ctx.strokeStyle = tk.done ? "rgba(78,201,160,0.8)" : "rgba(245,165,36,0.75)";
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.arc(tk.x, tk.y + 4, tk.done ? 4 : pulse + 3, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(tk.x - 5, tk.y + 4); ctx.lineTo(tk.x + 5, tk.y + 4);
+          ctx.moveTo(tk.x, tk.y - 1); ctx.lineTo(tk.x, tk.y + 9);
+          ctx.stroke();
+        }
+
+        for (var j = 0; j < agvs.length; j++) {
+          var a = agvs[j];
+          if (a.flash > 0) a.flash--;
+
+          if (a.task) {
+            var dx = a.task.x - a.x;
+            if (Math.abs(dx) < 2.5) {
+              a.task.done = true;
+              a.task.doneAt = a.task.age;
+              a.task = null;
+              a.pod = !a.pod;
+              a.flash = 26;
+              a.hold = 40;
               picks++;
               if (pickEl) pickEl.textContent = String(picks);
-              a.pod = !a.pod;
-              // occasionally change aisle, so the pattern never settles
-              if (Math.random() < 0.45) {
-                a.lane = Math.floor(Math.random() * agvs.aisles.length);
-                a.y = agvs.aisles[a.lane];
-                a.dir = Math.random() < 0.5 ? -1 : 1;
-              }
+            } else {
+              a.dir = dx > 0 ? 1 : -1;
+              a.x += Math.min(Math.abs(dx), a.v * 2.4) * a.dir;
+            }
+          } else if (a.hold > 0) {
+            a.hold--;
+            if (a.hold === 0 && Math.random() < 0.4) {
+              a.lane = Math.floor(Math.random() * aisles.length);
+              a.y = aisles[a.lane];
+              a.dir = Math.random() < 0.5 ? -1 : 1;
             }
           } else {
             a.x += a.v * a.dir;
-            if (a.x < -24) a.x = W + 20;
-            if (a.x > W + 24) a.x = -20;
-            if (Math.random() < 0.0016) a.hold = 60 + Math.random() * 200;
+            if (a.x < -26) a.x = W + 22;
+            if (a.x > W + 26) a.x = -22;
+            if (Math.random() < 0.0014) {
+              a.hold = 50 + Math.random() * 150;
+              picks++;
+              if (pickEl) pickEl.textContent = String(picks);
+              a.pod = !a.pod;
+              a.flash = 18;
+            }
           }
-
-          // body, brighter while stopped at a pick
-          ctx.fillStyle = a.hold > 0 ? "rgba(245,165,36,0.85)" : "rgba(245,165,36,0.45)";
-          ctx.fillRect(a.x, a.y, 9, 6);
-          if (a.pod) {
-            ctx.fillStyle = "rgba(122,167,217,0.5)";
-            ctx.fillRect(a.x + 1, a.y - 4, 7, 4);
-          }
-          // travel trail
-          ctx.fillStyle = "rgba(245,165,36,0.1)";
-          ctx.fillRect(a.x - a.dir * 15, a.y + 2, 14, 1.5);
+          drawAgv(a);
         }
       }
 
-      function loop() {
-        if (!running) return;
-        draw();
-        requestAnimationFrame(loop);
-      }
+      function loop() { if (!running) return; draw(); requestAnimationFrame(loop); }
       function start() {
         if (running || reduced || !visible) return;
         running = true;
-        // Paint one frame synchronously before handing off to rAF. Hidden
-        // panes and background tabs throttle rAF to nothing, and without
-        // this the hero renders as an empty rectangle rather than a floor.
+        // One frame synchronously: hidden panes and background tabs throttle
+        // rAF to nothing, and the hero would otherwise be an empty rectangle.
         draw();
         requestAnimationFrame(loop);
       }
@@ -1939,7 +2023,6 @@
 
       size();
       window.addEventListener("resize", size);
-
       if ("IntersectionObserver" in window) {
         new IntersectionObserver(function (es) {
           visible = es[0].isIntersecting;
@@ -1950,12 +2033,7 @@
         if (document.hidden) stop(); else start();
       });
 
-      if (reduced) {
-        draw(); // one static frame, so it is still a floor plan
-        if (nEl) nEl.textContent = String(agvs.length);
-      } else {
-        start();
-      }
+      if (reduced) draw(); else start();
     })();
 
     /* ---- conveyor box rides the scroll progress bar ------------------- */
@@ -2108,7 +2186,7 @@
         time: document.getElementById("m-time"),
         loads: document.getElementById("m-loads"),
         kg: document.getElementById("m-kg"),
-        rev: document.getElementById("m-rev")
+        cap: document.getElementById("m-cap")
       };
       // Anchored on the three measured points: 12 um / 25 min, 18 / 45, 20 / 60.
       // Between them time rises faster than linearly, which is why the curve is
@@ -2139,9 +2217,15 @@
         out.time.textContent = String(Math.round(t));
         out.loads.textContent = String(loads);
         out.kg.textContent = String(kg);
-        out.rev.textContent = (kg * 50).toLocaleString("en-IN");
+        // Tank minutes per kilo, indexed to the 12 um day. Per LOAD, not per
+        // shift: minutes per load divided by kilos per load. Dividing load
+        // minutes by the shift's kilos mixes the two and overstates it badly,
+        // 5.7x at 20 um against a true 2.4x.
+        var minPerKg = t * loads / kg;
+        var base = 25 * 29 / 1000;
+        out.cap.textContent = (minPerKg / base).toFixed(2);
         var down = um > 12;
-        [out.loads, out.kg, out.rev].forEach(function (e) {
+        [out.loads, out.kg].forEach(function (e) {
           e.classList.toggle("down", down);
         });
       }
