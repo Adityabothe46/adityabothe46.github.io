@@ -1144,9 +1144,107 @@
   .needle { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.45s cubic-bezier(0.33, 1, 0.68, 1); }
   .gauge-u.idle .rdg { color: var(--ink-4); }
 
+
+  /* ---------- welcome splash ---------- */
+  /* Hidden by default and shown by script, so with JS off or blocked the
+     page is simply there rather than sitting behind a curtain nothing
+     will ever lift. */
+  #welcome {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    cursor: pointer;
+  }
+  #welcome.on { display: flex; }
+  #welcome.out { opacity: 0; transition: opacity 0.45s ease; pointer-events: none; }
+  #welcome .word {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(34px, 7vw, 76px);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-align: center;
+    padding-inline: 20px;
+    min-height: 1.2em;
+  }
+  #welcome .sub {
+    position: absolute;
+    bottom: 38px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+
+  /* ---------- language slider ---------- */
+  .langbar {
+    position: fixed;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 70;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 9px;
+    background: rgb(20 24 28 / 0.86);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+  }
+  .langbar .cap {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    color: var(--ink-4);
+    writing-mode: vertical-rl;
+  }
+  .langbar .cur {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 0.08em;
+  }
+  #lang {
+    -webkit-appearance: slider-vertical;
+    appearance: slider-vertical;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    width: 20px;
+    height: 118px;
+    accent-color: var(--amber);
+    cursor: pointer;
+    background: transparent;
+  }
+  @media (max-width: 900px) {
+    .langbar { flex-direction: row; left: 50%; top: auto; bottom: 14px;
+               transform: translateX(-50%); border-radius: 999px; padding: 8px 14px; }
+    .langbar .cap { writing-mode: horizontal-tb; }
+    #lang { -webkit-appearance: auto; appearance: auto; writing-mode: horizontal-tb;
+            direction: ltr; width: 112px; height: 20px; }
+  }
+
 </style>
 </head>
 <body>
+
+<div id="welcome" aria-hidden="true">
+  <div class="word" id="welcome-word"></div>
+  <div class="sub">Aditya Bothe</div>
+</div>
+
+<div class="langbar" id="langbar">
+  <span class="cap">LANG</span>
+  <input id="lang" type="range" min="0" max="5" step="1" value="0"
+         aria-label="Site language" title="Slide to change language">
+  <span class="cur" id="lang-cur">EN</span>
+</div>
 
 <div id="progress-track" aria-hidden="true"></div>
 <div id="progress"></div>
@@ -1160,13 +1258,13 @@
       <span><span class="fc-dot"></span>Fleet <b id="fc-n">0</b> active</span>
       <span>Picks <b id="fc-picks">0</b></span>
       <span>NTP sync <b>OK</b></span>
-      <span class="tip">Click the floor to dispatch a pick</span>
+      <span class="tip" data-i18n="fcTip">Click the floor to dispatch a pick</span>
     </p>
     <div class="hero-grid">
       <div>
-        <p class="eyebrow enter">Industrial Engineer &nbsp;/&nbsp; Supply Chain &amp; Warehouse Automation</p>
+        <p class="eyebrow enter" data-i18n="heroEyebrow">Industrial Engineer &nbsp;/&nbsp; Supply Chain &amp; Warehouse Automation</p>
         <h1 class="enter">Aditya<br>Bothe</h1>
-        <p class="role enter">I make automated fulfillment centers run better.</p>
+        <p class="role enter" data-i18n="heroRole">I make automated fulfillment centers run better.</p>
         <p class="pitch enter">
           Most recently a Supply Chain IE co-op at <strong>Staples</strong>, where I fixed a
           fault that was taking down a fleet of <strong>1,000+ AGVs</strong>, designed a
@@ -1175,33 +1273,33 @@
           I like problems where nobody has written the runbook yet.
         </p>
         <div class="cta enter">
-          <a class="btn btn-primary" href="#contact">Get in touch</a>
+          <a class="btn btn-primary" href="#contact" data-i18n="ctaContact">Get in touch</a>
           <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer">LinkedIn ↗</a>
         <a class="btn" href="https://github.com/Adityabothe46" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a class="btn" href="Aditya_Bothe_Resume.pdf" download>Resume (PDF) &darr;</a>
-          <a class="btn" href="#work">See the work ↓</a>
+          <a class="btn" href="Aditya_Bothe_Resume.pdf" download data-i18n="ctaResume">Resume (PDF) &darr;</a>
+          <a class="btn" href="#work" data-i18n="ctaWork">See the work ↓</a>
         </div>
       </div>
 
       <dl class="spec enter">
         <div class="spec-row">
-          <dt>Status</dt>
+          <dt data-i18n="dtStatus">Status</dt>
           <dd><span class="avail">Available Jan 2027</span><br>Full-time, open to relocation</dd>
         </div>
         <div class="spec-row">
-          <dt>Education</dt>
+          <dt data-i18n="dtEducation">Education</dt>
           <dd><b>MS Industrial Engineering</b><br>Northeastern University · Dec 2026 · 3.62 GPA</dd>
         </div>
         <div class="spec-row">
-          <dt>Based</dt>
+          <dt data-i18n="dtBased">Based</dt>
           <dd>Boston, MA</dd>
         </div>
         <div class="spec-row">
-          <dt>Focus</dt>
+          <dt data-i18n="dtFocus">Focus</dt>
           <dd>Warehouse automation, AGV fleets, WMS, supply chain analytics</dd>
         </div>
         <div class="spec-row">
-          <dt>Experience</dt>
+          <dt data-i18n="dtExperience">Experience</dt>
           <dd>4+ years across manufacturing and automated fulfillment</dd>
         </div>
       </dl>
@@ -1210,8 +1308,8 @@
 
   <section>
     <div class="sec-head">
-      <h2>Measured Impact</h2>
-      <p class="note">Verified outcomes, Staples &amp; AB Enterprises</p>
+      <h2 data-i18n="h2Impact">Measured Impact</h2>
+      <p class="note" data-i18n="noteImpact">Verified outcomes, Staples &amp; AB Enterprises</p>
     </div>
     <div class="metrics enter">
       <div class="metric">
@@ -1255,8 +1353,8 @@
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section id="work">
     <div class="sec-head">
-      <h2>Selected Work</h2>
-      <p class="note">Built, shipped, measured</p>
+      <h2 data-i18n="h2Work">Selected Work</h2>
+      <p class="note" data-i18n="noteWork">Built, shipped, measured</p>
     </div>
 
     <article class="project enter">
@@ -1346,22 +1444,22 @@
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
-      <h2>Line Simulator</h2>
-      <p class="note">Little's Law · drag the sliders</p>
+      <h2 data-i18n="h2Sim">Line Simulator</h2>
+      <p class="note" data-i18n="noteSim">Little's Law · drag the sliders</p>
     </div>
 
     <div class="sim enter">
       <div class="sim-top">
         <div class="sim-cell">
           <label for="rate">
-            <span>Throughput</span>
+            <span data-i18n="lThroughput">Throughput</span>
             <span class="val"><span id="rate-val" class="num">220</span> units/hr</span>
           </label>
           <input id="rate" type="range" min="40" max="600" step="10" value="220">
         </div>
         <div class="sim-cell">
           <label for="cycle">
-            <span>Cycle time</span>
+            <span data-i18n="lCycle">Cycle time</span>
             <span class="val"><span id="cycle-val" class="num">45</span> min</span>
           </label>
           <input id="cycle" type="range" min="5" max="180" step="5" value="45">
@@ -1388,15 +1486,15 @@
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section class="band">
     <div class="sec-head enter">
-      <h2>Anodizing Line</h2>
-      <p class="note">AB Enterprises &middot; pick a finish and watch the route</p>
+      <h2 data-i18n="h2Anod">Anodizing Line</h2>
+      <p class="note" data-i18n="noteAnod">AB Enterprises &middot; pick a finish and watch the route</p>
     </div>
 
     <div class="anod enter">
       <div class="route-pick" role="group" aria-label="Finish type">
-        <button class="route-btn" type="button" data-route="glossy" aria-pressed="true">Glossy</button>
-        <button class="route-btn" type="button" data-route="matte" aria-pressed="false">Normal matte</button>
-        <button class="route-btn" type="button" data-route="hard" aria-pressed="false">Hard matte</button>
+        <button class="route-btn" type="button" data-route="glossy" aria-pressed="true" data-i18n="rGlossy">Glossy</button>
+        <button class="route-btn" type="button" data-route="matte" aria-pressed="false" data-i18n="rMatte">Normal matte</button>
+        <button class="route-btn" type="button" data-route="hard" aria-pressed="false" data-i18n="rHard">Hard matte</button>
       </div>
 
       <div class="line-wrap">
@@ -1497,7 +1595,7 @@
       <div class="micron">
         <div class="sim-cell">
           <label for="micron">
-            <span>Coating spec</span>
+            <span data-i18n="lCoating">Coating spec</span>
             <span class="val"><span id="micron-val" class="num">12</span> &micro;m</span>
           </label>
           <input id="micron" type="range" min="12" max="20" step="1" value="12">
@@ -1523,7 +1621,7 @@
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
-      <h2>Experience</h2>
+      <h2 data-i18n="h2Exp">Experience</h2>
       <p class="note">2020 — present</p>
     </div>
 
@@ -1593,8 +1691,8 @@
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
-      <h2>Capabilities</h2>
-      <p class="note">Hands-on, in production</p>
+      <h2 data-i18n="h2Cap">Capabilities</h2>
+      <p class="note" data-i18n="noteCap">Hands-on, in production</p>
     </div>
     <div class="skills enter">
       <div class="skill">
@@ -1647,7 +1745,7 @@
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
-      <h2>Education &amp; Certifications</h2>
+      <h2 data-i18n="h2Edu">Education &amp; Certifications</h2>
     </div>
     <div class="two enter">
       <div>
@@ -1676,7 +1774,7 @@
 
   <div class="contact enter" id="contact">
     <p class="eyebrow">Open to full-time roles from January 2027</p>
-    <h2>Let's talk about your operation.</h2>
+    <h2 data-i18n="h2Contact">Let's talk about your operation.</h2>
     <p>
       I am looking for industrial engineering, supply chain and warehouse automation roles
       in the US and internationally. If you have a process that is not behaving, I would
@@ -1684,7 +1782,7 @@
     </p>
     <div class="mailrow">
       <a class="mail" id="email" href="mailto:botheaditya46@gmail.com">botheaditya46@gmail.com</a>
-      <button class="btn" id="copy" type="button">Copy email</button>
+      <button class="btn" id="copy" type="button" data-i18n="copyEmail">Copy email</button>
       <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer">LinkedIn ↗</a>
         <a class="btn" href="https://github.com/Adityabothe46" target="_blank" rel="noreferrer">GitHub ↗</a>
       <span class="copied" id="copied" hidden>Copied</span>
@@ -2506,6 +2604,142 @@
       }
       if (micron) micron.addEventListener("input", update);
       update();
+    })();
+
+    /* ---- welcome splash ---------------------------------------------- */
+    /* Cycles "welcome" through a few languages then clears. Deliberately
+       short and dismissible on any input: a visitor who came to read a CV
+       should never be waiting on an animation. The overlay is display:none
+       in CSS and only switched on here, so if this script never runs the
+       page is simply visible rather than hidden behind a curtain. */
+    (function () {
+      var el = document.getElementById("welcome");
+      var word = document.getElementById("welcome-word");
+      if (!el || !word) return;
+
+      var WORDS = ["Welcome", "\u0928\u092e\u0938\u094d\u0924\u0947", "\u0928\u092e\u0938\u094d\u0915\u093e\u0930",
+        "Willkommen", "Welkom", "Bienvenido", "Bienvenue", "Benvenuto", "Bem-vindo",
+        "V\u00e4lkommen", "\u3088\u3046\u3053\u305d", "\ud658\uc601\ud569\ub2c8\ub2e4", "\u6b22\u8fce",
+        "\u0645\u0631\u062d\u0628\u0627", "\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c"];
+
+      // Reduced motion: no flicker, one greeting, straight out.
+      if (reduced) { word.textContent = WORDS[0]; return; }
+
+      var i = 0, timer = null, gone = false;
+      el.classList.add("on");
+      document.documentElement.style.overflow = "hidden";
+      word.textContent = WORDS[0];
+
+      function finish() {
+        if (gone) return;
+        gone = true;
+        clearInterval(timer);
+        el.classList.add("out");
+        document.documentElement.style.overflow = "";
+        setTimeout(function () { el.classList.remove("on", "out"); }, 500);
+      }
+
+      timer = setInterval(function () {
+        i++;
+        if (i >= WORDS.length) { finish(); return; }
+        word.textContent = WORDS[i];
+      }, 115);
+
+      // Any intent to get on with it ends it immediately.
+      el.addEventListener("click", finish);
+      window.addEventListener("keydown", finish, { once: true });
+      window.addEventListener("wheel", finish, { once: true, passive: true });
+      window.addEventListener("touchstart", finish, { once: true, passive: true });
+      setTimeout(finish, 2600);
+    })();
+
+    /* ---- language slider --------------------------------------------- */
+    /* Translates the narrative and the interface only. Company names, job
+       titles, figures and the technical tables stay in English on purpose:
+       a mistranslated process term reads worse to a specialist than plain
+       English does, and those are the parts a specialist reads. */
+    (function () {
+      var sl = document.getElementById("lang");
+      var cur = document.getElementById("lang-cur");
+      if (!sl) return;
+
+      var LANGS = [
+        { code: "en", tag: "EN", name: "English" },
+        { code: "hi", tag: "HI", name: "\u0939\u093f\u0928\u094d\u0926\u0940" },
+        { code: "mr", tag: "MR", name: "\u092e\u0930\u093e\u0920\u0940" },
+        { code: "de", tag: "DE", name: "Deutsch" },
+        { code: "nl", tag: "NL", name: "Nederlands" },
+        { code: "es", tag: "ES", name: "Espa\u00f1ol" }
+      ];
+
+      var T = {
+        heroEyebrow: {
+          hi: "\u0914\u0926\u094d\u092f\u094b\u0917\u093f\u0915 \u0907\u0902\u091c\u0940\u0928\u093f\u092f\u0930 / \u0938\u092a\u094d\u0932\u093e\u0908 \u091a\u0947\u0928 \u0914\u0930 \u0935\u0947\u092f\u0930\u0939\u093e\u0909\u0938 \u0911\u091f\u094b\u092e\u0947\u0936\u0928",
+          mr: "\u0914\u0926\u094d\u092f\u094b\u0917\u093f\u0915 \u0905\u092d\u093f\u092f\u0902\u0924\u093e / \u0938\u092a\u094d\u0932\u093e\u092f \u091a\u0947\u0928 \u0906\u0923\u093f \u0935\u0947\u0905\u0930\u0939\u093e\u0909\u0938 \u0911\u091f\u094b\u092e\u0947\u0936\u0928",
+          de: "Wirtschaftsingenieur / Supply Chain & Lagerautomatisierung",
+          nl: "Industrieel ingenieur / Supply chain & magazijnautomatisering",
+          es: "Ingeniero industrial / Cadena de suministro y automatizaci\u00f3n de almacenes" },
+        heroRole: {
+          hi: "\u092e\u0948\u0902 \u0938\u094d\u0935\u091a\u093e\u0932\u093f\u0924 \u092b\u0941\u0932\u092b\u093f\u0932\u092e\u0947\u0902\u091f \u0938\u0947\u0902\u091f\u0930 \u0915\u094b \u092c\u0947\u0939\u0924\u0930 \u091a\u0932\u093e\u0924\u093e \u0939\u0942\u0901\u0964",
+          mr: "\u092e\u0940 \u0938\u094d\u0935\u092f\u0902\u091a\u0932\u093f\u0924 \u092b\u0941\u0932\u092b\u093f\u0932\u092e\u0947\u0902\u091f \u0938\u0947\u0902\u091f\u0930 \u0905\u0927\u093f\u0915 \u091a\u093e\u0902\u0917\u0932\u0947 \u091a\u093e\u0932\u0935\u0924\u094b.",
+          de: "Ich bringe automatisierte Logistikzentren zum Laufen.",
+          nl: "Ik laat geautomatiseerde distributiecentra beter draaien.",
+          es: "Hago que los centros log\u00edsticos automatizados funcionen mejor." },
+        ctaContact: { hi: "\u0938\u0902\u092a\u0930\u094d\u0915 \u0915\u0930\u0947\u0902", mr: "\u0938\u0902\u092a\u0930\u094d\u0915 \u0938\u093e\u0927\u093e", de: "Kontakt aufnehmen", nl: "Neem contact op", es: "Contactar" },
+        ctaResume: { hi: "\u0930\u093f\u091c\u093c\u094d\u092f\u0942\u092e\u0947 (PDF) \u2193", mr: "\u0930\u0947\u091d\u094d\u092f\u0941\u092e\u0947 (PDF) \u2193", de: "Lebenslauf (PDF) \u2193", nl: "CV (PDF) \u2193", es: "CV (PDF) \u2193" },
+        ctaWork: { hi: "\u0915\u093e\u092e \u0926\u0947\u0916\u0947\u0902 \u2193", mr: "\u0915\u093e\u092e \u092a\u0939\u093e \u2193", de: "Arbeiten ansehen \u2193", nl: "Bekijk het werk \u2193", es: "Ver el trabajo \u2193" },
+        dtStatus: { hi: "\u0938\u094d\u0925\u093f\u0924\u093f", mr: "\u0938\u094d\u0925\u093f\u0924\u0940", de: "Status", nl: "Status", es: "Estado" },
+        dtEducation: { hi: "\u0936\u093f\u0915\u094d\u0937\u093e", mr: "\u0936\u093f\u0915\u094d\u0937\u0923", de: "Ausbildung", nl: "Opleiding", es: "Formaci\u00f3n" },
+        dtBased: { hi: "\u0938\u094d\u0925\u093e\u0928", mr: "\u0920\u093f\u0915\u093e\u0923", de: "Standort", nl: "Gevestigd", es: "Ubicaci\u00f3n" },
+        dtFocus: { hi: "\u092b\u094b\u0915\u0938", mr: "\u092b\u094b\u0915\u0938", de: "Schwerpunkt", nl: "Focus", es: "Enfoque" },
+        dtExperience: { hi: "\u0905\u0928\u0941\u092d\u0935", mr: "\u0905\u0928\u0941\u092d\u0935", de: "Erfahrung", nl: "Ervaring", es: "Experiencia" },
+        h2Impact: { hi: "\u092e\u093e\u092a\u093e \u0917\u092f\u093e \u092a\u094d\u0930\u092d\u093e\u0935", mr: "\u092e\u094b\u091c\u0932\u0947\u0932\u093e \u092a\u0930\u093f\u0923\u093e\u092e", de: "Gemessene Wirkung", nl: "Gemeten impact", es: "Impacto medido" },
+        h2Work: { hi: "\u091a\u0941\u0928\u093f\u0902\u0926\u093e \u0915\u093e\u092e", mr: "\u0928\u093f\u0935\u0921\u0915 \u0915\u093e\u092e", de: "Ausgew\u00e4hlte Arbeiten", nl: "Geselecteerd werk", es: "Trabajos seleccionados" },
+        h2Sim: { hi: "\u0932\u093e\u0907\u0928 \u0938\u093f\u092e\u094d\u092f\u0941\u0932\u0947\u091f\u0930", mr: "\u0932\u093e\u0907\u0928 \u0938\u093f\u092e\u094d\u092f\u0941\u0932\u0947\u091f\u0930", de: "Liniensimulator", nl: "Lijnsimulator", es: "Simulador de l\u00ednea" },
+        h2Anod: { hi: "\u090f\u0928\u094b\u0921\u093e\u0907\u091c\u093f\u0902\u0917 \u0932\u093e\u0907\u0928", mr: "\u0905\u0945\u0928\u094b\u0921\u093e\u092f\u091d\u093f\u0902\u0917 \u0932\u093e\u0907\u0928", de: "Eloxallinie", nl: "Anodiseerlijn", es: "L\u00ednea de anodizado" },
+        h2Exp: { hi: "\u0905\u0928\u0941\u092d\u0935", mr: "\u0905\u0928\u0941\u092d\u0935", de: "Erfahrung", nl: "Ervaring", es: "Experiencia" },
+        h2Cap: { hi: "\u0915\u094d\u0937\u092e\u0924\u093e\u090f\u0901", mr: "\u0915\u094d\u0937\u092e\u0924\u093e", de: "F\u00e4higkeiten", nl: "Vaardigheden", es: "Capacidades" },
+        h2Edu: { hi: "\u0936\u093f\u0915\u094d\u0937\u093e \u0914\u0930 \u092a\u094d\u0930\u092e\u093e\u0923\u092a\u0924\u094d\u0930", mr: "\u0936\u093f\u0915\u094d\u0937\u0923 \u0906\u0923\u093f \u092a\u094d\u0930\u092e\u093e\u0923\u092a\u0924\u094d\u0930\u0947", de: "Ausbildung & Zertifikate", nl: "Opleiding & certificaten", es: "Formaci\u00f3n y certificaciones" },
+        h2Contact: { hi: "\u0906\u092a\u0915\u0947 \u0911\u092a\u0930\u0947\u0936\u0928 \u0915\u0947 \u092c\u093e\u0930\u0947 \u092e\u0947\u0902 \u092c\u093e\u0924 \u0915\u0930\u0924\u0947 \u0939\u0948\u0902\u0964", mr: "\u0924\u0941\u092e\u091a\u094d\u092f\u093e \u0911\u092a\u0930\u0947\u0936\u0928\u092c\u0926\u094d\u0926\u0932 \u092c\u094b\u0932\u0942\u092f\u093e.", de: "Sprechen wir \u00fcber Ihren Betrieb.", nl: "Laten we het over uw operatie hebben.", es: "Hablemos de tu operaci\u00f3n." },
+        noteImpact: { hi: "\u0938\u0924\u094d\u092f\u093e\u092a\u093f\u0924 \u092a\u0930\u093f\u0923\u093e\u092e, Staples \u0914\u0930 AB Enterprises", mr: "\u092a\u0921\u0924\u093e\u0933\u0932\u0947\u0932\u0947 \u0928\u093f\u0915\u093e\u0932, Staples \u0906\u0923\u093f AB Enterprises", de: "Belegte Ergebnisse, Staples & AB Enterprises", nl: "Geverifieerde resultaten, Staples & AB Enterprises", es: "Resultados verificados, Staples y AB Enterprises" },
+        noteWork: { hi: "\u092c\u0928\u093e\u092f\u093e, \u0932\u0949\u0928\u094d\u091a \u0915\u093f\u092f\u093e, \u092e\u093e\u092a\u093e", mr: "\u092c\u0928\u0935\u0932\u0947, \u092a\u093e\u0920\u0935\u0932\u0947, \u092e\u094b\u091c\u0932\u0947", de: "Gebaut, ausgeliefert, gemessen", nl: "Gebouwd, geleverd, gemeten", es: "Construido, entregado, medido" },
+        noteSim: { hi: "\u0932\u093f\u091f\u0932\u094d\u0938 \u0932\u0949 \u00b7 \u0938\u094d\u0932\u093e\u0907\u0921\u0930 \u0916\u0940\u0902\u091a\u0947\u0902", mr: "\u0932\u093f\u091f\u0932\u094d\u0938 \u0932\u0949 \u00b7 \u0938\u094d\u0932\u093e\u092f\u0921\u0930 \u0913\u0922\u093e", de: "Little's Law \u00b7 Regler ziehen", nl: "Wet van Little \u00b7 sleep de schuiven", es: "Ley de Little \u00b7 arrastra los controles" },
+        noteAnod: { hi: "AB Enterprises \u00b7 \u092b\u093f\u0928\u093f\u0936 \u091a\u0941\u0928\u0947\u0902 \u0914\u0930 \u0930\u0942\u091f \u0926\u0947\u0916\u0947\u0902", mr: "AB Enterprises \u00b7 \u092b\u093f\u0928\u093f\u0936 \u0928\u093f\u0935\u0921\u093e \u0906\u0923\u093f \u092e\u093e\u0930\u094d\u0917 \u092a\u0939\u093e", de: "AB Enterprises \u00b7 Finish w\u00e4hlen und Route verfolgen", nl: "AB Enterprises \u00b7 kies een afwerking en volg de route", es: "AB Enterprises \u00b7 elige un acabado y observa la ruta" },
+        noteCap: { hi: "\u092a\u094d\u0930\u094b\u0921\u0915\u094d\u0936\u0928 \u092e\u0947\u0902, \u0935\u094d\u092f\u093e\u0935\u0939\u093e\u0930\u093f\u0915", mr: "\u092a\u094d\u0930\u0949\u0921\u0915\u094d\u0936\u0928\u092e\u0927\u094d\u092f\u0947, \u092a\u094d\u0930\u0924\u094d\u092f\u0915\u094d\u0937", de: "Praktisch, im Produktivbetrieb", nl: "Praktisch, in productie", es: "Pr\u00e1ctico, en producci\u00f3n" },
+        rGlossy: { hi: "\u0917\u094d\u0932\u0949\u0938\u0940", mr: "\u0917\u094d\u0932\u0949\u0938\u0940", de: "Gl\u00e4nzend", nl: "Glanzend", es: "Brillante" },
+        rMatte: { hi: "\u0928\u0949\u0930\u094d\u092e\u0932 \u092e\u0948\u091f", mr: "\u0928\u0949\u0930\u094d\u092e\u0932 \u092e\u0945\u091f", de: "Normal matt", nl: "Normaal mat", es: "Mate normal" },
+        rHard: { hi: "\u0939\u093e\u0930\u094d\u0921 \u092e\u0948\u091f", mr: "\u0939\u093e\u0930\u094d\u0921 \u092e\u0945\u091f", de: "Hart matt", nl: "Hard mat", es: "Mate duro" },
+        lThroughput: { hi: "\u0925\u094d\u0930\u0942\u092a\u0941\u091f", mr: "\u0925\u094d\u0930\u0942\u092a\u0941\u091f", de: "Durchsatz", nl: "Doorvoer", es: "Rendimiento" },
+        lCycle: { hi: "\u0938\u093e\u0907\u0915\u093f\u0932 \u091f\u093e\u0907\u092e", mr: "\u0938\u093e\u092f\u0915\u0932 \u091f\u093e\u0907\u092e", de: "Durchlaufzeit", nl: "Doorlooptijd", es: "Tiempo de ciclo" },
+        lCoating: { hi: "\u0915\u094b\u091f\u093f\u0902\u0917 \u0938\u094d\u092a\u0947\u0915", mr: "\u0915\u094b\u091f\u093f\u0902\u0917 \u0938\u094d\u092a\u0947\u0915", de: "Schichtdicke", nl: "Laagdikte", es: "Espesor" },
+        fcTip: { hi: "\u092a\u093f\u0915 \u092d\u0947\u091c\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u092b\u094d\u0932\u094b\u0930 \u092a\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u0947\u0902", mr: "\u092a\u093f\u0915 \u092a\u093e\u0920\u0935\u0923\u094d\u092f\u093e\u0938\u093e\u0920\u0940 \u092b\u094d\u0932\u094b\u0905\u0930\u0935\u0930 \u0915\u094d\u0932\u093f\u0915 \u0915\u0930\u093e", de: "Auf die Fl\u00e4che klicken, um einen Auftrag zu senden", nl: "Klik op de vloer om een order te sturen", es: "Haz clic en el suelo para enviar un pedido" },
+        copyEmail: { hi: "\u0908\u092e\u0947\u0932 \u0915\u0949\u092a\u0940 \u0915\u0930\u0947\u0902", mr: "\u0908\u092e\u0947\u0932 \u0915\u0949\u092a\u0940 \u0915\u0930\u093e", de: "E-Mail kopieren", nl: "E-mail kopi\u00earen", es: "Copiar correo" }
+      };
+
+      var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n]"));
+      // Keep the English as written in the markup rather than a second copy
+      // in the table, so the two can never drift apart.
+      nodes.forEach(function (n) { n.setAttribute("data-en", n.innerHTML); });
+
+      function apply(idx) {
+        var L = LANGS[idx] || LANGS[0];
+        nodes.forEach(function (n) {
+          var key = n.getAttribute("data-i18n");
+          var val = L.code === "en" ? n.getAttribute("data-en") : (T[key] && T[key][L.code]);
+          if (val) n.innerHTML = val;
+        });
+        document.documentElement.setAttribute("lang", L.code);
+        if (cur) cur.textContent = L.tag;
+        sl.setAttribute("title", L.name);
+        try { localStorage.setItem("portfolioLang", String(idx)); } catch (e) {}
+      }
+
+      sl.addEventListener("input", function () { apply(Number(sl.value)); });
+
+      var saved = 0;
+      try { saved = Number(localStorage.getItem("portfolioLang")) || 0; } catch (e) {}
+      if (saved > 0 && saved < LANGS.length) { sl.value = String(saved); }
+      apply(Number(sl.value));
     })();
 </script>
 </body>
