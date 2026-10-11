@@ -1017,6 +1017,133 @@
     .fc-hud { position: static; margin-top: 16px; }
   }
 
+
+  /* ---------- drawing-sheet section headers ---------- */
+  /* Numbered callout with a leader line and corner ticks, the way a
+     dimensioned drawing is annotated. Numbers come from the DOM order at
+     runtime so inserting a section never leaves them stale. */
+  .sec-head {
+    position: relative;
+    flex-wrap: wrap;
+    border-top: 0;
+    padding-top: 22px;
+  }
+  .sec-head::before,
+  .sec-head::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 11px;
+    height: 11px;
+    border-top: 1px solid var(--rule-2);
+    pointer-events: none;
+  }
+  .sec-head::before { left: 0; border-left: 1px solid var(--rule-2); }
+  .sec-head::after { right: 0; border-right: 1px solid var(--rule-2); }
+  .sec-no {
+    position: absolute;
+    top: -8px;
+    left: 24px;
+    background: var(--bg);
+    padding: 0 9px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    color: var(--amber-dim);
+  }
+  .sec-rule {
+    position: absolute;
+    top: 0;
+    left: 11px;
+    right: 11px;
+    height: 1px;
+    background: var(--rule-2);
+    z-index: -1;
+  }
+
+  /* ---------- conveyor divider between sections ---------- */
+  .conveyor-rule {
+    position: relative;
+    height: 13px;
+    margin: 58px 0 0;
+    opacity: 0.75;
+  }
+  .conveyor-rule::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rule-2) 12%, var(--rule-2) 88%, transparent);
+  }
+  .conveyor-rule::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 2px;
+    height: 7px;
+    background: radial-gradient(circle at 5px 3.5px, var(--rule-2) 0 2.6px, transparent 2.8px);
+    background-size: 22px 7px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+
+  /* ---------- AGV on the experience lane ---------- */
+  .rail { width: 3px; background: none; border-left: 1px dashed var(--rule); border-right: 1px dashed var(--rule); }
+  .rail-fill { background: linear-gradient(180deg, var(--amber), var(--amber-dim)); opacity: 0.55; }
+  .lane-agv {
+    position: absolute;
+    left: -8px;
+    top: 0;
+    width: 19px;
+    height: 12px;
+    background: var(--amber);
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgb(245 165 36 / 0.5);
+    transition: top 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+    z-index: 2;
+  }
+  .lane-agv::before {
+    content: "";
+    position: absolute;
+    left: 2px; top: -6px;
+    width: 15px; height: 5px;
+    background: var(--steel);
+    border-radius: 1px;
+  }
+  .lane-agv::after {
+    content: "";
+    position: absolute;
+    left: 3px; bottom: -9px;
+    width: 13px; height: 7px;
+    background: radial-gradient(ellipse at center, rgb(245 165 36 / 0.42), transparent 70%);
+  }
+  .lane-agv.docked { box-shadow: 0 0 16px rgb(78 201 160 / 0.6); background: var(--green); }
+
+  /* ---------- rectifier panel ---------- */
+  .rect-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .gauge-u { text-align: center; }
+  .gauge-u svg { width: 100%; max-width: 160px; height: auto; }
+  .gauge-u .lab {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    display: block;
+    margin-top: 2px;
+  }
+  .gauge-u .rdg { font-family: var(--mono); font-size: 16px; color: var(--amber); }
+  .needle { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.45s cubic-bezier(0.33, 1, 0.68, 1); }
+  .gauge-u.idle .rdg { color: var(--ink-4); }
+
 </style>
 </head>
 <body>
@@ -1125,6 +1252,7 @@
     </div>
   </section>
 
+  <div class="conveyor-rule" aria-hidden="true"></div>
   <section id="work">
     <div class="sec-head">
       <h2>Selected Work</h2>
@@ -1215,6 +1343,7 @@
     </div>
   </section>
 
+  <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
       <h2>Line Simulator</h2>
@@ -1256,6 +1385,7 @@
     </div>
   </section>
 
+  <div class="conveyor-rule" aria-hidden="true"></div>
   <section class="band">
     <div class="sec-head enter">
       <h2>Anodizing Line</h2>
@@ -1328,6 +1458,35 @@
 
       <p class="step-read" id="step-read" aria-live="polite">&nbsp;</p>
 
+      <div class="rect-panel" aria-hidden="true">
+        <div class="gauge-u idle" id="g-volt">
+          <svg viewBox="0 0 120 74">
+            <path d="M12 64 A48 48 0 0 1 108 64" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+            <path d="M12 64 A48 48 0 0 1 108 64" fill="none" stroke="#f5a524" stroke-width="2"
+                  stroke-dasharray="151" stroke-dashoffset="151" id="g-volt-arc" opacity="0.65"/>
+            <g class="needle" id="n-volt">
+              <line x1="60" y1="64" x2="60" y2="24" stroke="#eceef0" stroke-width="2"/>
+            </g>
+            <circle cx="60" cy="64" r="3.5" fill="#b4bcc4"/>
+          </svg>
+          <span class="rdg" id="r-volt">0.0 V</span>
+          <span class="lab">Anodizing rectifier</span>
+        </div>
+        <div class="gauge-u idle" id="g-amp">
+          <svg viewBox="0 0 120 74">
+            <path d="M12 64 A48 48 0 0 1 108 64" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+            <path d="M12 64 A48 48 0 0 1 108 64" fill="none" stroke="#f5a524" stroke-width="2"
+                  stroke-dasharray="151" stroke-dashoffset="151" id="g-amp-arc" opacity="0.65"/>
+            <g class="needle" id="n-amp">
+              <line x1="60" y1="64" x2="60" y2="24" stroke="#eceef0" stroke-width="2"/>
+            </g>
+            <circle cx="60" cy="64" r="3.5" fill="#b4bcc4"/>
+          </svg>
+          <span class="rdg" id="r-amp">0 A</span>
+          <span class="lab">Load current</span>
+        </div>
+      </div>
+
       <p class="sim-note">
         The finish decides the route, and hard matte runs the first two tanks in reverse: nitric
         for oil removal before the long caustic etch, then nitric again. Caustic dwell is what
@@ -1361,6 +1520,7 @@
     </div>
   </section>
 
+  <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
       <h2>Experience</h2>
@@ -1369,6 +1529,7 @@
 
     <div class="timeline">
     <div class="rail"><div class="rail-fill" id="railFill"></div></div>
+      <div class="lane-agv" id="laneAgv" aria-hidden="true"></div>
     <div class="job enter">
       <span class="node" aria-hidden="true"></span>
       <div class="job-head">
@@ -1429,6 +1590,7 @@
     </div>
   </section>
 
+  <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
       <h2>Capabilities</h2>
@@ -1482,6 +1644,7 @@
     </div>
   </section>
 
+  <div class="conveyor-rule" aria-hidden="true"></div>
   <section>
     <div class="sec-head">
       <h2>Education &amp; Certifications</h2>
@@ -2248,6 +2411,100 @@
         });
       }
       sl.addEventListener("input", update);
+      update();
+    })();
+
+    /* ---- drawing-sheet section numbers ------------------------------- */
+    /* Numbered at runtime from DOM order, so adding or moving a section
+       never leaves a hand-written number stale. */
+    (function () {
+      document.querySelectorAll(".sec-head").forEach(function (h, i) {
+        var rule = document.createElement("span");
+        rule.className = "sec-rule";
+        var no = document.createElement("span");
+        no.className = "sec-no";
+        no.textContent = (i + 1 < 10 ? "0" : "") + (i + 1);
+        h.appendChild(rule);
+        h.appendChild(no);
+      });
+    })();
+
+    /* ---- AGV travels the experience lane ----------------------------- */
+    (function () {
+      var lane = document.getElementById("laneAgv");
+      var timeline = document.querySelector(".timeline");
+      if (!lane || !timeline) return;
+      var jobs = Array.prototype.slice.call(timeline.querySelectorAll(".job"));
+      if (!jobs.length) return;
+
+      function place() {
+        var r = timeline.getBoundingClientRect();
+        var mark = window.innerHeight * 0.55;
+        var p = Math.max(0, Math.min(1, (mark - r.top) / r.height));
+        var y = r.height * p;
+        lane.style.top = y + "px";
+        // docked when level with a role's node, which is where the rail
+        // nodes already sit, so the two readings agree.
+        var near = false;
+        for (var i = 0; i < jobs.length; i++) {
+          if (Math.abs(jobs[i].offsetTop + 10 - y) < 22) { near = true; break; }
+        }
+        lane.classList.toggle("docked", near);
+      }
+
+      if (reduced) {
+        lane.style.top = "0px";
+        return;
+      }
+      window.addEventListener("scroll", place, { passive: true });
+      window.addEventListener("resize", place);
+      place();
+    })();
+
+    /* ---- rectifier gauges -------------------------------------------- */
+    /* Reads the tank line: live only while the load is in tank 5, which is
+       the one the rectifier actually feeds. Everywhere else it sits at zero,
+       because that is what the panel did. */
+    (function () {
+      var vol = document.getElementById("n-volt"), amp = document.getElementById("n-amp");
+      var rv = document.getElementById("r-volt"), ra = document.getElementById("r-amp");
+      var gv = document.getElementById("g-volt"), ga = document.getElementById("g-amp");
+      var av = document.getElementById("g-volt-arc"), aa = document.getElementById("g-amp-arc");
+      var tanksEl = document.getElementById("tanks");
+      var micron = document.getElementById("micron");
+      if (!vol || !tanksEl) return;
+      var ARC = 151;
+
+      function set(frac, needle, arc, readout, box, text) {
+        frac = Math.max(0, Math.min(1, frac));
+        needle.style.transform = "rotate(" + (-90 + frac * 180) + "deg)";
+        if (arc) arc.setAttribute("stroke-dashoffset", String(ARC * (1 - frac)));
+        readout.textContent = text;
+        box.classList.toggle("idle", frac <= 0.001);
+      }
+
+      function update() {
+        var live = !!tanksEl.querySelector('.tank.active[data-tank="5"]');
+        if (!live) {
+          set(0, vol, av, rv, gv, "0.0 V");
+          set(0, amp, aa, ra, ga, "0 A");
+          return;
+        }
+        // Thicker specs sit nearer the top of the working band.
+        var um = micron ? Number(micron.value) : 12;
+        var t = Math.max(0, Math.min(1, (um - 12) / 8));
+        var v = 13 + t * 4;                     // 13 to 17 V
+        var a = 1600 + t * 100;                 // 1600 to 1700 A
+        set((v - 12) / 6, vol, av, rv, gv, v.toFixed(1) + " V");
+        set((a - 1500) / 300, amp, aa, ra, ga, Math.round(a).toLocaleString("en-US") + " A");
+      }
+
+      if ("MutationObserver" in window) {
+        new MutationObserver(update).observe(tanksEl, {
+          subtree: true, attributes: true, attributeFilter: ["class"]
+        });
+      }
+      if (micron) micron.addEventListener("input", update);
       update();
     })();
 </script>
