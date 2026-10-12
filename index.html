@@ -3142,7 +3142,6 @@
 
       function apply(idx) {
         var L = LANGS[idx] || LANGS[0];
-        try { localStorage.setItem("portfolioLang", String(idx)); } catch (e) {}
         if (L.code === "en") { paint(null, L); return; }
         if (cache[L.code]) { paint(cache[L.code], L); return; }
         fetch("lang/" + L.code + ".json")
@@ -3157,10 +3156,12 @@
 
       sl.addEventListener("input", function () { apply(Number(sl.value)); });
 
-      var saved = 0;
-      try { saved = Number(localStorage.getItem("portfolioLang")) || 0; } catch (e) {}
-      if (saved > 0 && saved < LANGS.length) sl.value = String(saved);
-      apply(Number(sl.value));
+      // Language is deliberately not remembered. Every visit starts in
+      // English, which is what a recruiter opening the link expects; a
+      // remembered script from a previous visit would be a confusing
+      // first impression.
+      sl.value = "0";
+      apply(0);
     })();
 
     /* ---- theme switch -------------------------------------------------- */
