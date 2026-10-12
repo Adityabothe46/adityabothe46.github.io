@@ -34,6 +34,9 @@
     --ink-2: #b4bcc4;
     --ink-3: #7d8891;
     --ink-4: #5a646d;
+    --accent-rgb: 245 165 36;   /* the accent, as components, so the
+                                   rgb(... / alpha) uses below follow a
+                                   theme change instead of staying amber */
     --amber: #f5a524;
     --amber-dim: #a86f12;
     --steel: #7aa7d9;
@@ -42,6 +45,24 @@
     --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
     color-scheme: dark;
+  }
+
+  /* ---------- anodizing theme ---------- */
+  /* Same structure, plating-shop palette: bath blue in place of hi-vis
+     amber, cooler panels. Every accent on the page runs through --amber
+     and --accent-rgb, so redefining those two recolours the whole site. */
+  :root[data-theme="anodizing"] {
+    --bg: #070b10;
+    --bg-2: #0b1219;
+    --panel: #101922;
+    --panel-2: #15212c;
+    --rule: rgb(180 220 255 / 0.10);
+    --rule-2: rgb(180 220 255 / 0.18);
+    --ink-4: #5d6f7d;
+    --accent-rgb: 70 182 224;
+    --amber: #46b6e0;
+    --amber-dim: #2a6e8c;
+    --steel: #9fb6c9;
   }
 
   * { box-sizing: border-box; }
@@ -57,7 +78,7 @@
     padding-block: 0 0;
     -webkit-font-smoothing: antialiased;
     background-image:
-      radial-gradient(48rem 22rem at 78% -6%, rgb(245 165 36 / 0.07), transparent 65%),
+      radial-gradient(48rem 22rem at 78% -6%, rgb(var(--accent-rgb) / 0.07), transparent 65%),
       linear-gradient(rgb(255 255 255 / 0.016) 1px, transparent 1px),
       linear-gradient(90deg, rgb(255 255 255 / 0.016) 1px, transparent 1px);
     background-size: auto, 44px 44px, 44px 44px;
@@ -676,7 +697,7 @@
     font-family: var(--mono);
     font-size: 12.5px;
     color: var(--amber);
-    background: rgb(245 165 36 / 0.08);
+    background: rgb(var(--accent-rgb) / 0.08);
     border: 1px solid var(--rule);
     padding: 1px 6px;
     border-radius: 2px;
@@ -759,7 +780,7 @@
     width: 100%;
     height: 0%;
     background: linear-gradient(180deg, var(--amber), var(--amber-dim));
-    box-shadow: 0 0 10px rgb(245 165 36 / 0.45);
+    box-shadow: 0 0 10px rgb(var(--accent-rgb) / 0.45);
   }
   .job { position: relative; }
   .node {
@@ -777,7 +798,7 @@
   .node.lit {
     background: var(--amber);
     border-color: var(--amber);
-    box-shadow: 0 0 0 4px rgb(245 165 36 / 0.14);
+    box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.14);
   }
   .job .bullets li { transition: color 0.18s; }
   .job .bullets li:hover { color: var(--ink); }
@@ -860,6 +881,7 @@
     flex-wrap: wrap;
   }
   .fc-hud b { color: var(--ink-3); font-weight: 500; }
+  .fc-hud i { font-style: normal; }
   .fc-hud .tip { color: var(--amber-dim); }
   @keyframes fcpulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
   .fc-hud .tip { animation: fcpulse 2.6s ease-in-out infinite; }
@@ -897,7 +919,7 @@
     z-index: 61;
     background: var(--amber);
     border-radius: 1px;
-    box-shadow: 0 0 7px rgb(245 165 36 / 0.55);
+    box-shadow: 0 0 7px rgb(var(--accent-rgb) / 0.55);
     transform: translateX(-50%);
     transition: left 0.08s linear;
   }
@@ -920,7 +942,7 @@
   .route-btn[aria-pressed="true"] {
     border-color: var(--amber);
     color: var(--amber);
-    background: rgb(245 165 36 / 0.08);
+    background: rgb(var(--accent-rgb) / 0.08);
   }
 
   .line-wrap { position: relative; overflow-x: auto; padding-top: 34px; }
@@ -975,9 +997,9 @@
   }
   .tank .tno { font-family: var(--mono); font-size: 10px; color: var(--ink-4); }
   .tank .tname { font-size: 10.5px; color: var(--ink-3); line-height: 1.3; }
-  .tank.active { border-color: var(--amber); background: rgb(245 165 36 / 0.06); }
+  .tank.active { border-color: var(--amber); background: rgb(var(--accent-rgb) / 0.06); }
   .tank.active .tname { color: var(--ink); }
-  .tank.active .bath { background: rgb(245 165 36 / 0.3); }
+  .tank.active .bath { background: rgb(var(--accent-rgb) / 0.3); }
   .tank.done .bath { background: rgb(122 167 217 / 0.18); }
   .tank.skip { opacity: 0.32; }
 
@@ -1100,7 +1122,7 @@
     height: 12px;
     background: var(--amber);
     border-radius: 2px;
-    box-shadow: 0 0 12px rgb(245 165 36 / 0.5);
+    box-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.5);
     transition: top 0.25s cubic-bezier(0.33, 1, 0.68, 1);
     z-index: 2;
   }
@@ -1117,7 +1139,7 @@
     position: absolute;
     left: 3px; bottom: -9px;
     width: 13px; height: 7px;
-    background: radial-gradient(ellipse at center, rgb(245 165 36 / 0.42), transparent 70%);
+    background: radial-gradient(ellipse at center, rgb(var(--accent-rgb) / 0.42), transparent 70%);
   }
   .lane-agv.docked { box-shadow: 0 0 16px rgb(78 201 160 / 0.6); background: var(--green); }
 
@@ -1192,7 +1214,7 @@
   #welcome .aura.a1 {
     width: 46vmax; height: 46vmax;
     left: -10vmax; top: -14vmax;
-    background: radial-gradient(circle, rgb(245 165 36 / 0.5), transparent 68%);
+    background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.5), transparent 68%);
     animation: wdrift1 13s ease-in-out infinite alternate;
   }
   #welcome .aura.a2 {
@@ -1235,7 +1257,7 @@
     width: 26px; height: 13px;
     background: var(--amber);
     border-radius: 2px;
-    box-shadow: 0 0 14px rgb(245 165 36 / 0.55);
+    box-shadow: 0 0 14px rgb(var(--accent-rgb) / 0.55);
     animation: wride 6.5s linear infinite;
   }
   #welcome .wagv::before {
@@ -1363,7 +1385,7 @@
   .lang-list button:hover { color: var(--ink); background: rgb(255 255 255 / 0.05); }
   .lang-list button[aria-current="true"] {
     color: var(--amber);
-    background: rgb(245 165 36 / 0.1);
+    background: rgb(var(--accent-rgb) / 0.1);
     font-weight: 600;
   }
   #lang {
@@ -1403,6 +1425,53 @@
     body { padding-bottom: 52px; }
   }
 
+
+  /* ---------- theme switch ---------- */
+  .themebar {
+    position: fixed;
+    right: 14px;
+    top: 14px;
+    z-index: 70;
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+    background: rgb(20 24 28 / 0.9);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    backdrop-filter: blur(7px);
+  }
+  .themebar button {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.18s, background 0.18s;
+  }
+  .themebar button:hover { color: var(--ink-2); }
+  .themebar button[aria-pressed="true"] {
+    color: var(--amber);
+    background: rgb(var(--accent-rgb) / 0.13);
+  }
+  .themebar .dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: 0;
+    background: currentColor;
+  }
+  @media (max-width: 1100px) {
+    .themebar { top: auto; bottom: 52px; right: 10px; padding: 3px; }
+    .themebar button { padding: 5px 10px; font-size: 10px; }
+  }
+
 </style>
 </head>
 <body>
@@ -1416,6 +1485,11 @@
   <div class="sub">Aditya Bothe</div>
   <div class="skip">Click to skip</div>
   <div class="wbar" id="welcome-bar"></div>
+</div>
+
+<div class="themebar" id="themebar" role="group" aria-label="Site theme">
+  <button type="button" data-theme-btn="warehouse" aria-pressed="true"><span class="dot"></span>Warehouse</button>
+  <button type="button" data-theme-btn="anodizing" aria-pressed="false"><span class="dot"></span>Anodizing</button>
 </div>
 
 <div class="langbar" id="langbar">
@@ -1434,10 +1508,10 @@
   <header>
     <canvas id="fc" aria-hidden="true"></canvas>
     <p class="fc-hud" aria-hidden="true">
-      <span><span class="fc-dot"></span>Fleet <b id="fc-n">0</b> active</span>
-      <span>Picks <b id="fc-picks">0</b></span>
-      <span>NTP sync <b>OK</b></span>
-      <span class="tip" data-i18n="t114">Click the floor to dispatch a pick</span>
+      <span><span class="fc-dot"></span><i data-hud="unit">Fleet</i> <b id="fc-n">0</b> <i data-hud="unitSuffix">active</i></span>
+      <span><i data-hud="count">Picks</i> <b id="fc-picks">0</b></span>
+      <span><i data-hud="health">NTP sync</i> <b>OK</b></span>
+      <span class="tip" data-hud="tip" data-i18n="t114">Click the floor to dispatch a pick</span>
     </p>
     <div class="hero-grid">
       <div>
@@ -2299,6 +2373,8 @@
       var COL = 78, ROW = 50, RW = 40, RH = 16;
       var agvs = [], aisles = [], tasks = [], picks = 0;
       var visible = true, running = false, t = 0;
+      var mode = document.documentElement.getAttribute("data-theme") === "anodizing"
+        ? "anodizing" : "warehouse";
       var nEl = document.getElementById("fc-n");
       var pickEl = document.getElementById("fc-picks");
 
@@ -2310,6 +2386,7 @@
         cv.height = H * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         seed();
+        seedLine();
       }
 
       function seed() {
@@ -2371,7 +2448,18 @@
         var r = cv.getBoundingClientRect();
         var x = e.clientX - r.left, y = e.clientY - r.top;
         if (x < 0 || y < 0 || x > r.width || y > r.height) return;
-        dispatch(x, y);
+        if (mode === "anodizing") {
+          for (var i = 0; i < tanksX.length; i++) {
+            if (x >= tanksX[i].x && x <= tanksX[i].x + tanksX[i].w) {
+              tankIdx = i;
+              craneTarget = tanksX[i].x + tanksX[i].w / 2;
+              dipping = 0;
+              break;
+            }
+          }
+        } else {
+          dispatch(x, y);
+        }
         // Repaint at once so the marker appears on the click rather than on
         // the next animation frame. Matters on a throttled tab, and it makes
         // the floor feel responsive rather than laggy even when it isn't.
@@ -2396,7 +2484,103 @@
         ctx.fillRect(a.x - a.dir * 20, a.y + 3, 18, 2);
       }
 
+      // Colours come from the stylesheet rather than literals, so a theme
+      // change recolours the canvas with everything else.
+      var C = {};
+      function readPalette() {
+        var cs = getComputedStyle(document.documentElement);
+        var a = (cs.getPropertyValue("--accent-rgb") || "245 165 36").trim().replace(/\s+/g, ",");
+        C.accent = function (al) { return "rgba(" + a + "," + al + ")"; };
+        C.steel = (cs.getPropertyValue("--steel") || "#7aa7d9").trim();
+        C.rule = "rgba(255,255,255,0.06)";
+      }
+      readPalette();
+
+      /* ---- anodizing line, seen from the side ---- */
+      /* The other half of the same career: a crane walks the gantry, drops a
+         rack into a tank, holds while it processes, lifts and moves on.
+         Clicking sends it to whichever tank you picked, the same gesture as
+         dispatching a pick on the warehouse floor. */
+      var tanksX = [], craneX = 0, craneTarget = null, craneDip = 0, dipping = 0, tankIdx = 0;
+
+      function seedLine() {
+        tanksX = [];
+        var n = Math.max(5, Math.min(10, Math.round(W / 115)));
+        var pad = 26, gap = 7;
+        var tw = (W - pad * 2 - gap * (n - 1)) / n;
+        for (var i = 0; i < n; i++) tanksX.push({ x: pad + i * (tw + gap), w: tw });
+        craneX = tanksX[0].x + tanksX[0].w / 2;
+      }
+
+      function drawLine() {
+        ctx.clearRect(0, 0, W, H);
+        t++;
+        var top = H * 0.46, th = Math.min(150, H * 0.34);
+        var gantryY = top - 46;
+
+        ctx.strokeStyle = "rgba(255,255,255,0.10)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, gantryY); ctx.lineTo(W, gantryY); ctx.stroke();
+
+        for (var i = 0; i < tanksX.length; i++) {
+          var tk = tanksX[i];
+          var active = (tankIdx === i && dipping > 0);
+          ctx.fillStyle = active ? C.accent(0.2) : "rgba(122,167,217,0.085)";
+          ctx.fillRect(tk.x, top, tk.w, th);
+          ctx.strokeStyle = active ? C.accent(0.5) : "rgba(255,255,255,0.09)";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(tk.x + 0.5, top + 0.5, tk.w - 1, th - 1);
+          // surface line
+          ctx.fillStyle = active ? C.accent(0.45) : "rgba(255,255,255,0.11)";
+          ctx.fillRect(tk.x, top + 5, tk.w, 1);
+          // bubbles while a rack is in the bath
+          if (active) {
+            for (var b = 0; b < 7; b++) {
+              var bx = tk.x + ((b * 37 + t * 1.3) % (tk.w - 10)) + 5;
+              var by = top + th - ((t * 1.7 + b * 29) % (th - 12)) - 6;
+              ctx.fillStyle = C.accent(0.3);
+              ctx.beginPath(); ctx.arc(bx, by, 1.7, 0, Math.PI * 2); ctx.fill();
+            }
+          }
+        }
+
+        // crane: carriage on the gantry, rack hanging below
+        if (craneTarget !== null) {
+          var dx = craneTarget - craneX;
+          if (Math.abs(dx) < 1.5) {
+            craneTarget = null;
+            dipping = 150;
+            picks++;
+            if (pickEl) pickEl.textContent = String(picks);
+          } else craneX += Math.max(-2.6, Math.min(2.6, dx));
+        } else if (dipping > 0) {
+          dipping--;
+          craneDip += ((dipping > 30 ? 1 : 0) - craneDip) * 0.08;
+          if (dipping === 0) {
+            tankIdx = (tankIdx + 1) % tanksX.length;
+            craneTarget = tanksX[tankIdx].x + tanksX[tankIdx].w / 2;
+          }
+        } else {
+          craneTarget = tanksX[tankIdx].x + tanksX[tankIdx].w / 2;
+        }
+        craneDip += ((dipping > 30 ? 1 : 0) - craneDip) * 0.08;
+
+        var rackY = gantryY + 18 + craneDip * (th * 0.6);
+        ctx.strokeStyle = "rgba(255,255,255,0.22)";
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(craneX, gantryY); ctx.lineTo(craneX, rackY); ctx.stroke();
+        ctx.fillStyle = C.accent(0.9);
+        ctx.fillRect(craneX - 13, gantryY - 7, 26, 9);
+        ctx.fillStyle = C.steel;
+        ctx.fillRect(craneX - 17, rackY, 34, 7);
+        for (var k = -2; k <= 2; k++) {
+          ctx.fillStyle = "rgba(255,255,255,0.18)";
+          ctx.fillRect(craneX + k * 7 - 1, rackY + 7, 2, 16);
+        }
+      }
+
       function draw() {
+        if (mode === "anodizing") { drawLine(); return; }
         ctx.clearRect(0, 0, W, H);
         t++;
 
@@ -2500,6 +2684,17 @@
       });
 
       if (reduced) draw(); else start();
+
+      // The theme control calls this; the renderer owns its own mode so the
+      // switch does not need to know anything about canvases.
+      window.__setHeroMode = function (next) {
+        mode = next === "anodizing" ? "anodizing" : "warehouse";
+        readPalette();
+        picks = 0;
+        if (pickEl) pickEl.textContent = "0";
+        tasks = [];
+        draw();
+      };
     })();
 
     /* ---- conveyor box rides the scroll progress bar ------------------- */
@@ -2940,6 +3135,9 @@
         });
         sl.setAttribute("title", L.name);
         sl.setAttribute("aria-valuetext", L.name);
+        // The HUD tip carries a translation key, so a language change would
+        // otherwise overwrite whatever wording the current theme set.
+        document.dispatchEvent(new CustomEvent("i18n:applied"));
       }
 
       function apply(idx) {
@@ -2963,6 +3161,68 @@
       try { saved = Number(localStorage.getItem("portfolioLang")) || 0; } catch (e) {}
       if (saved > 0 && saved < LANGS.length) sl.value = String(saved);
       apply(Number(sl.value));
+    })();
+
+    /* ---- theme switch -------------------------------------------------- */
+    /* Two sides of the same background: the fulfillment floor and the
+       plating line. Everything visual runs through --amber and --accent-rgb,
+       so the switch sets one attribute and the stylesheet does the rest; the
+       hero canvas is told separately because it paints its own pixels. */
+    (function () {
+      var bar = document.getElementById("themebar");
+      if (!bar) return;
+      var btns = Array.prototype.slice.call(bar.querySelectorAll("[data-theme-btn]"));
+      var hud = document.querySelector(".fc-hud");
+
+      var LABELS = {
+        warehouse: { unit: "Fleet", unitSuffix: "active", count: "Picks",
+                     health: "NTP sync", tip: "Click the floor to dispatch a pick" },
+        anodizing: { unit: "Tanks", unitSuffix: "on line", count: "Loads",
+                     health: "Bath temp", tip: "Click a tank to send the crane" }
+      };
+
+      function setTheme(name, save) {
+        var anod = name === "anodizing";
+        if (anod) document.documentElement.setAttribute("data-theme", "anodizing");
+        else document.documentElement.removeAttribute("data-theme");
+        btns.forEach(function (b) {
+          b.setAttribute("aria-pressed", String(b.getAttribute("data-theme-btn") === name));
+        });
+        // Only the label nodes are retitled. Rewriting the surrounding markup
+        // would detach #fc-n and #fc-picks, which the canvas holds references
+        // to, and the counters would silently stop updating.
+        if (hud) {
+          var L = LABELS[anod ? "anodizing" : "warehouse"];
+          hud.querySelectorAll("[data-hud]").forEach(function (n) {
+            var k = n.getAttribute("data-hud");
+            if (L[k]) n.textContent = L[k];
+          });
+        }
+        if (typeof window.__setHeroMode === "function") window.__setHeroMode(name);
+        if (save) { try { localStorage.setItem("portfolioTheme", name); } catch (e) {} }
+      }
+
+      btns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          setTheme(b.getAttribute("data-theme-btn"), true);
+        });
+      });
+
+      // Reassert the theme's labels whenever the language repaints.
+      document.addEventListener("i18n:applied", function () {
+        var now = document.documentElement.getAttribute("data-theme") === "anodizing"
+          ? "anodizing" : "warehouse";
+        if (!hud) return;
+        var L = LABELS[now];
+        hud.querySelectorAll("[data-hud]").forEach(function (n) {
+          var k = n.getAttribute("data-hud");
+          if (L[k]) n.textContent = L[k];
+        });
+      });
+
+      var saved = null;
+      try { saved = localStorage.getItem("portfolioTheme"); } catch (e) {}
+      if (saved === "anodizing") setTheme("anodizing", false);
     })();
 </script>
 </body>
