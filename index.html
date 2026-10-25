@@ -517,14 +517,150 @@
     transition: opacity 0.55s cubic-bezier(.22,.68,.36,1), transform 0.55s cubic-bezier(.22,.68,.36,1);
   }
 
+  /* Cards in a grid arrive one after another rather than all at once. The
+     delay is set per card in JS, because the count varies by section. */
+  .js-anim .stagger > * { opacity: 0; transform: translateY(12px); }
+  .js-anim .stagger.in > * {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s cubic-bezier(.22,.68,.36,1),
+                transform 0.5s cubic-bezier(.22,.68,.36,1);
+    transition-delay: var(--d, 0ms);
+  }
+
+  /* ---------- the impact tiles ----------
+     These carry the headline numbers and were the flattest thing on the
+     page: a grey box with amber text in it. Three cheap additions, none of
+     which move anything once it has settled. */
+
+  /* A measuring rule under the number, drawn left to right on arrival.
+     ::before is already the hatched strip along the top edge. */
+  .metric::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.75s cubic-bezier(.22,.68,.36,1) 0.15s;
+  }
+  .in .metric::after { transform: scaleX(1); }
+
+  .metric b {
+    background: linear-gradient(92deg, var(--amber) 35%, #ffd98f 55%, var(--amber) 75%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-position 0.9s ease;
+    background-position: 100% 50%;
+  }
+  .in .metric b { background-position: 0% 50%; }
+
+  .metric:hover { background: var(--panel-2); }
+  .metric:hover::after { transform: scaleX(1); height: 3px; }
+
+  /* A figure inside a bullet gets a faint amber wash that wipes in behind
+     it. The experience section is a wall of prose and these are the parts
+     worth finding in it. */
+  /* Only a bold run that actually carries a number. Bold is also used for
+     sentence leads like "It searches for me", and washing those in amber
+     highlighted the prose instead of the evidence. The .fig class is added
+     in JS, where the text can be looked at. */
+  strong.fig {
+    background-image: linear-gradient(rgb(var(--accent-rgb) / 0.18),
+                                      rgb(var(--accent-rgb) / 0.18));
+    background-repeat: no-repeat;
+    background-position: 0 88%;
+    background-size: 0% 0.42em;
+    transition: background-size 0.6s cubic-bezier(.22,.68,.36,1) 0.25s;
+    border-radius: 2px;
+  }
+  .in strong.fig, .in.job strong.fig { background-size: 100% 0.42em; }
+
+  /* Capabilities are a list, and the tech under a project is a row of
+     chips. Both arrive item by item rather than as a block. */
+  .js-anim .skills li, .js-anim .stackline .chip {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .js-anim .in.skills li, .js-anim .in .skills li,
+  .js-anim .in .stackline .chip, .js-anim .in.stackline .chip {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.4s ease var(--cd, 0ms),
+                transform 0.4s cubic-bezier(.22,.68,.36,1) var(--cd, 0ms);
+  }
+  .skills li { transition: color 0.18s; }
+  .skills li:hover { color: var(--ink); }
+
   /* ---------- hover lift ---------- */
   .project, .mini, .edu {
-    transition: transform 0.22s cubic-bezier(.22,.68,.36,1), border-color 0.22s;
+    position: relative;
+    transition: transform 0.22s cubic-bezier(.22,.68,.36,1),
+                border-color 0.22s, box-shadow 0.22s;
   }
+  /* A hairline of accent along the top edge, drawn from the left when the
+     card appears. The panels are all one flat grey otherwise, which is what
+     made a page full of real work read as pale. */
+  .project::after, .mini::after, .edu::after {
+    content: "";
+    position: absolute;
+    inset: -1px auto auto -1px;
+    height: 2px;
+    width: calc(100% + 2px);
+    background: linear-gradient(90deg, var(--amber), rgb(var(--accent-rgb) / 0.15));
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0.75;
+    transition: transform 0.6s cubic-bezier(.22,.68,.36,1), opacity 0.22s;
+  }
+  .in .project::after, .in.project::after,
+  .in .mini::after, .in.mini::after,
+  .in .edu::after, .in.edu::after { transform: scaleX(1); }
   .project:hover, .mini:hover, .edu:hover {
     transform: translateY(-3px);
     border-color: var(--rule-2);
+    box-shadow: 0 10px 34px -22px rgb(var(--accent-rgb) / 0.55);
   }
+  .project:hover::after, .mini:hover::after, .edu:hover::after { opacity: 1; }
+
+  /* The one project worth leading with gets a tinted panel so the eye
+     lands on it first. */
+  .mini-lead {
+    background:
+      linear-gradient(160deg, rgb(var(--accent-rgb) / 0.055), transparent 58%),
+      var(--panel);
+  }
+
+  /* Figures tick up to their value as the card scrolls in. Monospace keeps
+     the width steady, so nothing jumps while the digits change. */
+  .ticker { font-variant-numeric: tabular-nums; }
+
+  /* A section heading underlines itself on arrival. */
+  .sec-head h2 { position: relative; }
+  .sec-head h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -7px;
+    height: 2px;
+    width: 2.6rem;
+    background: var(--amber);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.55s cubic-bezier(.22,.68,.36,1) 0.1s;
+  }
+  .sec-head.in h2::after { transform: scaleX(1); }
+
+  .chip, .tag {
+    transition: color 0.18s, border-color 0.18s, background 0.18s,
+                transform 0.18s;
+  }
+  .chip:hover, .tag:hover { transform: translateY(-1px); }
   .metric { transition: background 0.22s; }
   .metric:hover { background: var(--panel-2); }
   .metric:hover::before { opacity: 1; }
@@ -844,6 +980,14 @@
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
     .js-anim .enter { opacity: 1; transform: none; }
+    .js-anim .stagger > * { opacity: 1; transform: none; }
+    .project::after, .mini::after, .edu::after,
+    .sec-head h2::after, .metric::after { transform: scaleX(1); }
+    .metric b { background-position: 0% 50%; }
+    strong.fig { background-size: 100% 0.42em; }
+    .js-anim .skills li, .js-anim .stackline .chip {
+      opacity: 1; transform: none;
+    }
   }
 
   /* ---------- hero: fulfillment centre floor ---------- */
@@ -1492,13 +1636,6 @@
   <button type="button" data-theme-btn="anodizing" aria-pressed="false"><span class="dot"></span>Anodizing</button>
 </div>
 
-<div class="langbar" id="langbar">
-  <span class="cap" data-i18n="t113">LANG</span>
-  <input id="lang" type="range" min="0" max="11" step="1" value="0"
-         aria-label="Site language" title="Slide to change language">
-  <div class="lang-list" id="lang-list" role="group" aria-label="Choose a language"></div>
-</div>
-
 <div id="progress-track" aria-hidden="true"></div>
 <div id="progress"></div>
 <div id="progress-box" aria-hidden="true"></div>
@@ -1615,9 +1752,6 @@
           am actually eligible for. It currently manages a live pipeline of
           <strong>369 roles across 5 countries</strong>.
         </p>
-      </div>
-      <img class="shot" src="job-tracker.png" alt="The Job Tracker board, showing pipeline columns, KPI tiles and discovered job cards" width="1600" height="1000">
-      <div class="project-body">
         <ul class="bullets">
           <li data-i18n="t020"><strong>It searches for me.</strong> Checks company career sites first, then runs broad discovery for employers I have not seen. Every result is re-validated in code, not trusted: postings older than 30 days, senior titles, roles that refuse visa sponsorship and anything I previously rejected all get dropped automatically.</li>
           <li data-i18n="t021"><strong>It measures the search like a process.</strong> Daily goal tracking, streaks, a 30-day activity chart, interview and offer conversion rates, and average response time. The same instinct as putting KPIs on a production line.</li>
@@ -1640,6 +1774,18 @@
     </article>
 
     <div class="mini-grid enter">
+      <article class="mini mini-lead">
+        <h3 data-i18n="t226">Greenfield Plant Build</h3>
+        <p class="eyebrow" style="margin:6px 0 12px" data-i18n="t227">$120K capital project &middot; Led end to end &middot; AB Enterprises</p>
+        <ul class="bullets">
+          <li data-i18n="t228">Led a <strong><span data-count="120" data-prefix="$" data-suffix="K">$120K</span></strong> capital project from concept through startup, commissioning <strong><span data-count="6" data-suffix="+">6+</span> machines</strong> over six months.</li>
+          <li data-i18n="t229">Designed the facility layout and material flow for the new plant, taking daily output from <strong>700 kg to a full ton</strong> per 8-hour shift.</li>
+        </ul>
+        <div class="gauges">
+          <div class="gauge"><span class="g-label" data-i18n="t230">Output per shift</span><div class="g-track"><i data-fill="100"></i></div><span class="g-delta up">1 ton</span></div>
+          <div class="gauge"><span class="g-label" data-i18n="t231">Before</span><div class="g-track"><i data-fill="70"></i></div><span class="g-delta">700 kg</span></div>
+        </div>
+      </article>
       <article class="mini">
         <h3 data-i18n="t024">Anodizing Line Process Analysis</h3>
         <p class="eyebrow" style="margin:6px 0 12px" data-i18n="t025">PFMEA &middot; Control plan &middot; AB Enterprises</p>
@@ -1686,49 +1832,7 @@
     </div>
   </section>
 
-  <div class="conveyor-rule" aria-hidden="true"></div>
-  <section>
-    <div class="sec-head">
-      <h2 data-i18n="t168">Line Simulator</h2>
-      <p class="note" data-i18n="t169">Little's Law · drag the sliders</p>
-    </div>
-
-    <div class="sim enter">
-      <div class="sim-top">
-        <div class="sim-cell">
-          <label for="rate">
-            <span data-i18n="t137">Throughput</span>
-            <span class="val"><span id="rate-val" class="num">220</span> units/hr</span>
-          </label>
-          <input id="rate" type="range" min="40" max="600" step="10" value="220">
-        </div>
-        <div class="sim-cell">
-          <label for="cycle">
-            <span data-i18n="t138">Cycle time</span>
-            <span class="val"><span id="cycle-val" class="num">45</span> min</span>
-          </label>
-          <input id="cycle" type="range" min="5" max="180" step="5" value="45">
-        </div>
-        <div class="sim-out">
-          <div class="big num" id="wip">165</div>
-          <div class="sub">Units in system (WIP)</div>
-        </div>
-      </div>
-
-      <div class="belt" id="belt" aria-hidden="true">
-        <div class="belt-rail"></div>
-      </div>
-
-      <p class="sim-note" data-i18n="t037">
-        <b>Little's Law:</b> <code>WIP = Throughput × Cycle Time</code>. Push the rate up or
-        let the cycle time slip, and inventory on the floor climbs with it. That is cash
-        sitting on a conveyor, longer lead times, and more places for a defect to hide.
-        Most of the wins on my resume came from attacking one side of this equation.
-      </p>
-    </div>
-  </section>
-
-  <div class="conveyor-rule" aria-hidden="true"></div>
+    <div class="conveyor-rule" aria-hidden="true"></div>
   <section class="band">
     <div class="sec-head enter">
       <h2 data-i18n="t170">Anodizing Line</h2>
@@ -2103,6 +2207,37 @@
         el.style.transitionDelay = i * 70 + "ms";
         requestAnimationFrame(function () { el.classList.add("in"); });
       });
+      // Grids of cards arrive one after another instead of all together.
+      // The delay is written onto each child as a custom property, because
+      // the number of cards differs from grid to grid.
+      var grids = Array.prototype.slice.call(
+        document.querySelectorAll(".mini-grid, .metrics, .edu-grid"));
+      grids.forEach(function (g) {
+        g.classList.add("stagger");
+        Array.prototype.forEach.call(g.children, function (c, i) {
+          c.style.setProperty("--d", Math.min(i * 80, 480) + "ms");
+        });
+      });
+
+      // Chips come in one at a time too, but faster: there are a lot of
+      // them and a long queue would read as a wait rather than a flourish.
+      // Mark the bold runs that carry a figure, so the highlight lands on
+      // the evidence rather than on every bold phrase.
+      Array.prototype.forEach.call(
+        document.querySelectorAll(".bullets strong, .project-body p strong"),
+        function (el) {
+          if (/\d/.test(el.textContent)) el.classList.add("fig");
+        });
+
+      Array.prototype.forEach.call(
+        document.querySelectorAll(".skills .skill, .stackline"),
+        function (row) {
+          Array.prototype.forEach.call(
+            row.querySelectorAll("li, .chip"), function (c, i) {
+              c.style.setProperty("--cd", Math.min(i * 45, 420) + "ms");
+            });
+        });
+
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (!e.isIntersecting) return;
@@ -2111,10 +2246,44 @@
         });
       }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
       items.forEach(function (el) { if (!el.closest("header")) io.observe(el); });
-      // Safety net: if anything is still hidden after 3s, reveal it.
+      grids.forEach(function (el) { io.observe(el); });
+      Array.prototype.forEach.call(
+        document.querySelectorAll(".sec-head"),
+        function (el) { io.observe(el); });
+      // An IntersectionObserver only fires for something that crosses the
+      // edge of the viewport. Jump straight down the page, which an anchor
+      // link or a restored scroll position both do, and everything skipped
+      // over never fires at all and stays invisible. So on every scroll,
+      // reveal whatever is now above the fold.
+      var watched = items.concat(grids);
+      var ticking = false;
+      function revealPassed() {
+        ticking = false;
+        var h = window.innerHeight || 0;
+        watched = watched.filter(function (el) {
+          if (el.classList.contains("in")) return false;
+          if (el.getBoundingClientRect().top < h) {
+            el.classList.add("in");
+            return false;
+          }
+          return true;
+        });
+        if (!watched.length) {
+          window.removeEventListener("scroll", onScroll);
+        }
+      }
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(revealPassed);
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      // Last resort, in case neither path ran: nothing stays hidden.
       setTimeout(function () {
         items.forEach(function (el) { el.classList.add("in"); });
-      }, 3000);
+        grids.forEach(function (el) { el.classList.add("in"); });
+      }, 2500);
     }
 
     /* ---- count-up on the impact numbers ---- */
@@ -2145,65 +2314,6 @@
         });
       }, { threshold: 0.4 });
       counters.forEach(function (el) { cio.observe(el); });
-    }
-
-    /* ---- line simulator (Little's Law) ---- */
-    var rate = document.getElementById("rate");
-    var cycle = document.getElementById("cycle");
-    var belt = document.getElementById("belt");
-    if (rate && cycle && belt) {
-      var rateVal = document.getElementById("rate-val");
-      var cycleVal = document.getElementById("cycle-val");
-      var wipOut = document.getElementById("wip");
-      var boxes = [];
-      var MAX_BOXES = 26;
-
-      function layout(wip) {
-        // One box per ~8 units of WIP, so the belt reads as "fuller" without
-        // trying to draw hundreds of items.
-        var want = Math.max(1, Math.min(MAX_BOXES, Math.round(wip / 8)));
-        while (boxes.length < want) {
-          var b = document.createElement("div");
-          b.className = "box";
-          belt.appendChild(b);
-          boxes.push(b);
-        }
-        while (boxes.length > want) belt.removeChild(boxes.pop());
-        boxes.forEach(function (b, i) { b.dataset.slot = i / want; });
-      }
-
-      function update() {
-        var r = parseInt(rate.value, 10);
-        var c = parseInt(cycle.value, 10);
-        var wip = Math.round(r * (c / 60)); // units = units/hr × hours
-        rateVal.textContent = r.toLocaleString("en-US");
-        cycleVal.textContent = c;
-        wipOut.textContent = wip.toLocaleString("en-US");
-        layout(wip);
-      }
-
-      rate.addEventListener("input", update);
-      cycle.addEventListener("input", update);
-      update();
-
-      // Belt animation: speed scales with throughput.
-      if (!reduced) {
-        var pos = 0;
-        var last = 0;
-        (function tick(now) {
-          if (!last) last = now;
-          var dt = Math.min(64, now - last);
-          last = now;
-          var speed = parseInt(rate.value, 10) / 2800; // fraction of belt per ms
-          pos = (pos + (speed * dt) / 100) % 1;
-          var w = belt.clientWidth + 30;
-          boxes.forEach(function (b) {
-            var t = (parseFloat(b.dataset.slot) + pos) % 1;
-            b.style.transform = "translateX(" + (t * w - 24) + "px)";
-          });
-          requestAnimationFrame(tick);
-        })(0);
-      }
     }
 
     /* ---- expandable "How+" stories on the impact tiles ---- */
@@ -2995,22 +3105,18 @@
       var bar = document.getElementById("welcome-bar");
       if (!el || !word) return;
 
+      /* This used to cycle a greeting in each of the twelve languages the
+         site carried. The site is English only now, so the intro names what
+         the page is rather than what language it is in. Same rhythm, same
+         gradient sweep: it was the liveliest thing here and losing it along
+         with the translations would be a poor trade. */
       var GREETINGS = [
-        ["Welcome", "English", "#f5a524", "#ffd27a"],
-        ["\u6b22\u8fce", "\u4e2d\u6587", "#e0756b", "#ffb3a6"],
-        ["\u0928\u092e\u0938\u094d\u0924\u0947", "\u0939\u093f\u0928\u094d\u0926\u0940", "#f5a524", "#ffe0a3"],
-        ["Bienvenido", "Espa\u00f1ol", "#4ec9a0", "#a8f0d6"],
-        ["\u0645\u0631\u062d\u0628\u0627", "\u0627\u0644\u0639\u0631\u0628\u064a\u0629", "#7aa7d9", "#bcd8f5"],
-        ["Bienvenue", "Fran\u00e7ais", "#9b8cf0", "#cfc6ff"],
-        ["Bem-vindo", "Portugu\u00eas", "#f5a524", "#ffd98f"],
-        ["\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c", "\u0420\u0443\u0441\u0441\u043a\u0438\u0439", "#7aa7d9", "#c2ddf7"],
-        ["\u062e\u0648\u0634 \u0622\u0645\u062f\u06cc\u062f", "\u0627\u0631\u062f\u0648", "#e0756b", "#ffb8ab"],
-        ["\u0928\u092e\u0938\u094d\u0915\u093e\u0930", "\u092e\u0930\u093e\u0920\u0940", "#f5a524", "#ffe4ad"],
-        ["Willkommen", "Deutsch", "#9b8cf0", "#d4ccff"],
-        ["Welkom", "Nederlands", "#4ec9a0", "#a5efd4"]
+        ["Welcome", "Industrial Engineer", "#f5a524", "#ffd27a"],
+        ["Built", "Shipped and measured", "#4ec9a0", "#a8f0d6"],
+        ["Aditya Bothe", "Boston, MA", "#7aa7d9", "#bcd8f5"]
       ];
 
-      var HOLD = 231;   // twice sped up from the original 520ms
+      var HOLD = 620;   // fewer cards than before, so each one holds longer
 
       if (reduced) {
         word.style.backgroundImage = "linear-gradient(90deg,#f5a524,#ffd27a,#f5a524)";
@@ -3062,101 +3168,11 @@
     })();
 
     /* ---- language ----------------------------------------------------- */
-    /* Translations live in lang/<code>.json and are fetched the first time a
-       language is picked, so the initial page stays small no matter how many
-       languages exist. English is read back out of the markup rather than
-       from a file, which means the page and the translation table cannot
-       drift apart as the copy is edited. */
-    (function () {
-      var sl = document.getElementById("lang");
-      var list = document.getElementById("lang-list");
-      if (!sl) return;
-
-      var LANGS = [
-        { code: "en", tag: "EN", name: "English" },
-        { code: "zh", tag: "ZH", name: "\u4e2d\u6587" },
-        { code: "hi", tag: "HI", name: "\u0939\u093f\u0928\u094d\u0926\u0940" },
-        { code: "es", tag: "ES", name: "Espa\u00f1ol" },
-        { code: "ar", tag: "AR", name: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629", rtl: true },
-        { code: "fr", tag: "FR", name: "Fran\u00e7ais" },
-        { code: "pt", tag: "PT", name: "Portugu\u00eas" },
-        { code: "ru", tag: "RU", name: "\u0420\u0443\u0441\u0441\u043a\u0438\u0439" },
-        { code: "ur", tag: "UR", name: "\u0627\u0631\u062f\u0648", rtl: true },
-        { code: "mr", tag: "MR", name: "\u092e\u0930\u093e\u0920\u0940" },
-        { code: "de", tag: "DE", name: "Deutsch" },
-        { code: "nl", tag: "NL", name: "Nederlands" }
-      ];
-      sl.max = String(LANGS.length - 1);
-
-      var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n]"));
-      nodes.forEach(function (n) { n.setAttribute("data-en", n.innerHTML); });
-
-      // One button per language, named in its own script. The slider and the
-      // list are two views of the same index, so either can drive it.
-      var buttons = [];
-      if (list) {
-        LANGS.forEach(function (L, i) {
-          var b = document.createElement("button");
-          b.type = "button";
-          b.textContent = L.name;
-          b.setAttribute("lang", L.code);
-          if (L.rtl) b.setAttribute("dir", "rtl");
-          b.addEventListener("click", function () {
-            sl.value = String(i);
-            apply(i);
-          });
-          list.appendChild(b);
-          buttons.push(b);
-        });
-      }
-
-      var cache = { en: null };
-
-      function paint(dict, L) {
-        nodes.forEach(function (n) {
-          var k = n.getAttribute("data-i18n");
-          var v = dict ? dict[k] : null;
-          n.innerHTML = v || n.getAttribute("data-en");
-        });
-        var root = document.documentElement;
-        root.setAttribute("lang", L.code);
-        // Only the reading direction flips. The left rail, the floor and the
-        // tank line are physical layouts, not text, so they stay put.
-        if (L.rtl) root.setAttribute("dir", "rtl");
-        else root.removeAttribute("dir");
-        buttons.forEach(function (b, i) {
-          b.setAttribute("aria-current", String(LANGS[i].code === L.code));
-        });
-        sl.setAttribute("title", L.name);
-        sl.setAttribute("aria-valuetext", L.name);
-        // The HUD tip carries a translation key, so a language change would
-        // otherwise overwrite whatever wording the current theme set.
-        document.dispatchEvent(new CustomEvent("i18n:applied"));
-      }
-
-      function apply(idx) {
-        var L = LANGS[idx] || LANGS[0];
-        if (L.code === "en") { paint(null, L); return; }
-        if (cache[L.code]) { paint(cache[L.code], L); return; }
-        fetch("lang/" + L.code + ".json")
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function (d) { cache[L.code] = d; paint(d, L); })
-          .catch(function () {
-            // A missing or broken file must not strip the page: fall back to
-            // the English already sitting in the markup.
-            paint(null, L);
-          });
-      }
-
-      sl.addEventListener("input", function () { apply(Number(sl.value)); });
-
-      // Language is deliberately not remembered. Every visit starts in
-      // English, which is what a recruiter opening the link expects; a
-      // remembered script from a previous visit would be a confusing
-      // first impression.
-      sl.value = "0";
-      apply(0);
-    })();
+    /* The site is English only. It used to carry twelve translations in
+       lang/<code>.json with a switcher down the left edge; keeping twelve
+       copies of every sentence in step cost more than the switcher was
+       worth. English has always lived in the markup itself rather than in
+       a file, so removing the layer removed no copy. */
 
     /* ---- theme switch -------------------------------------------------- */
     /* Two sides of the same background: the fulfillment floor and the
