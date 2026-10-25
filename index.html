@@ -41,6 +41,11 @@
     --amber-dim: #a86f12;
     --steel: #7aa7d9;
     --green: #4ec9a0;
+    /* A second accent, so the page is not one colour on black. Used for
+       the cooler half of the work: data, reporting, software. */
+    --cool: #5fb4e8;
+    --cool-rgb: 95 180 232;
+    --glow: rgb(var(--accent-rgb) / 0.30);
     --display: "Archivo", "Segoe UI", system-ui, sans-serif;
     --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -63,6 +68,8 @@
     --amber: #46b6e0;
     --amber-dim: #2a6e8c;
     --steel: #9fb6c9;
+    --cool: #f0a04b;
+    --cool-rgb: 240 160 75;
   }
 
   * { box-sizing: border-box; }
@@ -528,6 +535,146 @@
     transition-delay: var(--d, 0ms);
   }
 
+  /* ---------- depth and light ----------
+     The page was one flat near-black with amber text on it. Everything
+     below adds depth without adding noise: a slow aurora behind the
+     content, panels that catch light where the pointer is, and headings
+     that are not all the same grey. */
+
+  /* Two slow blooms drifting behind everything. Fixed, so scrolling moves
+     the content across the light rather than dragging the light along. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -20vmax;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(34vmax 26vmax at 18% 22%, rgb(var(--accent-rgb) / 0.20), transparent 62%),
+      radial-gradient(30vmax 24vmax at 82% 68%, rgb(var(--cool-rgb) / 0.17), transparent 62%),
+      radial-gradient(26vmax 20vmax at 55% 95%, rgb(var(--accent-rgb) / 0.11), transparent 64%);
+    animation: aurora 34s ease-in-out infinite alternate;
+  }
+  @keyframes aurora {
+    from { transform: translate3d(-3vmax, -2vmax, 0) scale(1); }
+    to   { transform: translate3d(3vmax, 2vmax, 0) scale(1.12); }
+  }
+
+  /* Panels sit above the bloom rather than blocking it out. */
+  .project, .mini, .edu, .metrics, .skill, .spec {
+    background-color: rgb(20 24 28 / 0.72);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+  }
+  :root[data-theme="anodizing"] .project,
+  :root[data-theme="anodizing"] .mini,
+  :root[data-theme="anodizing"] .edu,
+  :root[data-theme="anodizing"] .metrics,
+  :root[data-theme="anodizing"] .skill,
+  :root[data-theme="anodizing"] .spec {
+    background-color: rgb(16 25 34 / 0.72);
+  }
+
+  /* A soft light that follows the pointer across a card. --mx/--my are set
+     in JS on the card under the cursor, and nothing moves: it is a
+     background, so there is no layout work per frame. */
+  .project, .mini, .edu {
+    background-image: radial-gradient(
+      16rem 16rem at var(--mx, 50%) var(--my, -30%),
+      rgb(var(--accent-rgb) / 0.13), transparent 70%);
+    background-repeat: no-repeat;
+  }
+  .mini-lead {
+    background-image:
+      radial-gradient(16rem 16rem at var(--mx, 50%) var(--my, -30%),
+                      rgb(var(--accent-rgb) / 0.16), transparent 70%),
+      linear-gradient(160deg, rgb(var(--accent-rgb) / 0.07), transparent 58%);
+  }
+
+  /* Section headings read as a label, not as a line of body text. */
+  .sec-head h2 {
+    font-size: 15px;
+    background: linear-gradient(92deg, var(--ink), var(--amber) 115%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sec-head h2::after {
+    width: 100%;
+    max-width: 5.4rem;
+    height: 2px;
+    background: linear-gradient(90deg, var(--amber), var(--cool));
+  }
+
+  /* A shine that crosses a button once on hover. */
+  .btn { position: relative; overflow: hidden; }
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 -60%;
+    width: 45%;
+    transform: skewX(-18deg);
+    background: linear-gradient(90deg, transparent,
+                                rgb(255 255 255 / 0.17), transparent);
+    transition: left 0.55s ease;
+  }
+  .btn:hover::after { left: 115%; }
+  .btn-primary { box-shadow: 0 6px 20px -10px var(--glow); }
+  .btn-primary:hover { box-shadow: 0 10px 26px -10px var(--glow); }
+
+  /* The cooler half of the capabilities gets the second accent, so the
+     section is not four identical amber headings. */
+  .skill:nth-child(even) h3 { color: var(--cool); }
+  .skill:nth-child(even) li::marker { color: var(--cool); }
+
+  /* ---------- the name ----------
+     It was flat white, the largest thing on the page and the least alive.
+     A slow sheen crosses it once every twelve seconds: enough to catch
+     the eye on arrival, slow enough that it is not a distraction while
+     someone is reading the paragraph underneath. */
+  header h1 {
+    background: linear-gradient(104deg,
+      var(--ink) 0%, var(--ink) 38%, var(--amber) 50%,
+      var(--ink) 62%, var(--ink) 100%);
+    background-size: 280% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: sheen 12s ease-in-out 1.2s infinite;
+  }
+  @keyframes sheen {
+    0%, 62%, 100% { background-position: 100% 50%; }
+    18%           { background-position: 0% 50%; }
+  }
+
+  /* The availability line is the one thing on the page with a deadline on
+     it, so it gets a pulse. */
+  .avail { position: relative; padding-left: 15px; }
+  .avail::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.52em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgb(78 201 160 / 0.65);
+    animation: availpulse 2.4s ease-out infinite;
+  }
+  @keyframes availpulse {
+    70%  { box-shadow: 0 0 0 9px rgb(78 201 160 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(78 201 160 / 0); }
+  }
+
+  /* A card under the pointer lifts a little further and carries the
+     accent, rather than only changing its border. */
+  .project:hover, .mini:hover, .edu:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 46px -26px var(--glow),
+                0 0 0 1px rgb(var(--accent-rgb) / 0.22);
+  }
+
   /* ---------- the impact tiles ----------
      These carry the headline numbers and were the flattest thing on the
      page: a grey box with amber text in it. Three cheap additions, none of
@@ -979,6 +1126,9 @@
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
+    body::before { animation: none; }
+    header h1 { animation: none; background-position: 100% 50%; }
+    .avail::before { animation: none; }
     .js-anim .enter { opacity: 1; transform: none; }
     .js-anim .stagger > * { opacity: 1; transform: none; }
     .project::after, .mini::after, .edu::after,
@@ -2285,6 +2435,46 @@
         grids.forEach(function (el) { el.classList.add("in"); });
       }, 2500);
     }
+
+    /* ---- the light that follows the pointer across a card ----
+       One listener on the document rather than one per card, and the work
+       is a single custom-property write inside a rAF, so moving the mouse
+       does not cost a layout. Only the card under the cursor is touched. */
+    (function () {
+      if (reduced || !window.matchMedia("(hover: hover)").matches) return;
+      var lit = null, pending = null, queued = false;
+
+      function paint() {
+        queued = false;
+        if (!pending) return;
+        var card = pending.card, r = card.getBoundingClientRect();
+        card.style.setProperty("--mx",
+          ((pending.x - r.left) / r.width * 100).toFixed(1) + "%");
+        card.style.setProperty("--my",
+          ((pending.y - r.top) / r.height * 100).toFixed(1) + "%");
+      }
+
+      document.addEventListener("pointermove", function (e) {
+        var card = e.target.closest && e.target.closest(".project, .mini, .edu");
+        if (card !== lit && lit) {
+          lit.style.removeProperty("--mx");
+          lit.style.removeProperty("--my");
+        }
+        lit = card;
+        if (!card) return;
+        pending = { card: card, x: e.clientX, y: e.clientY };
+        if (!queued) { queued = true; requestAnimationFrame(paint); }
+      }, { passive: true });
+
+      // A card scrolled out from under a still pointer would keep its
+      // highlight, which then looks stuck on rather than following.
+      document.addEventListener("pointerleave", function () {
+        if (!lit) return;
+        lit.style.removeProperty("--mx");
+        lit.style.removeProperty("--my");
+        lit = null;
+      });
+    })();
 
     /* ---- count-up on the impact numbers ---- */
     var counters = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
