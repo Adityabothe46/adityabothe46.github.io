@@ -3780,38 +3780,44 @@
 <script>
 /* Interactive hero.
  *
- * The point of this is that he is NOT playing a clip. Frames 25 to 39 of the
- * source are one continuous pan of his head, full left through neutral to
- * full right, so cursor x maps straight onto a frame number. Move the mouse
- * and his head is already there; stop moving and he stops. Nothing is on a
- * timer. An earlier cut of this played a canned sequence per zone and read
- * exactly like what it was: video.
+ * His head follows the cursor. Not a clip with a trigger on it: the source
+ * video pans his head once, continuously, left to right, and those frames are
+ * cut out as hero/look. Cursor x maps onto a position along that pan.
  *
- * Three states sit on top of that:
- *   idle   he types, head down. Before the mouse arrives, and after it leaves.
- *   track  his head follows the pointer. The default while you are here.
- *   greet  you brought the cursor to him, so he looks up, takes the headset
- *          off, waves and points at the portfolio. The one timed thing,
- *          because taking headphones off cannot be scrubbed.
+ * Smoothness comes from three things, and the first version was missing two:
+ *
+ *   1. Resolution. The pan is sampled at the source's full 24fps, 29 frames,
+ *      so a 1280px screen changes image about every 44px of travel. The
+ *      earlier 12fps cut gave 15 frames and stepped visibly.
+ *   2. Blending. The eased position is fractional, so each paint draws the
+ *      two frames either side of it and cross-dissolves by the fraction.
+ *      Without this, motion is still a staircase however many frames exist.
+ *   3. A short follow. 60ms, which keeps the lead the cursor has over his
+ *      head below the point where it reads as drag.
+ *
+ * Idle (typing) and the greeting come from hero/frames and stay on their own
+ * timelines; only the greeting is timed, because taking headphones off cannot
+ * be scrubbed.
  */
 (function () {
   var stage = document.getElementById("ihero-stage");
   var canvas = document.getElementById("ihero-canvas");
   if (!stage || !canvas || !canvas.getContext) return;
 
-  var ctx = canvas.getContext("2d");
+  var ctx = canvas.getContext("2d", { alpha: true });
   var msgEl = document.getElementById("ihero-msg");
   var section = document.getElementById("ihero");
+  var W = canvas.width, H = canvas.height;
 
-  var TOTAL = 120;
-  var IDLE_FROM = 1,  IDLE_TO = 16;     // typing, head down
-  var LOOK_FROM = 25, LOOK_TO = 39;     // full left -> neutral -> full right
-  var GREET_FROM = 46, GREET_TO = 120;  // notices you, headset off, wave, points
-  var LOOK_MID = (LOOK_FROM + LOOK_TO) / 2;
+  var SEQ_N = 120;                      // hero/frames, 12fps
+  var IDLE_FROM = 1, IDLE_TO = 16;
+  var GREET_FROM = 46, GREET_TO = 120;
+  var LOOK_N = 29;                      // hero/look, 24fps, left -> right
 
-  var IDLE_FPS = 12, GREET_FPS = 12, FADE_MS = 150;
-  var CALL_BAND = 0.07;   // how near the middle counts as coming to him
-  var CALL_DWELL = 420;   // and for how long, so sweeping past does not fire it
+  var IDLE_FPS = 12, GREET_FPS = 12;
+  var TAU = 0.06;                       // follow time constant, seconds
+  var FADE_MS = 150;
+  var CALL_BAND = 0.07, CALL_DWELL = 420;
 
   var MSG_LEFT = "Anyone over on the left?";
   var MSG_RIGHT = "Anyone over on the right?";
@@ -3825,75 +3831,142 @@
   try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
   try { coarse = matchMedia("(pointer: coarse)").matches; } catch (e) {}
 
-  var frames = new Array(TOTAL + 1);
-  var ready = new Array(TOTAL + 1);
+  var seq = new Array(SEQ_N + 1), seqOk = new Array(SEQ_N + 1);
+  var look = new Array(LOOK_N), lookOk = new Array(LOOK_N);
   var painted = false;
 
-  function src(n) {
-    return "hero/frames/f" + (n < 10 ? "00" : n < 100 ? "0" : "") + n + ".webp";
-  }
-  function load(n, cb) {
-    if (frames[n]) return;
+  // Decoding a WebP the first time it is drawn costs a frame. Drawing each
+  // one into a 1px scratch canvas as it arrives pays that cost up front, off
+  // the critical path, so the first sweep across the hero is not a stutter.
+  var warm = document.createElement("canvas");
+  warm.width = warm.height = 1;
+  var warmCtx = warm.getContext("2d");
+  function prewarm(img) { try { warmCtx.drawImage(img, 0, 0, 1, 1); } catch (e) {} }
+
+  function pad(n, w) { var t = String(n); while (t.length < w) t = "0" + t; return t; }
+
+  function loadSeq(n) {
+    if (seq[n]) return;
     var img = new Image();
     img.decoding = "async";
-    img.onload = function () { ready[n] = true; if (cb) cb(); };
-    img.src = src(n);
-    frames[n] = img;
+    img.onload = function () { seqOk[n] = true; prewarm(img); };
+    img.src = "hero/frames/f" + pad(n, 3) + ".webp";
+    seq[n] = img;
+  }
+  function loadLook(i) {
+    if (look[i]) return;
+    var img = new Image();
+    img.decoding = "async";
+    img.onload = function () {
+      lookOk[i] = true;
+      prewarm(img);
+      if (!painted && lookOk[(LOOK_N - 1) >> 1]) { painted = true; paint(); }
+    };
+    img.src = "hero/look/L" + pad(i + 1, 2) + ".webp";
+    look[i] = img;
   }
 
-  // The look range is what the cursor drives, so it loads first.
-  var n;
-  for (n = LOOK_FROM; n <= LOOK_TO; n++) load(n, first);
-  for (n = IDLE_FROM; n <= IDLE_TO; n++) load(n, first);
-  function first() { if (!painted && ready[LOOK_FROM + 7]) { painted = true; paint(); } }
-  function loadRest() { for (var i = 1; i <= TOTAL; i++) load(i); }
+  var i;
+  for (i = 0; i < LOOK_N; i++) loadLook(i);            // the cursor drives these
+  for (i = IDLE_FROM; i <= IDLE_TO; i++) loadSeq(i);
+  // Only the idle loop and the greeting still come from hero/frames. The
+  // middle of that set used to be the head sweep and is now served by the
+  // finer hero/look, so fetching it would be ~340KB nobody looks at.
+  function loadRest() {
+    for (var n = IDLE_FROM; n <= IDLE_TO; n++) loadSeq(n);
+    for (var m = GREET_FROM; m <= GREET_TO; m++) loadSeq(m);
+  }
   if ("requestIdleCallback" in window) requestIdleCallback(loadRest, { timeout: 2500 });
   else setTimeout(loadRest, 700);
 
   var mode = "idle";
   var idlePos = IDLE_FROM, idleDir = 1;
-  var lookPos = LOOK_MID, lookTarget = LOOK_MID;
+  var lookPos = (LOOK_N - 1) / 2, lookTarget = lookPos;
   var greetPos = GREET_FROM, greetStart = 0;
-  var fadeFrom = 0, fadeAt = 0;
+  var fadeAt = 0, snap = null;
   var callSince = 0, inside = false, lastX = 0.5, last = 0;
 
   function now() {
     return window.performance && performance.now ? performance.now() : Date.now();
   }
-  function nearest(v) {
-    var i = Math.round(v);
-    if (i < 1) i = 1;
-    if (i > TOTAL) i = TOTAL;
-    if (ready[i]) return i;
-    for (var d = 1; d < TOTAL; d++) {
-      if (i - d >= 1 && ready[i - d]) return i - d;
-      if (i + d <= TOTAL && ready[i + d]) return i + d;
+
+  function nearestSeq(v) {
+    var n = Math.round(v);
+    if (n < 1) n = 1;
+    if (n > SEQ_N) n = SEQ_N;
+    if (seqOk[n]) return n;
+    for (var d = 1; d < SEQ_N; d++) {
+      if (n - d >= 1 && seqOk[n - d]) return n - d;
+      if (n + d <= SEQ_N && seqOk[n + d]) return n + d;
     }
     return 0;
   }
-  function blit(i) { var im = frames[i]; if (im) ctx.drawImage(im, 0, 0, canvas.width, canvas.height); }
-  function current() {
-    if (mode === "idle") return idlePos;
-    if (mode === "greet") return greetPos;
-    return lookPos;
+  function nearestLook(i) {
+    if (i < 0) i = 0;
+    if (i > LOOK_N - 1) i = LOOK_N - 1;
+    if (lookOk[i]) return i;
+    for (var d = 1; d < LOOK_N; d++) {
+      if (i - d >= 0 && lookOk[i - d]) return i - d;
+      if (i + d < LOOK_N && lookOk[i + d]) return i + d;
+    }
+    return -1;
   }
-  function paint() {
-    var i = nearest(current());
-    if (!i) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (fadeFrom) {
-      var t = (now() - fadeAt) / FADE_MS;
-      if (t >= 1) { fadeFrom = 0; blit(i); return; }
-      blit(fadeFrom);
-      ctx.globalAlpha = t < 0 ? 0 : t;
-      blit(i);
-      ctx.globalAlpha = 1;
+
+  /** Draw the current state, blending between frames where it is continuous. */
+  function drawState() {
+    if (mode === "track") {
+      var lo = Math.floor(lookPos);
+      var f = lookPos - lo;
+      var a = nearestLook(lo), b = nearestLook(lo + 1);
+      if (a < 0) return;
+      ctx.drawImage(look[a], 0, 0, W, H);
+      // The whole reason this looks smooth rather than stepped: the position
+      // is fractional, so the next frame is laid over the current one at that
+      // fraction. Skipped at the ends of the sweep and when the two would be
+      // the same image.
+      if (b >= 0 && b !== a && f > 0.02) {
+        ctx.globalAlpha = f;
+        ctx.drawImage(look[b], 0, 0, W, H);
+        ctx.globalAlpha = 1;
+      }
       return;
     }
-    blit(i);
+    var n = nearestSeq(mode === "idle" ? idlePos : greetPos);
+    if (n) { ctx.drawImage(seq[n], 0, 0, W, H); return; }
+    // Nothing from the idle or greeting set has decoded yet. The look frames
+    // are fetched first and are the only thing guaranteed to be there, so
+    // fall back to the middle of the sweep rather than leaving a blank canvas
+    // on a slow connection.
+    var mid = nearestLook((LOOK_N - 1) >> 1);
+    if (mid >= 0) ctx.drawImage(look[mid], 0, 0, W, H);
   }
-  /* Hide a jump between frames that do not neighbour each other. */
-  function cut() { var f = nearest(current()); if (f) { fadeFrom = f; fadeAt = now(); } }
+
+  function paint() {
+    ctx.clearRect(0, 0, W, H);
+    drawState();
+    if (snap) {
+      var t = (now() - fadeAt) / FADE_MS;
+      if (t >= 1) { snap = null; return; }
+      ctx.globalAlpha = 1 - (t < 0 ? 0 : t);
+      ctx.drawImage(snap, 0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  /* Freeze what is on screen, so a jump between states dissolves. Snapshotting
+     the canvas works whichever image set each side came from. */
+  function cut() {
+    try {
+      if (!snap || snap.width !== W) {
+        snap = document.createElement("canvas");
+        snap.width = W; snap.height = H;
+      }
+      var g = snap.getContext("2d");
+      g.clearRect(0, 0, W, H);
+      g.drawImage(canvas, 0, 0);
+      fadeAt = now();
+    } catch (e) { snap = null; }
+  }
 
   function say(text) {
     if (!msgEl) return;
@@ -3927,9 +4000,9 @@
       if (idlePos >= IDLE_TO) { idlePos = IDLE_TO; idleDir = -1; }
       if (idlePos <= IDLE_FROM) { idlePos = IDLE_FROM; idleDir = 1; }
     } else if (mode === "track") {
-      // Damped follow, frame-rate independent, so his head eases after the
-      // pointer rather than snapping frame to frame.
-      var k = 1 - Math.pow(0.0015, dt);
+      // Exponential follow expressed as a time constant, so the feel is the
+      // same at 60Hz and 144Hz.
+      var k = 1 - Math.exp(-dt / TAU);
       lookPos += (lookTarget - lookPos) * k;
       if (inside) say(lastX < 0.36 ? MSG_LEFT : lastX > 0.64 ? MSG_RIGHT : "");
     } else if (greetPos < GREET_TO) {
@@ -3948,7 +4021,8 @@
 
   if (reduced) {
     // One still, no loop, no tracking. Mid-wave, so it still reads as hello.
-    load(85, function () { greetPos = 85; mode = "greet"; paint(); });
+    loadSeq(85);
+    seq[85].onload = function () { seqOk[85] = true; greetPos = 85; mode = "greet"; paint(); };
     say("Have a look around.");
     return;
   }
@@ -3975,7 +4049,7 @@
     if (x < 0) x = 0; else if (x > 1) x = 1;
     lastX = x;
     inside = true;
-    lookTarget = LOOK_FROM + x * (LOOK_TO - LOOK_FROM);
+    lookTarget = x * (LOOK_N - 1);
 
     // Bringing the cursor to him and keeping it there is what calls him. A
     // dwell rather than a zone, so sweeping across does not set him off.
