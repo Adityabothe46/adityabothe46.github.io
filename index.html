@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Aditya Bothe: Industrial Engineering at Northeastern. Warehouse automation, WMS and supply chain analytics. Selected work, measured results.">
+<meta name="description" content="Aditya Bothe: Industrial Engineer. Warehouse automation, AGV fleets and SQL. Lean Six Sigma Green Belt. MS Industrial Engineering, Northeastern, Dec 2026.">
 <meta name="color-scheme" content="dark light">
 <meta property="og:title" content="Aditya Bothe">
-<meta property="og:description" content="Industrial engineer. Warehouse automation, WMS and supply chain analytics.">
+<meta property="og:description" content="Industrial Engineer. Warehouse automation, AGV fleets and SQL. Lean Six Sigma Green Belt.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://adityabothe46.github.io/">
 <meta property="og:image" content="https://adityabothe46.github.io/preview.png">
@@ -41,7 +41,7 @@
     --amber-dim: #a86f12;
     --steel: #7aa7d9;
     --green: #4ec9a0;
-    /* A second accent, so the page is not one colour on black. Used for
+    /* A second accent, so the page is not one color on black. Used for
        the cooler half of the work: data, reporting, software. */
     --cool: #5fb4e8;
     --cool-rgb: 95 180 232;
@@ -55,7 +55,7 @@
   /* ---------- anodizing theme ---------- */
   /* Same structure, plating-shop palette: bath blue in place of hi-vis
      amber, cooler panels. Every accent on the page runs through --amber
-     and --accent-rgb, so redefining those two recolours the whole site. */
+     and --accent-rgb, so redefining those two recolors the whole site. */
   :root[data-theme="anodizing"] {
     --bg: #070b10;
     --bg-2: #0b1219;
@@ -722,6 +722,21 @@
     box-shadow: 0 8px 22px -14px rgb(var(--cool-rgb) / 0.4);
   }
 
+  /* About prose. Measure kept short so the paragraphs stay readable on a
+     wide screen, matching the rest of the page's body copy. */
+  .about-copy {
+    max-width: 68ch;
+    margin-top: 18px;
+  }
+  .about-copy p {
+    margin: 0 0 14px;
+    color: var(--ink-2);
+    font-size: 15.5px;
+    line-height: 1.68;
+  }
+  .about-copy p:last-child { margin-bottom: 0; }
+  .about-copy strong { color: var(--ink); }
+
   .convey-note {
     font-family: var(--mono);
     font-size: 11px;
@@ -1253,7 +1268,7 @@
     }
   }
 
-  /* ---------- hero: fulfillment centre floor ---------- */
+  /* ---------- hero: fulfillment center floor ---------- */
   /* A top-down FC behind the name. Racks are static, AGVs path between
      them. Kept at low contrast so it reads as texture, not decoration
      competing with the headline. Pauses when scrolled out of view. */
@@ -1609,7 +1624,7 @@
   }
   @keyframes wfloor { to { transform: translate(54px, 54px); } }
 
-  /* Two slow colour fields drifting behind the greeting, blurred hard enough
+  /* Two slow color fields drifting behind the greeting, blurred hard enough
      that they read as light in the room rather than as shapes. */
   #welcome .aura {
     position: absolute;
@@ -1910,26 +1925,24 @@
     <p class="fc-hud" aria-hidden="true">
       <span><span class="fc-dot"></span><i data-hud="unit">Fleet</i> <b id="fc-n">0</b> <i data-hud="unitSuffix">active</i></span>
       <span><i data-hud="count">Picks</i> <b id="fc-picks">0</b></span>
-      <span><i data-hud="health">NTP sync</i> <b>OK</b></span>
+      <span><i data-hud="health">Link</i> <b>OK</b></span>
       <span class="tip" data-hud="tip" data-i18n="t114">Click the floor to dispatch a pick</span>
     </p>
     <div class="hero-grid">
       <div>
-        <p class="eyebrow enter" data-i18n="t157">Industrial Engineer &nbsp;/&nbsp; Supply Chain &amp; Warehouse Automation</p>
+        <p class="eyebrow enter">Industrial Engineer &nbsp;/&nbsp; Warehouse Automation, AGV Fleets and SQL</p>
         <h1 class="enter">Aditya<br>Bothe</h1>
-        <p class="role enter" data-i18n="t158">I make automated fulfillment centers run better.</p>
-        <p class="pitch enter" data-i18n="t002">
-          Most recently a Supply Chain IE co-op at <strong>Staples</strong>, where I deployed a
-          fleet-wide fix across <strong>250+ AGVs</strong>, proposed the design alternative that
-          cut a facility build's floor levelling requirement, and
-          migrated <strong>650+ Power BI reports</strong> off a server being decommissioned.
-          I like problems where nobody has written the runbook yet.
+        <p class="role enter">Lean Six Sigma Green Belt &middot; MS Industrial Engineering, Northeastern, Dec 2026</p>
+        <p class="pitch enter">
+          I am an industrial engineer who likes being where the problem actually sits,
+          whether that is a robot fleet stopping in the wrong aisle or a production
+          schedule that keeps missing orders.
         </p>
         <div class="cta enter">
           <a class="btn btn-primary" href="#contact" data-i18n="t101">Get in touch</a>
           <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer" data-i18n="t102">LinkedIn ↗</a>
         <a class="btn" href="https://github.com/Adityabothe46" target="_blank" rel="noreferrer" data-i18n="t103">GitHub ↗</a>
-          <a class="btn" href="Aditya_Bothe_Resume.pdf" download data-i18n="t104">Resume (PDF) &darr;</a>
+          <a class="btn" href="Aditya_Bothe_Resume_Master.pdf" download data-i18n="t104">Resume (PDF) &darr;</a>
           <a class="btn" href="#work" data-i18n="t105">See the work ↓</a>
         </div>
       </div>
@@ -1937,7 +1950,7 @@
       <dl class="spec enter">
         <div class="spec-row">
           <dt data-i18n="t159">Status</dt>
-          <dd data-i18n="t003"><span class="avail" data-i18n="t115">Available Jan 2027</span><br>Full-time, open to relocation</dd>
+          <dd data-i18n="t003"><span class="avail" data-i18n="t115">Available Jan 2027</span><br>Full-time industrial, manufacturing or process engineering</dd>
         </div>
         <div class="spec-row">
           <dt data-i18n="t160">Education</dt>
@@ -1945,11 +1958,43 @@
         </div>
         <div class="spec-row">
           <dt data-i18n="t162">Focus</dt>
-          <dd data-i18n="t006">Warehouse automation, AGV fleets, WMS, supply chain analytics</dd>
+          <dd data-i18n="t006">Warehouse automation, AGV fleets and SQL</dd>
         </div>
       </dl>
     </div>
   </header>
+
+  <section id="about">
+    <div class="sec-head">
+      <h2>About</h2>
+      <p class="note">Where the problem actually sits</p>
+    </div>
+    <div class="about-copy">
+      <p>
+        This year I spent eight months as a supply chain industrial engineering co-op
+        at Staples, working across fulfillment centers with AGV fleets, goods-to-person
+        storage and vision systems. At the Fridley FC I recalibrated tote min/max levels
+        against real demand and cut replenishment trips by <strong>30%</strong>, and I was
+        the only engineer on site through the ladder system stabilization, tracing faults
+        from the bots to the vision system in Kafka and Redis. I also migrated
+        <strong>650+ Power BI reports</strong> off a retiring SQL Server and rebuilt the
+        <strong>400+ views</strong> behind them.
+      </p>
+      <p>
+        Before Staples I spent nearly three years as the manufacturing engineer on an
+        aluminum anodizing line in India, at a business I co-founded with my brother. I cut
+        unplanned downtime by <strong>25%</strong> and rework by <strong>10%</strong>,
+        scheduled production to deliver <strong>95%+</strong> of orders on time, and led the
+        setup of a second plant that took the site from
+        <strong>700 kg to 1,700 kg</strong> a day.
+      </p>
+      <p>
+        I hold a Six Sigma Green Belt and complete my MS in Industrial Engineering at
+        Northeastern in December 2026. I am looking for full-time industrial, manufacturing
+        or process engineering roles starting January 2027.
+      </p>
+    </div>
+  </section>
 
   <div class="conveyor-rule" aria-hidden="true"></div>
   <section id="toolkit">
@@ -1960,13 +2005,13 @@
 
     <div class="convey">
       <div class="lane">
-        <div class="track" data-dir="l" style="--secs:38s"><span class="tote f-ie">Manhattan Active WMS</span><span class="tote f-ie">AGV fleet management</span><span class="tote f-ie">WMS migration</span><span class="tote f-ie">Min/max inventory tuning</span><span class="tote f-ie">Layout commissioning</span><span class="tote f-ie">SOP development</span><span class="tote f-ie">Time &amp; motion study</span><span class="tote f-ie">Process optimization</span><span aria-hidden="true" class="tote dup f-ie">Manhattan Active WMS</span><span aria-hidden="true" class="tote dup f-ie">AGV fleet management</span><span aria-hidden="true" class="tote dup f-ie">WMS migration</span><span aria-hidden="true" class="tote dup f-ie">Min/max inventory tuning</span><span aria-hidden="true" class="tote dup f-ie">Layout commissioning</span><span aria-hidden="true" class="tote dup f-ie">SOP development</span><span aria-hidden="true" class="tote dup f-ie">Time &amp; motion study</span><span aria-hidden="true" class="tote dup f-ie">Process optimization</span></div>
+        <div class="track" data-dir="l" style="--secs:38s"><span class="tote f-ie">AGV Fleets</span><span class="tote f-ie">Goods-to-Person</span><span class="tote f-ie">Vision Systems</span><span class="tote f-ie">Warehouse Management Systems</span><span class="tote f-ie">PKMS</span><span class="tote f-ie">Production Scheduling</span><span class="tote f-ie">Replenishment</span><span class="tote f-ie">Preventive Maintenance</span><span aria-hidden="true" class="tote dup f-ie">AGV Fleets</span><span aria-hidden="true" class="tote dup f-ie">Goods-to-Person</span><span aria-hidden="true" class="tote dup f-ie">Vision Systems</span><span aria-hidden="true" class="tote dup f-ie">Warehouse Management Systems</span><span aria-hidden="true" class="tote dup f-ie">PKMS</span><span aria-hidden="true" class="tote dup f-ie">Production Scheduling</span><span aria-hidden="true" class="tote dup f-ie">Replenishment</span><span aria-hidden="true" class="tote dup f-ie">Preventive Maintenance</span></div>
       </div>
       <div class="lane">
-        <div class="track" data-dir="r" style="--secs:44s"><span class="tote f-data">Power BI</span><span class="tote f-data">DAX</span><span class="tote f-data">SQL Server</span><span class="tote f-data">PostgreSQL</span><span class="tote f-data">Snowflake</span><span class="tote f-data">MySQL</span><span class="tote f-data">Advanced Excel</span><span class="tote f-data">Report migration</span><span aria-hidden="true" class="tote dup f-data">Power BI</span><span aria-hidden="true" class="tote dup f-data">DAX</span><span aria-hidden="true" class="tote dup f-data">SQL Server</span><span aria-hidden="true" class="tote dup f-data">PostgreSQL</span><span aria-hidden="true" class="tote dup f-data">Snowflake</span><span aria-hidden="true" class="tote dup f-data">MySQL</span><span aria-hidden="true" class="tote dup f-data">Advanced Excel</span><span aria-hidden="true" class="tote dup f-data">Report migration</span></div>
+        <div class="track" data-dir="r" style="--secs:44s"><span class="tote f-data">SQL</span><span class="tote f-data">Power BI</span><span class="tote f-data">SQL Server</span><span class="tote f-data">Snowflake</span><span class="tote f-data">Kafka</span><span class="tote f-data">Microsoft Excel</span><span class="tote f-data">Minitab</span><span class="tote f-data">Throughput</span><span aria-hidden="true" class="tote dup f-data">SQL</span><span aria-hidden="true" class="tote dup f-data">Power BI</span><span aria-hidden="true" class="tote dup f-data">SQL Server</span><span aria-hidden="true" class="tote dup f-data">Snowflake</span><span aria-hidden="true" class="tote dup f-data">Kafka</span><span aria-hidden="true" class="tote dup f-data">Microsoft Excel</span><span aria-hidden="true" class="tote dup f-data">Minitab</span><span aria-hidden="true" class="tote dup f-data">Throughput</span></div>
       </div>
       <div class="lane">
-        <div class="track" data-dir="l" style="--secs:34s"><span class="tote f-ie">Lean manufacturing</span><span class="tote f-ie">Root cause analysis</span><span class="tote f-ie">Inventory optimization</span><span class="tote f-ie">Project management</span><span class="tote f-build">SolidWorks</span><span class="tote f-build">Minitab</span><span class="tote f-build">DBeaver</span><span class="tote f-build">Azure Data Studio</span><span class="tote f-build">TypeScript</span><span class="tote f-build">Next.js</span><span class="tote f-build">SQLite</span><span class="tote f-build">Git</span><span aria-hidden="true" class="tote dup f-ie">Lean manufacturing</span><span aria-hidden="true" class="tote dup f-ie">Root cause analysis</span><span aria-hidden="true" class="tote dup f-ie">Inventory optimization</span><span aria-hidden="true" class="tote dup f-ie">Project management</span><span aria-hidden="true" class="tote dup f-build">SolidWorks</span><span aria-hidden="true" class="tote dup f-build">Minitab</span><span aria-hidden="true" class="tote dup f-build">DBeaver</span><span aria-hidden="true" class="tote dup f-build">Azure Data Studio</span><span aria-hidden="true" class="tote dup f-build">TypeScript</span><span aria-hidden="true" class="tote dup f-build">Next.js</span><span aria-hidden="true" class="tote dup f-build">SQLite</span><span aria-hidden="true" class="tote dup f-build">Git</span></div>
+        <div class="track" data-dir="l" style="--secs:34s"><span class="tote f-build">Lean Six Sigma</span><span class="tote f-build">Root Cause Analysis</span><span class="tote f-build">PFMEA</span><span class="tote f-build">Control Plans</span><span class="tote f-build">Statistical Process Control</span><span class="tote f-build">IQ/OQ/PQ</span><span class="tote f-build">DMAIC</span><span class="tote f-build">Python</span><span aria-hidden="true" class="tote dup f-build">Lean Six Sigma</span><span aria-hidden="true" class="tote dup f-build">Root Cause Analysis</span><span aria-hidden="true" class="tote dup f-build">PFMEA</span><span aria-hidden="true" class="tote dup f-build">Control Plans</span><span aria-hidden="true" class="tote dup f-build">Statistical Process Control</span><span aria-hidden="true" class="tote dup f-build">IQ/OQ/PQ</span><span aria-hidden="true" class="tote dup f-build">DMAIC</span><span aria-hidden="true" class="tote dup f-build">Python</span></div>
       </div>
     </div>
 
@@ -1983,39 +2028,32 @@
     </div>
     <div class="metrics enter">
       <div class="metric">
-        <b class="num"><span data-count="250" data-suffix="+">250+</span></b>
-        <span data-i18n="t116">AGVs updated in a phased fleet-wide deployment</span>
-        <em>Staples · Two FCs</em>
-        <button class="more" type="button" aria-expanded="false" aria-controls="story-0" data-i18n="t008">How<span aria-hidden="true">+</span></button>
-        <p class="story" id="story-0" hidden data-i18n="t009">The whole fleet synced to a single time server. When it drifted, AGVs read a 2016 timestamp and stopped responding to commands. The engineering team found the cause and wrote the update; I handled the deployment on site, over SSH. One unit first, isolated with the manual controller, then three at a time, then the full fleet during an overnight maintenance window, monitoring through the next production day before sign-off. Then the same again at a second site.</p>
+        <b class="num"><span data-count="200" data-suffix="+">200+</span></b>
+        <span>Robots remapped onto new pick locations for an aisle expansion</span>
+        <em>Staples · Charlotte</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-0">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-0" hidden>I remapped the Charlotte AGV layout for an aisle expansion so 200+ robots used the new pick locations, freeing room for 40+ pallets. Each new pick location was tested in the PKMS/WS400 QA environment and confirmed with test picks before going live.</p>
       </div>
       <div class="metric">
-        <b class="num"><span data-count="50000" data-suffix="+" data-i18n="t117">50,000+</span></b>
-        <span data-i18n="t118">SKUs onboarded for a new client site launch</span>
-        <em>Staples · New client launch</em>
-        <button class="more" type="button" aria-expanded="false" aria-controls="story-1" data-i18n="t010">How<span aria-hidden="true">+</span></button>
-        <p class="story" id="story-1" hidden data-i18n="t011">A new client site was being brought online, and every SKU had to exist in the warehouse system before the site could run. I onboarded more than 50,000 of them as part of that launch.</p>
+        <b class="num"><span data-count="50000" data-suffix="+">50,000+</span></b>
+        <span>SKUs onboarded for a third-party client warehouse</span>
+        <em>Staples · Nashville</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-1">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-1" hidden>I onboarded a third-party client's Nashville warehouse of 50,000+ SKUs, cube scanning, slotting and loading the item data into PKMS.</p>
       </div>
       <div class="metric">
         <b class="num"><span data-count="650" data-suffix="+">650+</span></b>
-        <span data-i18n="t119">Power BI reports migrated off a dying server</span>
-        <em>4 database platforms</em>
-        <button class="more" type="button" aria-expanded="false" aria-controls="story-2" data-i18n="t012">How<span aria-hidden="true">+</span></button>
-        <p class="story" id="story-2" hidden data-i18n="t013">A SQL Server was being decommissioned with hundreds of live Power BI reports still pointed at it. I rebuilt broken views for 400+ reports and redirected the rest, across SQL Server, PostgreSQL, Snowflake and MySQL.</p>
-      </div>
-      <div class="metric">
-        <b class="num"><span data-count="100" data-prefix="$" data-suffix="K" data-i18n="t120">$100K</span><span style="font-size:.6em" data-i18n="t121">/day</span></b>
-        <span data-i18n="t122">Downtime loss prevented during system stabilization</span>
-        <em>Sole on-site engineer</em>
-        <button class="more" type="button" aria-expanded="false" aria-controls="story-3" data-i18n="t014">How<span aria-hidden="true">+</span></button>
-        <p class="story" id="story-3" hidden data-i18n="t015">During Fridley's Ladder stabilization I was the only engineer on site. Recurring pipeline failures would have stopped outbound. I traced them on the Kafka and Redis monitoring dashboards, got them cleared, and wrote the training documentation so support could handle it without me.</p>
+        <span>Power BI reports migrated off a decommissioning SQL Server</span>
+        <em>400+ views rebuilt</em>
+        <button class="more" type="button" aria-expanded="false" aria-controls="story-2">How<span aria-hidden="true">+</span></button>
+        <p class="story" id="story-2" hidden>I migrated 650+ Power BI reports off a SQL Server being decommissioned, rebuilding 400+ of the database views they ran on. I wrote those views in SQL over OPENQUERY against PostgreSQL, MySQL, DB2, Snowflake and Teradata linked servers.</p>
       </div>
       <div class="metric">
         <b class="num"><span data-count="30" data-suffix="%">30%</span></b>
         <span data-i18n="t123">Fewer replenishment trips after min/max recalibration</span>
         <em>Fridley FC</em>
         <button class="more" type="button" aria-expanded="false" aria-controls="story-4" data-i18n="t016">How<span aria-hidden="true">+</span></button>
-        <p class="story" id="story-4" hidden data-i18n="t017">Min/max thresholds were set conservatively, so replenishment runs fired more often than they needed to. Recalculating them against real demand cut trip frequency by roughly a third.</p>
+        <p class="story" id="story-4" hidden>I recalibrated breakpack tote min/max levels in the Fridley FC goods-to-person ladder against actual demand, cutting replenishment trips by 30%.</p>
       </div>
     </div>
   </section>
@@ -2029,34 +2067,28 @@
 
     <article class="project enter">
       <div class="project-head">
-        <h3 data-i18n="t018">Job Tracker</h3>
-        <span class="tag" data-i18n="t124">Built from scratch</span>
-        <span class="tag tag-quiet" data-i18n="t125">Python · Next.js · TypeScript · SQLite · AI</span>
+        <h3>JARVIS and Job Application Tracker</h3>
+        <span class="tag">Personal tool</span>
+        <span class="tag tag-quiet">Python · JavaScript · Next.js · TypeScript · SQLite</span>
       </div>
       <div class="project-body">
-        <p data-i18n="t019">
-          A desktop app I built to run my own job search. It tracks every application on a
-          board, and it goes out and finds new openings on its own, filtered down to roles I
-          am actually eligible for. It currently manages a live pipeline of
-          <strong>369 roles across 5 countries</strong>.
+        <p>
+          A personal job search tool I built for my own use. It watches six applicant
+          tracking systems through their APIs and ranks postings against a sponsorship
+          index I matched and cleaned from <strong>34,039 public Department of Labor
+          filings</strong>.
         </p>
         <ul class="bullets">
-          <li data-i18n="t020"><strong>It searches for me.</strong> Checks company career sites first, then runs broad discovery for employers I have not seen. Every result is re-validated in code, not trusted: postings older than 30 days, senior titles, roles that refuse visa sponsorship and anything I previously rejected all get dropped automatically.</li>
-          <li data-i18n="t021"><strong>It measures the search like a process.</strong> Daily goal tracking, streaks, a 30-day activity chart, interview and offer conversion rates, and average response time. The same instinct as putting KPIs on a production line.</li>
-          <li data-i18n="t022"><strong>It runs on zero budget.</strong> No paid API. It drives the Claude CLI already installed on my machine, so there is no per-token bill. When one run started consuming 60% of my available usage, I traced the cost to session count rather than prompt size, merged six search sessions into one and cut it by roughly 70%.</li>
-          <li data-i18n="t023"><strong>It respects privacy.</strong> Everything is local. No account, no server, no analytics. My resume and application history never leave my disk.</li>
-          <li data-i18n="t243"><strong>It is bigger than it looks.</strong> A <strong>9,600-line</strong> system integrating <strong>6 ATS APIs</strong> across <strong>155 job boards</strong>, running end to end unattended, with <strong>34,039 Department of Labor filings</strong> indexed into a searchable sponsorship history that is queried before every application.</li>
-          <li data-i18n="t244"><strong>I measured before building.</strong> 56 parked questions turned out to be <strong>21 distinct ones</strong>, and four of those were a single apostrophe bug. The fix was a character, not a feature.</li>
+          <li><strong>Work authorization stays out of the automation.</strong> Legal and work authorization questions are stopped by a hard stop written into the code, not by a prompt instruction.</li>
+          <li><strong>The sponsorship index is public data I cleaned.</strong> The Department of Labor filings are public; the work was matching employers across them and cleaning the result so a posting can be ranked against it.</li>
+          <li><strong>It runs locally.</strong> No account and no server. The resume and application history stay on my own disk.</li>
         </ul>
         <div class="stackline">
-          <span class="chip" data-i18n="t245">Python</span>
-          <span class="chip" data-i18n="t126">Next.js App Router</span>
-          <span class="chip" data-i18n="t127">TypeScript</span>
-          <span class="chip" data-i18n="t128">SQLite (node:sqlite)</span>
-          <span class="chip" data-i18n="t129">Tailwind</span>
-          <span class="chip" data-i18n="t130">dnd-kit</span>
-          <span class="chip" data-i18n="t131">Claude CLI</span>
-          <span class="chip" data-i18n="t132">Readability</span>
+          <span class="chip">Python</span>
+          <span class="chip">Next.js</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">SQLite</span>
+          <span class="chip">SQL</span>
         </div>
         <div class="stackline" style="margin-top:18px">
           <a class="btn btn-primary" href="https://github.com/Adityabothe46/job-tracker" target="_blank" rel="noreferrer" data-i18n="t106">View the source on GitHub ↗</a>
@@ -2066,24 +2098,23 @@
 
     <div class="mini-grid enter">
       <article class="mini mini-lead">
-        <h3 data-i18n="t226">Greenfield Plant Build</h3>
-        <p class="eyebrow" style="margin:6px 0 12px" data-i18n="t227">$120K capital project &middot; Led end to end &middot; AB Enterprises</p>
+        <h3>New Plant Setup and Capacity Expansion</h3>
+        <p class="eyebrow" style="margin:6px 0 12px">$120K &middot; AB Enterprises</p>
         <ul class="bullets">
-          <li data-i18n="t228">Led a <strong><span data-count="120" data-prefix="$" data-suffix="K">$120K</span></strong> capital project from concept through startup, commissioning <strong><span data-count="6" data-suffix="+">6+</span> machines</strong> over six months.</li>
-          <li data-i18n="t229">Designed the facility layout and material flow for the new plant, lifting site capacity from <strong>700 kg to 1,700 kg</strong> per day.</li>
-          <li data-i18n="t232">Traced the cycle constraint to the sulfuric anodizing stage and specified two tanks running in parallel to break it open.</li>
-          <li data-i18n="t233">Built the second line alongside the existing plant, so not a single shift of production was lost to the build.</li>
+          <li>Led the setup of a second powder coating and anodizing plant in about six months for <strong>$120K</strong>, buying and installing <strong>six new machines</strong>.</li>
+          <li>Specified two sulfuric tanks in parallel to break the micron-build bottleneck, lifting the site from <strong>700 kg to 1,700 kg</strong> a day.</li>
+          <li>Hired and trained <strong>24+ people</strong> to run it and validated each machine through IQ, OQ and PQ before production.</li>
         </ul>
         <div class="gauges">
-          <div class="gauge"><span class="g-label" data-i18n="t230">Capacity per day</span><div class="g-track"><i data-fill="100"></i></div><span class="g-delta up">1,700 kg</span></div>
-          <div class="gauge"><span class="g-label" data-i18n="t231">Before</span><div class="g-track"><i data-fill="41"></i></div><span class="g-delta">700 kg</span></div>
+          <div class="gauge"><span class="g-label">Capacity a day</span><div class="g-track"><i data-fill="100"></i></div><span class="g-delta up">1,700 kg</span></div>
+          <div class="gauge"><span class="g-label">Before</span><div class="g-track"><i data-fill="41"></i></div><span class="g-delta">700 kg</span></div>
         </div>
       </article>
       <article class="mini">
-        <h3 data-i18n="t024">Anodizing Line Process Analysis</h3>
-        <p class="eyebrow" style="margin:6px 0 12px" data-i18n="t025">PFMEA &middot; Control plan &middot; AB Enterprises</p>
+        <h3>Process FMEA and Control Plan, Anodizing Process</h3>
+        <p class="eyebrow" style="margin:6px 0 12px">PFMEA &middot; Control plan</p>
         <ul class="bullets">
-          <li data-i18n="t026">Risk analysis of a 10-tank anodizing line using PFMEA and control plan methodology. Identified bath temperature logging as the highest value change, taking that failure mode from <strong>RPN 216 to roughly 81</strong>.</li>
+          <li>Built a PFMEA scoring <strong>8 failure modes</strong> across the anodizing process and the <strong>14-characteristic</strong> control plan that follows from it.</li>
         </ul>
         <div class="stackline" style="margin-top:14px">
           <a class="btn btn-primary" href="anodizing/" data-i18n="t107">Read the full case study &rarr;</a>
@@ -2100,10 +2131,10 @@
         </div>
       </article>
       <article class="mini">
-        <h3 data-i18n="t030">Cost Optimization: LED Back Panel Fixture Design</h3>
-        <p class="eyebrow" style="margin:6px 0 12px" data-i18n="t031">Manufacturing · Fixture design</p>
+        <h3>Multi-Section Jigs for 3-Meter Profiles</h3>
+        <p class="eyebrow" style="margin:6px 0 12px">Manufacturing &middot; AB Enterprises</p>
         <ul class="bullets">
-          <li data-i18n="t032">Led the design of multi-section jigs for 3-meter aluminum profiles, increasing batch capacity <strong>40%</strong> and cutting per-piece cost <strong>18%</strong>.</li>
+          <li>Specified multi-section jigs for 3-meter aluminum profiles and oversaw the build, adding <strong>40%</strong> load capacity and cutting unit cost <strong>18%</strong>.</li>
         </ul>
         <div class="gauges">
           <div class="gauge"><span class="g-label" data-i18n="t133">Batch capacity</span><div class="g-track"><i data-fill="100"></i></div><span class="g-delta up">+40%</span></div>
@@ -2114,8 +2145,8 @@
         <h3 data-i18n="t033">Quality Recovery: Customer Order Escalation</h3>
         <p class="eyebrow" style="margin:6px 0 12px" data-i18n="t034">Customer escalation · On-site</p>
         <ul class="bullets">
-          <li data-i18n="t035">Led on-site inspection of a rejected 2-ton order, isolated defects in <strong>5%</strong> of material, completed rework and recovered <strong>100% of payment</strong>.</li>
-          <li data-i18n="t036">Root cause traced back to coating thickness rather than the colour tank. <a href="anodizing/#pfmea" data-i18n="t109">The full process analysis is here</a>.</li>
+          <li>Inspected a rejected 2-ton Tata Marcopolo order on site, found defects in <strong>5%</strong> of it, reworked them and recovered <strong>100% of the payment</strong>.</li>
+          <li>Coating defects traced to root cause by checking bath chemistry and coating thickness. <a href="anodizing/#pfmea">The full process analysis is here</a>.</li>
         </ul>
         <div class="gauges">
           <div class="gauge"><span class="g-label" data-i18n="t135">Material defective</span><div class="g-track"><i data-fill="5"></i></div><span class="g-delta">5%</span></div>
@@ -2176,7 +2207,7 @@
           <div class="tank" data-tank="7">
             <div class="bath"></div>
             <span class="tno">7</span>
-            <div class="tname">Colour</div>
+            <div class="tname">Color</div>
           </div>
           <div class="tank" data-tank="8">
             <div class="bath"></div>
@@ -2264,7 +2295,7 @@
   <section>
     <div class="sec-head">
       <h2 data-i18n="t175">Experience</h2>
-      <p class="note" data-i18n="t041">2020 — present</p>
+      <p class="note">2020 to present</p>
     </div>
 
     <div class="timeline">
@@ -2274,44 +2305,35 @@
       <span class="node" aria-hidden="true"></span>
       <div class="job-head">
         <h3 data-i18n="t042">MS, Industrial Engineering</h3>
-        <p class="job-meta">Sep 2024 — Dec 2026</p>
+        <p class="job-meta">Sep 2024 to Dec 2026</p>
       </div>
       <p class="employer">Northeastern University <span data-i18n="t146">&middot; Boston, MA</span></p>
       <ul class="bullets">
-        <li data-i18n="t043">3.62 GPA. Coursework in facility layout, capacity modelling, quality engineering and supply chain analytics.</li>
+        <li data-i18n="t043">3.62 GPA. Coursework in facility layout, capacity modeling, quality engineering and supply chain analytics.</li>
       </ul>
     </div>
 
     <div class="job enter">
       <span class="node" aria-hidden="true"></span>
       <div class="job-head">
-        <h3 data-i18n="t044">Supply Chain Industrial Engineer, Co-op</h3>
-        <p class="job-meta">Jan 2026 — Sep 2026</p>
+        <h3>Supply Chain - Industrial Engineer Intern</h3>
+        <p class="job-meta">Jan 2026 to Sep 2026</p>
       </div>
       <p class="employer">Staples Inc., Multi-FC <span data-i18n="t147">· Framingham, MA</span></p>
       <ul class="bullets">
-        <li data-i18n="t200">Supported an automated fulfilment operation as the sole on-site engineer across an entire multi-site distribution network</li>
-        <li data-i18n="t237">Owned the <strong>robotic fleets, the goods-to-person flow and the vision systems</strong> across the fulfilment network</li>
-        <li data-i18n="t238">Diagnosed the automation faults nobody else on site could place, and restored the fleet to full production</li>
-        <li data-i18n="t239">Configured the <strong>path layouts, stop points and route parameters</strong> that governed how the whole fleet moved</li>
-        <li data-i18n="t201">Conducted <strong>time studies</strong> across live distribution operations, recalibrating thresholds and cutting restocking trips <strong>30%</strong></li>
-        <li data-i18n="t202">Deployed a fleet-wide equipment update across more than <strong>250 AGVs</strong>, scaling from single-unit validation to the full fleet</li>
-        <li data-i18n="t203">Executed that rollout during overnight maintenance windows, then monitored the whole fleet through the next production day</li>
-        <li data-i18n="t204">Completed the validated deployment at two separate fulfilment centers, isolating and updating units over SSH on the floor</li>
-        <li data-i18n="t205">Built <strong>Power BI</strong> reporting for site leadership, migrating more than <strong>650 individual reports</strong> across four separate platforms</li>
-        <li data-i18n="t206">Audited and corrected more than <strong>400 records</strong> before building anything, because nobody acts on a number they distrust</li>
-        <li data-i18n="t240">Wrote <strong>SQL and Python</strong> to answer the operational questions the standard reporting could not reach</li>
-        <li data-i18n="t207">Redesigned the facility layout and material flow for an aisle expansion, unlocking <strong>40+ additional pallet positions</strong> on site</li>
-        <li data-i18n="t208">Proposed a design alternative on a storage system installation that reduced the projected floor levelling requirement significantly</li>
-        <li data-i18n="t209">Analysed inbound, outbound and inventory operations to identify where the material flow constrained daily throughput</li>
-        <li data-i18n="t210">Worked directly in <strong>WMS</strong> platforms including Manhattan Active and PKMS, auditing transaction accuracy across the site</li>
-        <li data-i18n="t211">Supported a new client site launch, personally onboarding more than <strong>50,000 individual SKUs</strong> into the main warehouse system</li>
-        <li data-i18n="t241">Carried an entire client site from equipment installation through commissioning to full rated production</li>
-        <li data-i18n="t242">Cut the ergonomic risk on the repeated manual tasks that were quietly costing the site its most experienced people</li>
-        <li data-i18n="t212">Authored standard work documentation and the detailed runbook production teams relied on through every single shift</li>
-        <li data-i18n="t213">Trained operators and supervisors directly on every new process and reporting tool introduced across the whole facility</li>
-        <li data-i18n="t214">Presented findings and recommendations to senior site leadership, refining each proposal from their direct floor feedback</li>
-        <li data-i18n="t215">Covered the operations, engineering, quality, procurement and technology work as the only engineer on site</li>
+        <li>Recalibrated breakpack tote min/max levels in the Fridley FC goods-to-person ladder against actual demand, cutting replenishment trips by <strong>30%</strong></li>
+        <li>Standardized case-load sequencing on Fridley's replenishment pallets, saving about <strong>2 minutes</strong> on each pallet</li>
+        <li>Served as the only on-site engineer through the Fridley ladder stabilization, tracing faults from bot to PKMS to vision system using <strong>Kafka and Redis</strong></li>
+        <li>Wrote the Fridley ladder runbook covering each recurring failure type and the steps the support team takes to clear it</li>
+        <li>Remapped the Charlotte AGV layout for an aisle expansion so <strong>200+ robots</strong> used the new pick locations, freeing room for <strong>40+ pallets</strong></li>
+        <li>Tested each new pick location in the PKMS/WS400 QA environment and confirmed it with test picks before going live</li>
+        <li>Rolled out a time-server fix to the Ontario and Denver AGV fleets over SSH, one robot, then three, then the rest, during 1am to 4am windows</li>
+        <li>Migrated <strong>650+ Power BI reports</strong> off a decommissioning SQL Server, rebuilding <strong>400+</strong> of the database views they ran on</li>
+        <li>Wrote those views in <strong>SQL</strong> over OPENQUERY against PostgreSQL, MySQL, DB2, Snowflake and Teradata linked servers</li>
+        <li>Redesigned a fulfillment center Power BI report around a single KPI home page, cutting navigation across its <strong>15+ pages</strong></li>
+        <li>Onboarded a third-party client's Nashville warehouse of <strong>50,000+ SKUs</strong>, cube scanning, slotting and loading item data into PKMS</li>
+        <li>Configured AGV path layouts, stop points and route distances in Guozi Robotics' fleet management software</li>
+        <li>Proposed a floor-leveling alternative for a ladder site that would have cut a <strong>$4M</strong> quote to about <strong>$1M</strong>, before the project was canceled</li>
       </ul>
     </div>
 
@@ -2319,23 +2341,18 @@
       <span class="node" aria-hidden="true"></span>
       <div class="job-head">
         <h3 data-i18n="t051">Manufacturing Engineer</h3>
-        <p class="job-meta">Dec 2021 — Aug 2024</p>
+        <p class="job-meta">Dec 2021 to Aug 2024</p>
       </div>
       <p class="employer">AB Enterprises <span data-i18n="t148">· Ahilyanagar, India</span></p>
       <ul class="bullets">
-        <li data-i18n="t216">Owned <strong>process parameters</strong> across a 10-tank anodizing line, controlling rectifier output, bath chemistry and bath temperature</li>
-        <li data-i18n="t217">Managed a <strong>$120K</strong> capital project from initial concept through startup, commissioning 6+ machines across six months</li>
-        <li data-i18n="t218">Lifted site capacity from <strong>700 kg to 1,700 kg per day</strong> through a greenfield plant build and facility layout design</li>
-        <li data-i18n="t234">Built a <strong>PFMEA</strong> that caught two separate failure modes the existing inspection checks could not detect</li>
-        <li data-i18n="t235">Applied <strong>SPC and process capability</strong> to the critical characteristics, steadily reducing variation over time</li>
-        <li data-i18n="t219">Designed <strong>tooling and fixtures</strong> in SolidWorks for multi-section part processing, raising overall batch capacity <strong>40%</strong> per load</li>
-        <li data-i18n="t220">Led <strong>root cause analysis</strong> on recurring process defects, cutting rework by <strong>10%</strong> and unplanned downtime by <strong>25%</strong> overall</li>
-        <li data-i18n="t221">Cut unit cost <strong>18%</strong> and inventory holding cost by <strong>30%</strong> through process redesign and material planning improvements</li>
-        <li data-i18n="t222">Validated all new equipment and tooling through complete <strong>IQ/OQ/PQ</strong> qualification before any release into full production</li>
-        <li data-i18n="t223">Resolved a customer quality escape at their own facility, recovering both the full payment and the commercial relationship</li>
-        <li data-i18n="t224">Hired and trained more than <strong>24 people</strong>, building the team that went on to run that plant on every production shift</li>
-        <li data-i18n="t225">Qualified more than 3 suppliers against technical specifications, negotiating terms and holding <strong>95%+</strong> on-time delivery</li>
-        <li data-i18n="t236">Wrote the safety standard and the procedures the whole plant worked to through every production shift</li>
+        <li>Specified multi-section jigs for 3-meter aluminum profiles and oversaw the build, adding <strong>40%</strong> load capacity and cutting unit cost <strong>18%</strong></li>
+        <li>Cut unplanned downtime <strong>25%</strong> through preventive maintenance schedules built with the maintenance crew and fast breakdown response</li>
+        <li>Cut rework <strong>10%</strong> by tracing coating defects to root cause, checking bath chemistry by hydrometer and coating thickness by DFT meter</li>
+        <li>Cut raw material holding cost <strong>30%</strong> by setting reorder points, safety stock and lead times, without running short</li>
+        <li>Built production schedules around customer orders, processing times, run sizes and changeovers, delivering <strong>95%+</strong> of orders on time</li>
+        <li>Inspected a rejected 2-ton Tata Marcopolo order on site, found defects in <strong>5%</strong> of it, reworked them and recovered <strong>100%</strong> of the payment</li>
+        <li>Stopped a caustic tank cleaning procedure being done without proper PPE and replaced it with a written safety SOP and PPE checklist</li>
+        <li>Delivered a rush 3 to 4 ton priority order inside a <strong>5-day</strong> deadline by moving the line onto a two-shift staffing plan</li>
       </ul>
     </div>
     </div>
@@ -2351,45 +2368,45 @@
       <div class="skill">
         <h3 data-i18n="t060">Warehouse &amp; Automation</h3>
         <ul>
-          <li data-i18n="t061">Manhattan Active WMS (MAWM)</li>
-          <li data-i18n="t062">AGV fleet management</li>
-          <li data-i18n="t063">WMS migration</li>
-          <li data-i18n="t064">Min/max inventory tuning</li>
-          <li data-i18n="t065">Layout commissioning</li>
-          <li data-i18n="t066">SOP development</li>
+          <li>AGV Fleets</li>
+          <li>Goods-to-Person</li>
+          <li>Vision Systems</li>
+          <li>Warehouse Management Systems · PKMS</li>
+          <li>Replenishment · Safety Stock</li>
+          <li>Inventory Planning · Preventive Maintenance</li>
         </ul>
       </div>
       <div class="skill">
         <h3 data-i18n="t067">Data &amp; Reporting</h3>
         <ul>
-          <li data-i18n="t068">Power BI · DAX · report migration</li>
-          <li data-i18n="t069">SQL Server</li>
-          <li data-i18n="t070">PostgreSQL</li>
-          <li data-i18n="t071">Snowflake</li>
-          <li data-i18n="t072">MySQL</li>
-          <li data-i18n="t073">Advanced Excel</li>
+          <li>SQL · Power BI</li>
+          <li>SQL Server</li>
+          <li>Snowflake</li>
+          <li>Kafka</li>
+          <li>Microsoft Excel</li>
+          <li>Minitab</li>
         </ul>
       </div>
       <div class="skill">
         <h3 data-i18n="t074">Industrial Engineering</h3>
         <ul>
-          <li data-i18n="t075">Process optimization</li>
-          <li data-i18n="t076">Lean manufacturing</li>
-          <li data-i18n="t077">Root cause analysis</li>
-          <li data-i18n="t078">Inventory optimization</li>
-          <li data-i18n="t079">Time &amp; motion study</li>
-          <li data-i18n="t080">Project management</li>
+          <li>Time Study · Standard Times</li>
+          <li>Routings · Line Balancing</li>
+          <li>Value Stream Mapping</li>
+          <li>Layout Planning · Throughput</li>
+          <li>Root Cause Analysis</li>
+          <li>Production Scheduling</li>
         </ul>
       </div>
       <div class="skill">
         <h3 data-i18n="t081">Tools &amp; Build</h3>
         <ul>
-          <li data-i18n="t082">DBeaver · Azure Data Studio</li>
-          <li data-i18n="t083">SolidWorks · Minitab</li>
-          <li data-i18n="t084">TypeScript · Next.js</li>
-          <li data-i18n="t085">SQLite · SQL</li>
-          <li data-i18n="t086">Git</li>
-          <li data-i18n="t087">MS Office</li>
+          <li>PFMEA · Control Plans</li>
+          <li>Statistical Process Control</li>
+          <li>IQ/OQ/PQ · DMAIC</li>
+          <li>Lean Six Sigma</li>
+          <li>Minitab · Microsoft Excel</li>
+          <li>Python</li>
         </ul>
       </div>
     </div>
@@ -2429,12 +2446,13 @@
     <p class="eyebrow" data-i18n="t099">Open to full-time roles from January 2027</p>
     <h2 data-i18n="t179">Let's talk about your operation.</h2>
     <p data-i18n="t100">
-      I am looking for industrial engineering, supply chain and warehouse automation roles
-      in the US and internationally. If you have a process that is not behaving, I would
-      like to hear about it.
+      I am looking for full-time industrial, manufacturing or process engineering roles
+      starting January 2027. If you have a process that is not behaving, I would like to
+      hear about it.
     </p>
     <div class="mailrow">
       <a class="mail" id="email" href="mailto:botheaditya46@gmail.com" data-i18n="t110">botheaditya46@gmail.com</a>
+      <a class="mail" href="tel:+16174076542">617-407-6542</a>
       <button class="btn" id="copy" type="button" data-i18n="t180">Copy email</button>
       <a class="btn" href="https://www.linkedin.com/in/aditya-bothe" target="_blank" rel="noreferrer" data-i18n="t111">LinkedIn ↗</a>
         <a class="btn" href="https://github.com/Adityabothe46" target="_blank" rel="noreferrer" data-i18n="t112">GitHub ↗</a>
@@ -2695,7 +2713,7 @@
     function updateRail() {
       if (!timeline || !railFill) return;
       var r = timeline.getBoundingClientRect();
-      var mark = window.innerHeight * 0.55; // the "playhead" sits just above centre
+      var mark = window.innerHeight * 0.55; // the "playhead" sits just above center
       var p = (mark - r.top) / r.height;
       p = Math.max(0, Math.min(1, p));
       railFill.style.height = p * 100 + "%";
@@ -2804,7 +2822,7 @@
 
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* ---- hero: top-down fulfillment centre --------------------------- */
+    /* ---- hero: top-down fulfillment center --------------------------- */
     /* A working floor rather than a backdrop. Racks are fixed, AGVs run the
        aisles, and clicking dispatches a pick that the nearest free unit
        drives to. Canvas rather than DOM nodes because a few dozen moving
@@ -2930,8 +2948,8 @@
         ctx.fillRect(a.x - a.dir * 20, a.y + 3, 18, 2);
       }
 
-      // Colours come from the stylesheet rather than literals, so a theme
-      // change recolours the canvas with everything else.
+      // Colors come from the stylesheet rather than literals, so a theme
+      // change recolors the canvas with everything else.
       var C = {};
       function readPalette() {
         var cs = getComputedStyle(document.documentElement);
@@ -3036,7 +3054,7 @@
         for (var r = 0; r < rows; r++) {
           for (var c = 0; c < cols; c++) ctx.fillRect(c * COL + 10, r * ROW + 6, RW, RH);
         }
-        // aisle centre lines
+        // aisle center lines
         ctx.strokeStyle = "rgba(255,255,255,0.035)";
         ctx.lineWidth = 1;
         for (var i = 0; i < aisles.length; i++) {
@@ -3167,14 +3185,14 @@
       var ROUTES = {
         glossy: [
           [0, "Buffing", "Polish buff, 8 min"],
-          [0, "Jigging", "Tie to rods, 12.5 to 13 gauge aluminium wire"],
+          [0, "Jigging", "Tie to rods, 12.5 to 13 gauge aluminum wire"],
           [1, "Caustic", "Short dwell, stays smooth enough to polish"],
           [2, "Rinse", ""],
           [3, "Nitric", "10 min, oil removal and brightening"],
           [4, "Rinse", ""],
           [5, "Anodize", "25 min at 12 microns, 15 V, 1600 to 1700 A"],
           [6, "Rinse", ""],
-          [7, "Colour", "90 to 120 sec against the master sample"],
+          [7, "Color", "90 to 120 sec against the master sample"],
           [8, "Rinse", ""],
           [9, "Cold seal", "5 min, closes the pores"],
           [10, "Rinse", ""],
@@ -3189,7 +3207,7 @@
           [4, "Rinse", ""],
           [5, "Anodize", "Micron build to spec"],
           [6, "Rinse", ""],
-          [7, "Colour", "Dye to shade"],
+          [7, "Color", "Dye to shade"],
           [8, "Rinse", ""],
           [9, "Cold seal", ""],
           [10, "Rinse", ""],
@@ -3203,7 +3221,7 @@
           [4, "Rinse", ""],
           [5, "Anodize", "Micron build to spec"],
           [6, "Rinse", ""],
-          [7, "Colour", "Silver skips this tank entirely"],
+          [7, "Color", "Silver skips this tank entirely"],
           [8, "Rinse", ""],
           [9, "Cold seal", ""],
           [10, "Rinse", ""],
@@ -3213,7 +3231,7 @@
 
       var route = "glossy", step = 0, timer = null;
 
-      function centreOf(n) {
+      function centerOf(n) {
         if (!n) return null;
         var t = tanks[n - 1];
         if (!t) return null;
@@ -3236,7 +3254,7 @@
           }
         });
 
-        var x = centreOf(cur[0]);
+        var x = centerOf(cur[0]);
         if (x !== null) {
           crane.style.opacity = "1";
           crane.style.left = x + "px";
@@ -3436,7 +3454,7 @@
 
     /* ---- welcome splash ---------------------------------------------- */
     /* Cycles a greeting through the world's most spoken languages, each one
-       held long enough to actually read, each in its own colour. Dismissible
+       held long enough to actually read, each in its own color. Dismissible
        on any input. The overlay is display:none in CSS and only switched on
        here, so a blocked or failed script leaves the page visible rather
        than hidden behind a curtain that never lifts. */
@@ -3529,7 +3547,7 @@
 
       var LABELS = {
         warehouse: { unit: "Fleet", unitSuffix: "active", count: "Picks",
-                     health: "NTP sync", tip: "Click the floor to dispatch a pick" },
+                     health: "Link", tip: "Click the floor to dispatch a pick" },
         anodizing: { unit: "Tanks", unitSuffix: "on line", count: "Loads",
                      health: "Bath temp", tip: "Click a tank to send the crane" }
       };
