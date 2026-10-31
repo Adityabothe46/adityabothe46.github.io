@@ -2080,7 +2080,7 @@
 
 <section class="ihero" id="ihero" aria-label="Interactive introduction">
   <div class="ihero-stage" id="ihero-stage">
-    <canvas id="ihero-canvas" width="630" height="560" role="img"
+    <canvas id="ihero-canvas" width="1121" height="976" role="img"
             aria-label="Aditya at a desk working on a laptop. He looks toward wherever the cursor is, and when it reaches him he takes his headphones off, waves, and points down toward the portfolio."></canvas>
   </div>
   <div class="ihero-aside">
@@ -3811,6 +3811,8 @@
   var FADE_MS = 150;
   var CALL_BAND = 0.07, CALL_DWELL = 420;
 
+  var AVIF_PROBE = "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAIAAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAAAQAAAAEAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAKG1kYXQSAAoIGAAGiAhoNCAyEh/3h4UV3///4s/AAJA1jjx+3A==";
+
   var MSG_LEFT = "Anyone over on the left?";
   var MSG_RIGHT = "Anyone over on the right?";
   var MSG_GREET = [
@@ -3823,11 +3825,12 @@
   try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
   try { coarse = matchMedia("(pointer: coarse)").matches; } catch (e) {}
 
+  var EXT = ".webp";
   var seq = new Array(SEQ_N + 1), seqOk = new Array(SEQ_N + 1);
   var look = new Array(LOOK_N), lookOk = new Array(LOOK_N);
   var painted = false;
 
-  // Decoding a WebP the first time it is drawn costs a frame. Drawing each
+  // Decoding a frame the first time it is drawn costs a frame of animation. Drawing each
   // one into a 1px scratch canvas as it arrives pays that cost up front, off
   // the critical path, so the first sweep across the hero is not a stutter.
   var warm = document.createElement("canvas");
@@ -3841,8 +3844,14 @@
     if (seq[n]) return;
     var img = new Image();
     img.decoding = "async";
-    img.onload = function () { seqOk[n] = true; prewarm(img); };
-    img.src = "hero/frames/f" + pad(n, 3) + ".webp";
+    img.onload = function () {
+      seqOk[n] = true;
+      prewarm(img);
+      // He rests in the typing loop, so whichever frame lands first is the one
+      // worth showing. On a touch screen it is the only set that loads.
+      if (!painted) { painted = true; paint(); }
+    };
+    img.src = "hero/frames/f" + pad(n, 3) + EXT;
     seq[n] = img;
   }
   function loadLook(i) {
@@ -3852,15 +3861,21 @@
     img.onload = function () {
       lookOk[i] = true;
       prewarm(img);
-      if (!painted && lookOk[(LOOK_N - 1) >> 1]) { painted = true; paint(); }
+      if (!painted) { painted = true; paint(); }
     };
-    img.src = "hero/look/L" + pad(i + 1, 2) + ".webp";
+    img.src = "hero/look/L" + pad(i + 1, 2) + EXT;
     look[i] = img;
   }
 
-  var i;
-  for (i = 0; i < LOOK_N; i++) loadLook(i);            // the cursor drives these
-  for (i = IDLE_FROM; i <= IDLE_TO; i++) loadSeq(i);
+  function beginLoading() {
+    var i;
+    // No cursor on a touch screen, so these 29 would be fetched and never
+    // drawn. They are the single biggest thing a phone can skip here.
+    if (!coarse) for (i = 0; i < LOOK_N; i++) loadLook(i);
+    for (i = IDLE_FROM; i <= IDLE_TO; i++) loadSeq(i);
+    if ("requestIdleCallback" in window) requestIdleCallback(loadRest, { timeout: 2500 });
+    else setTimeout(loadRest, 700);
+  }
   // Only the idle loop and the greeting still come from hero/frames. The
   // middle of that set used to be the head sweep and is now served by the
   // finer hero/look, so fetching it would be ~340KB nobody looks at.
@@ -3868,9 +3883,6 @@
     for (var n = IDLE_FROM; n <= IDLE_TO; n++) loadSeq(n);
     for (var m = GREET_FROM; m <= GREET_TO; m++) loadSeq(m);
   }
-  if ("requestIdleCallback" in window) requestIdleCallback(loadRest, { timeout: 2500 });
-  else setTimeout(loadRest, 700);
-
   var mode = "idle";
   var idlePos = IDLE_FROM, idleDir = 1;
   var lookPos = (LOOK_N - 1) / 2, lookTarget = lookPos;
@@ -4011,14 +4023,28 @@
     requestAnimationFrame(tick);
   }
 
+  /* AVIF carries this set at 4.1MB against WebP's 6.7MB at matching quality,
+     which is what makes the source's own resolution affordable at all. Safari
+     before 16.4 and Firefox before 93 cannot read it, so both are published
+     and the choice is made once, from a 1x1 probe that is inline and so costs
+     no request. Nothing is fetched until it answers. */
+  function withFormat(go) {
+    var probe = new Image();
+    probe.onload = function () { EXT = ".avif"; go(); };
+    probe.onerror = go;
+    probe.src = AVIF_PROBE;
+  }
+
   if (reduced) {
     // One still, no loop, no tracking. Mid-wave, so it still reads as hello.
-    loadSeq(85);
-    seq[85].onload = function () { seqOk[85] = true; greetPos = 85; mode = "greet"; paint(); };
+    withFormat(function () { loadSeq(85); });
     say("Have a look around.");
+    greetPos = 85;
+    mode = "greet";
     return;
   }
 
+  withFormat(beginLoading);
   requestAnimationFrame(tick);
 
   if (coarse) {
