@@ -1916,7 +1916,11 @@
   }
   .ihero-stage {
     position: relative;
-    width: min(620px, 88vw);
+    /* 1121 is the canvas at native size, so the cap is exactly the point
+       past which he would start being upscaled: on a wide screen he is
+       painted 1:1 and no larger. Height is what binds on most laptops
+       anyway, through the canvas max-height below. */
+    width: min(1121px, 92vw);
     margin: 0 auto;
     justify-self: center;
   }
@@ -1934,12 +1938,14 @@
   }
   .ihero-stage canvas {
     display: block;
-    width: 100%;
+    /* Sized from the image, bounded on both axes, so the element is always
+       exactly the picture. With width:100% a short window would letterbox him
+       inside a full-width box and the glow would light empty space. */
+    width: auto;
     height: auto;
-    max-height: calc(100svh - 240px);
-    /* He is cut out, so the box is mostly transparent and letterboxing from
-       contain is invisible. */
-    object-fit: contain;
+    max-width: 100%;
+    max-height: calc(100svh - 190px);
+    margin: 0 auto;
     /* Follows his silhouette rather than a box, which is what keeps him from
        looking pasted onto the page. */
     filter: drop-shadow(0 24px 34px rgb(0 0 0 / 0.55));
@@ -1948,7 +1954,7 @@
   /* Overlaid so the character keeps the middle of the screen to himself. */
   .ihero-aside {
     position: absolute;
-    left: calc(50vw - 620px);
+    left: max(18px, calc(50vw - 670px));
     top: 50%;
     transform: translateY(-50%);
     z-index: 3;
@@ -2024,7 +2030,12 @@
   /* Below this there is no clear space beside the character, so the intro
      goes above him instead of on top of him. 1340px is where the plate's
      left edge stops clearing a 230px column plus gutters. */
-  @media (max-width: 1340px) {
+  /* Below this the hint no longer clears him and has to go above, which costs
+     vertical space and so costs him size. The canvas now sizes itself from the
+     available height, so on a short window it is narrower than the stage and
+     leaves more room beside him than the old fixed-width box did: the hint
+     stays beside him further down than it used to. */
+  @media (max-width: 1200px) {
     .ihero-aside {
       position: static;
       transform: none;
@@ -2034,12 +2045,12 @@
       order: -1;
     }
     .ihero-hint { justify-content: center; }
-    .ihero-stage canvas { max-height: calc(100svh - 300px); }
+    .ihero-stage canvas { max-height: calc(100svh - 240px); }
   }
   @media (max-width: 860px) {
-    /* Let him have the full column: at 94% he came out 311px on a 375px
-       phone, which is small for the one thing the screen is about. */
-    .ihero-stage { width: 100%; }
+    /* Let him span the viewport rather than the padded column: he is the
+       one thing this screen is about, and 44px of gutter is a lot at 375. */
+    .ihero-stage { width: 100vw; margin-left: calc(50% - 50vw); }
     .ihero-stage canvas { max-height: none; }
     /* Pushing the cue to the bottom of the viewport left a dead half-screen
        under him here. Centre the whole stack instead. */
