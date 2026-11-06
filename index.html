@@ -2092,7 +2092,7 @@
 <section class="ihero" id="ihero" aria-label="Interactive introduction">
   <div class="ihero-stage" id="ihero-stage">
     <canvas id="ihero-canvas" width="1121" height="976" role="img"
-            aria-label="Aditya, head and shoulders. He looks toward wherever the cursor is, and waves when it is brought to him."></canvas>
+            aria-label="Aditya at a desk working on a laptop. He looks toward wherever the cursor is, and when it reaches him he takes his headphones off, waves, and points down toward the portfolio."></canvas>
   </div>
   <div class="ihero-aside">
     <p class="ihero-hint"><span class="ihero-dot" aria-hidden="true"></span>Move your cursor. Bring it to me to say hello.</p>
@@ -3780,43 +3780,49 @@
     })();
 </script>
 
-<script src="vendor/three.min.js"></script>
-<script src="vendor/GLTFLoader.js"></script>
 <script>
 /* Interactive hero.
  *
- * He is a rigged model, not footage. The previous version cut a video into
- * 240 images and cross-dissolved between them; every complaint about it came
- * from the same root, that a frame is a photograph of a pose and you can only
- * ever show the poses that were filmed. A rig has no frames. The head turns
- * to an angle because it is told that angle, so the follow is continuous, the
- * wave can start from wherever the arm happens to be, and the whole thing
- * weighs less than the pictures of it did.
+ * His head follows the cursor. Not a clip with a trigger on it: the source
+ * video pans his head once, continuously, left to right, and those frames are
+ * cut out as hero/look. Cursor x maps onto a position along that pan.
  *
- * Three states, unchanged from the frame version: idle when the cursor is
- * away, track when it is in the section, greet when it is brought to him and
- * held there.
+ * Smoothness comes from three things, and the first version was missing two:
  *
- * Everything is posed about WORLD axes rather than the bones' own. Rigs do
- * not agree on which local axis runs down a bone, so "turn your head right"
- * written in local space is a guess per exporter; written in world space it
- * is the same instruction everywhere, which is what lets this file survive
- * the model being replaced.
+ *   1. Resolution. The pan is sampled at the source's full 24fps, 29 frames,
+ *      so a 1280px screen changes image about every 44px of travel. The
+ *      earlier 12fps cut gave 15 frames and stepped visibly.
+ *   2. Blending. The eased position is fractional, so each paint draws the
+ *      two frames either side of it and cross-dissolves by the fraction.
+ *      Without this, motion is still a staircase however many frames exist.
+ *   3. A short follow. 60ms, which keeps the lead the cursor has over his
+ *      head below the point where it reads as drag.
+ *
+ * Idle (typing) and the greeting come from hero/frames and stay on their own
+ * timelines; only the greeting is timed, because taking headphones off cannot
+ * be scrubbed.
  */
 (function () {
   var stage = document.getElementById("ihero-stage");
   var canvas = document.getElementById("ihero-canvas");
+  if (!stage || !canvas || !canvas.getContext) return;
+
+  var ctx = canvas.getContext("2d", { alpha: true });
   var msgEl = document.getElementById("ihero-msg");
   var section = document.getElementById("ihero");
-  if (!stage || !canvas || !section) return;
-  if (!window.THREE || !THREE.GLTFLoader || !THREE.WebGLRenderer) return;
+  var W = canvas.width, H = canvas.height;
 
-  var MODEL = "hero/avatar.glb";
-  var W = canvas.width, H = canvas.height;   // 1121x976, the layout depends on it
+  var SEQ_N = 120;                      // hero/frames, 12fps
+  var IDLE_FROM = 1, IDLE_TO = 16;
+  var GREET_FROM = 46, GREET_TO = 120;
+  var LOOK_N = 29;                      // hero/look, 24fps, left -> right
 
-  var TAU = 0.09;                       // follow time constant, seconds
+  var IDLE_FPS = 12, GREET_FPS = 12;
+  var TAU = 0.06;                       // follow time constant, seconds
+  var FADE_MS = 150;
   var CALL_BAND = 0.07, CALL_DWELL = 420;
-  var GREET_MS = 6200;
+
+  var AVIF_PROBE = "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAIAAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAAAQAAAAEAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAKG1kYXQSAAoIGAAGiAhoNCAyEh/3h4UV3///4s/AAJA1jjx+3A==";
 
   var MSG_LEFT = "Anyone over on the left?";
   var MSG_RIGHT = "Anyone over on the right?";
@@ -3830,207 +3836,151 @@
   try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
   try { coarse = matchMedia("(pointer: coarse)").matches; } catch (e) {}
 
-  var rend;
-  try {
-    rend = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  } catch (e) { return; }
-  /* The buffer is fixed at the canvas's own 1121x976 and the page scales it
-     down with CSS, so the layout never learns that this is WebGL now, and on
-     any display smaller than that the extra pixels land as free supersampling.
-     Sizing to the element instead would mean writing width and height back
-     onto the canvas, which is what the CSS reads to lay it out. */
-  rend.setPixelRatio(1);
-  rend.setSize(W, H, false);
-  rend.outputEncoding = THREE.sRGBEncoding;
-  rend.toneMapping = THREE.ACESFilmicToneMapping;
-  rend.toneMappingExposure = 1.0;
+  var EXT = ".webp";
+  var seq = new Array(SEQ_N + 1), seqOk = new Array(SEQ_N + 1);
+  var look = new Array(LOOK_N), lookOk = new Array(LOOK_N);
+  var painted = false;
 
-  var AMBER = 0xf5a524;
-  var scene = new THREE.Scene();
-  var cam = new THREE.PerspectiveCamera(26, W / H, 0.1, 100);
+  // Decoding a frame the first time it is drawn costs a frame of animation. Drawing each
+  // one into a 1px scratch canvas as it arrives pays that cost up front, off
+  // the critical path, so the first sweep across the hero is not a stutter.
+  var warm = document.createElement("canvas");
+  warm.width = warm.height = 1;
+  var warmCtx = warm.getContext("2d");
+  function prewarm(img) { try { warmCtx.drawImage(img, 0, 0, 1, 1); } catch (e) {} }
 
-  scene.add(new THREE.AmbientLight(0x2a343d, 0.5));
-  var key = new THREE.DirectionalLight(0xfff2e2, 1.5);
-  key.position.set(2.6, 3.4, 4.2); scene.add(key);
-  var rim = new THREE.DirectionalLight(AMBER, 2.2);
-  rim.position.set(-4, 2, -3); scene.add(rim);
-  var rim2 = new THREE.DirectionalLight(0x74a8d8, 0.8);
-  rim2.position.set(4, 0.6, -3); scene.add(rim2);
-  var fill = new THREE.DirectionalLight(0x5b7792, 0.25);
-  fill.position.set(-2, -1.4, 3); scene.add(fill);
+  function pad(n, w) { var t = String(n); while (t.length < w) t = "0" + t; return t; }
 
-  var root, head, neck, spine, eyeL, eyeR;
-  var arm = {}, restQ = {}, blinks = [];
-  var ready = false;
-
-  var ARMS = ["leftshoulder", "rightshoulder", "leftarm", "rightarm",
-              "leftforearm", "rightforearm", "lefthand", "righthand"];
-
-  function norm(s) { return (s || "").toLowerCase().replace(/[^a-z]/g, ""); }
-
-  /* Rotate a bone about a world axis, written into its parent-relative
-     quaternion. See the note at the top: this is the whole reason the file
-     does not care which rig it is given. */
-  var _q = new THREE.Quaternion(), _v = new THREE.Vector3();
-  function rotW(bone, ax, ay, az, ang) {
-    if (!bone || !bone.parent || !ang) return;
-    bone.parent.getWorldQuaternion(_q);
-    _v.set(ax, ay, az).applyQuaternion(_q.invert()).normalize();
-    bone.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(_v, ang));
-    bone.updateMatrixWorld(true);
+  function loadSeq(n) {
+    if (seq[n]) return;
+    var img = new Image();
+    img.decoding = "async";
+    img.onload = function () {
+      seqOk[n] = true;
+      prewarm(img);
+      // He rests in the typing loop, so whichever frame lands first is the one
+      // worth showing. On a touch screen it is the only set that loads.
+      if (!painted) { painted = true; paint(); }
+    };
+    img.src = "hero/frames/f" + pad(n, 3) + EXT;
+    seq[n] = img;
+  }
+  function loadLook(i) {
+    if (look[i]) return;
+    var img = new Image();
+    img.decoding = "async";
+    img.onload = function () {
+      lookOk[i] = true;
+      prewarm(img);
+      if (!painted) { painted = true; paint(); }
+    };
+    img.src = "hero/look/L" + pad(i + 1, 2) + EXT;
+    look[i] = img;
   }
 
-  /* Point a bone so the limb running from it to its child lies along a world
-     direction, blended in by `amt`.
-
-     Posing an arm by naming angles means knowing which way each of a rig's
-     axes happens to face, and getting a sign wrong there does not look wrong,
-     it looks like a different gesture. Naming the direction the forearm
-     should end up pointing is something you can check against the picture, so
-     that is what this takes. The rotation needed is then measured rather than
-     guessed. */
-  var _a = new THREE.Vector3(), _b = new THREE.Vector3();
-  var _d = new THREE.Vector3(), _t = new THREE.Vector3();
-  var _r = new THREE.Quaternion(), _i = new THREE.Quaternion();
-  function aimW(bone, child, tx, ty, tz, amt) {
-    if (!bone || !child || amt <= 0.001) return;
-    bone.getWorldPosition(_a); child.getWorldPosition(_b);
-    _d.subVectors(_b, _a);
-    if (_d.lengthSq() < 1e-10) return;
-    _r.setFromUnitVectors(_d.normalize(), _t.set(tx, ty, tz).normalize());
-    _i.set(0, 0, 0, 1).slerp(_r, amt);
-    var w = _i.w < -1 ? -1 : _i.w > 1 ? 1 : _i.w;
-    var sn = Math.sqrt(1 - w * w);
-    if (sn < 1e-6) return;
-    rotW(bone, _i.x / sn, _i.y / sn, _i.z / sn, 2 * Math.acos(w));
+  function beginLoading() {
+    var i;
+    // No cursor on a touch screen, so these 29 would be fetched and never
+    // drawn. They are the single biggest thing a phone can skip here.
+    if (!coarse) for (i = 0; i < LOOK_N; i++) loadLook(i);
+    for (i = IDLE_FROM; i <= IDLE_TO; i++) loadSeq(i);
+    if ("requestIdleCallback" in window) requestIdleCallback(loadRest, { timeout: 2500 });
+    else setTimeout(loadRest, 700);
   }
-
-  /* Reset to the resting pose, then aim. Parents must be posed before their
-     children in the same pass, because each rotation is read against the
-     parent's current world orientation. */
-  function pose(bone, name, yaw, pitch, roll) {
-    if (!bone || !restQ[name]) return;
-    bone.quaternion.copy(restQ[name]);
-    bone.updateMatrixWorld(true);
-    rotW(bone, 0, 1, 0, yaw);
-    rotW(bone, 1, 0, 0, pitch);
-    rotW(bone, 0, 0, 1, roll || 0);
+  // Only the idle loop and the greeting still come from hero/frames. The
+  // middle of that set used to be the head sweep and is now served by the
+  // finer hero/look, so fetching it would be ~340KB nobody looks at.
+  function loadRest() {
+    for (var n = IDLE_FROM; n <= IDLE_TO; n++) loadSeq(n);
+    for (var m = GREET_FROM; m <= GREET_TO; m++) loadSeq(m);
   }
-
-  /* An exported avatar stands in a T. Nobody stands in a T. */
-  function relax() {
-    [["left", 1], ["right", -1]].forEach(function (p) {
-      var s = p[0], d = p[1];
-      rotW(arm[s + "shoulder"], 0, 0, 1, -d * 0.10);
-      rotW(arm[s + "arm"], 0, 0, 1, -d * 1.22);
-      rotW(arm[s + "arm"], 0, 1, 0, -d * 0.16);
-      rotW(arm[s + "forearm"], 0, 0, 1, -d * 0.26);
-      rotW(arm[s + "forearm"], 1, 0, 0, -0.30);
-      rotW(arm[s + "hand"], 0, 0, 1, -d * 0.10);
-    });
-  }
-
-  /* The greeting. The frame version could only play the wave that was filmed;
-     this one is built from the shoulder down, so the hand keeps waving for
-     exactly as long as the three lines of text take to read, and the arm can
-     drop back mid-wave the moment the cursor leaves. */
-  var WAVE_CHAIN = ["rightshoulder", "rightarm", "rightforearm", "righthand"];
-  var SIDE = -1;                        // which way his right hand lies in x
-  function wave(amt, osc) {
-    for (var i = 0; i < WAVE_CHAIN.length; i++) {
-      var b = arm[WAVE_CHAIN[i]];
-      if (b && restQ[WAVE_CHAIN[i]]) {
-        b.quaternion.copy(restQ[WAVE_CHAIN[i]]);
-        b.updateMatrixWorld(true);
-      }
-    }
-    if (amt <= 0.001) return;
-    /* A small wave, elbow kept near the ribs. A wide one looks better as a
-       gesture and worse as geometry: the jacket is skinned for an arm that
-       hangs, so swinging the shoulder far from that collapses the sleeve, and
-       the elbow leaves the crop on the way out. */
-    aimW(arm.rightarm, arm.rightforearm, SIDE * 0.30, -0.94, 0.16, amt);
-    aimW(arm.rightforearm, arm.righthand, SIDE * 0.06 + osc * 0.14, 0.96, 0.26, amt);
-    rotW(arm.righthand, 0, 0, 1, osc * 0.22 * amt);
-  }
-
-  new THREE.GLTFLoader().load(MODEL, function (gltf) {
-    root = gltf.scene;
-    scene.add(root);
-
-    root.traverse(function (o) {
-      var n = norm(o.name);
-      if (o.isBone || o.type === "Bone") {
-        if (!head && n === "head") head = o;
-        else if (!neck && n === "neck") neck = o;
-        else if (!spine && (n === "spine2" || n === "spine1" || n === "spine")) spine = o;
-        else if (!eyeL && (n === "lefteye" || n === "eyeleft")) eyeL = o;
-        else if (!eyeR && (n === "righteye" || n === "eyeright")) eyeR = o;
-        else if (!arm[n] && ARMS.indexOf(n) >= 0) arm[n] = o;
-      }
-      if (o.isMesh) {
-        o.frustumCulled = false;
-        if (o.material) o.material.envMapIntensity = 0.6;
-        var d = o.morphTargetDictionary;
-        if (d) {
-          Object.keys(d).forEach(function (k) {
-            var nk = norm(k);
-            if (nk === "eyeblinkleft" || nk === "eyeblinkright" ||
-                nk === "eyesclosed" || nk === "blink") blinks.push({ mesh: o, index: d[k] });
-          });
-        }
-      }
-    });
-
-    root.updateMatrixWorld(true);
-    relax();
-    root.updateMatrixWorld(true);
-
-    /* Resting pose is captured after relaxing, so every rotation below is
-       relative to how he actually stands rather than to the export. */
-    var map = { head: head, neck: neck, spine: spine, eyeL: eyeL, eyeR: eyeR };
-    Object.keys(map).forEach(function (k) {
-      if (map[k]) restQ[k] = map[k].quaternion.clone();
-    });
-    Object.keys(arm).forEach(function (k) { restQ[k] = arm[k].quaternion.clone(); });
-
-    /* Frame on the head wherever this model puts it. Exporters disagree about
-       scale and origin, so a hard-coded camera height only ever fits one file. */
-    /* Mirrored rigs exist, and so do exporters that flip x. Read which side
-       his right hand is actually on rather than assuming. */
-    if (arm.righthand && head) {
-      SIDE = arm.righthand.getWorldPosition(new THREE.Vector3()).x <
-             head.getWorldPosition(new THREE.Vector3()).x ? -1 : 1;
-    }
-
-    var box = new THREE.Box3().setFromObject(root);
-    var top = box.max.y, centre = box.getCenter(new THREE.Vector3());
-    var hy = head ? head.getWorldPosition(new THREE.Vector3()).y : top - 0.2;
-    var span = Math.max(0.35, (top - hy) * 3.1);
-    var at = new THREE.Vector3(centre.x, hy - span * 0.20, 0);
-    cam.position.set(at.x, at.y + span * 0.06, span / (2 * Math.tan(26 * Math.PI / 360)) * 1.02);
-    cam.lookAt(at);
-
-    ready = true;
-    canvas.style.transition = "opacity .45s ease";
-    canvas.style.opacity = "1";
-
-    if (reduced) { still(); return; }
-    requestAnimationFrame(tick);
-    if (coarse) onVisible();
-  });
-
-  canvas.style.opacity = "0";
-
   var mode = "idle";
-  var yaw = 0, pitch = 0, tx = 0, ty = 0;
-  var last = 0, t = 0;
-  var greetStart = 0, callSince = 0, inside = false, lastX = 0.5;
-  var driftX = 0, driftY = 0, driftAt = 0;
-  var blinkAt = 2 + Math.random() * 3, blinkT = -1;
+  var idlePos = IDLE_FROM, idleDir = 1;
+  var lookPos = (LOOK_N - 1) / 2, lookTarget = lookPos;
+  var greetPos = GREET_FROM, greetStart = 0;
+  var fadeAt = 0, snap = null;
+  var callSince = 0, inside = false, lastX = 0.5, last = 0;
 
   function now() {
     return window.performance && performance.now ? performance.now() : Date.now();
+  }
+
+  function nearestSeq(v) {
+    var n = Math.round(v);
+    if (n < 1) n = 1;
+    if (n > SEQ_N) n = SEQ_N;
+    if (seqOk[n]) return n;
+    for (var d = 1; d < SEQ_N; d++) {
+      if (n - d >= 1 && seqOk[n - d]) return n - d;
+      if (n + d <= SEQ_N && seqOk[n + d]) return n + d;
+    }
+    return 0;
+  }
+  function nearestLook(i) {
+    if (i < 0) i = 0;
+    if (i > LOOK_N - 1) i = LOOK_N - 1;
+    if (lookOk[i]) return i;
+    for (var d = 1; d < LOOK_N; d++) {
+      if (i - d >= 0 && lookOk[i - d]) return i - d;
+      if (i + d < LOOK_N && lookOk[i + d]) return i + d;
+    }
+    return -1;
+  }
+
+  /** Draw the current state, blending between frames where it is continuous. */
+  function drawState() {
+    if (mode === "track") {
+      var lo = Math.floor(lookPos);
+      var f = lookPos - lo;
+      var a = nearestLook(lo), b = nearestLook(lo + 1);
+      if (a < 0) return;
+      ctx.drawImage(look[a], 0, 0, W, H);
+      // The whole reason this looks smooth rather than stepped: the position
+      // is fractional, so the next frame is laid over the current one at that
+      // fraction. Skipped at the ends of the sweep and when the two would be
+      // the same image.
+      if (b >= 0 && b !== a && f > 0.02) {
+        ctx.globalAlpha = f;
+        ctx.drawImage(look[b], 0, 0, W, H);
+        ctx.globalAlpha = 1;
+      }
+      return;
+    }
+    var n = nearestSeq(mode === "idle" ? idlePos : greetPos);
+    if (n) { ctx.drawImage(seq[n], 0, 0, W, H); return; }
+    // Nothing from the idle or greeting set has decoded yet. The look frames
+    // are fetched first and are the only thing guaranteed to be there, so
+    // fall back to the middle of the sweep rather than leaving a blank canvas
+    // on a slow connection.
+    var mid = nearestLook((LOOK_N - 1) >> 1);
+    if (mid >= 0) ctx.drawImage(look[mid], 0, 0, W, H);
+  }
+
+  function paint() {
+    ctx.clearRect(0, 0, W, H);
+    drawState();
+    if (snap) {
+      var t = (now() - fadeAt) / FADE_MS;
+      if (t >= 1) { snap = null; return; }
+      ctx.globalAlpha = 1 - (t < 0 ? 0 : t);
+      ctx.drawImage(snap, 0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  /* Freeze what is on screen, so a jump between states dissolves. Snapshotting
+     the canvas works whichever image set each side came from. */
+  function cut() {
+    try {
+      if (!snap || snap.width !== W) {
+        snap = document.createElement("canvas");
+        snap.width = W; snap.height = H;
+      }
+      var g = snap.getContext("2d");
+      g.clearRect(0, 0, W, H);
+      g.drawImage(canvas, 0, 0);
+      fadeAt = now();
+    } catch (e) { snap = null; }
   }
 
   function say(text) {
@@ -4040,119 +3990,95 @@
     msgEl.classList.add("on");
   }
 
-  function toTrack() { if (mode !== "track") { mode = "track"; say(""); } }
-  function toIdle()  { if (mode !== "idle")  { mode = "idle"; callSince = 0; say(""); } }
+  function toTrack() {
+    if (mode === "track") return;
+    cut(); mode = "track"; lookPos = lookTarget; say("");
+  }
+  function toIdle() {
+    if (mode === "idle") return;
+    cut(); mode = "idle"; idlePos = IDLE_TO; idleDir = -1; callSince = 0; say("");
+  }
   function toGreet() {
     if (mode === "greet") return;
-    mode = "greet"; greetStart = now(); say(MSG_GREET[0].text);
+    cut(); mode = "greet"; greetPos = GREET_FROM; greetStart = now();
+    say(MSG_GREET[0].text);
   }
 
-  /* Reduced motion: one still frame, looking straight out, arm down. No loop
-     runs at all, so there is nothing moving on the page to opt out of. */
-  function still() {
+  function tick(ts) {
+    if (!last) last = ts;
+    var dt = (ts - last) / 1000;
+    last = ts;
+    if (dt > 0.25) dt = 0.25;   // a backgrounded tab must not fast-forward
+
+    if (mode === "idle") {
+      idlePos += idleDir * dt * IDLE_FPS;
+      if (idlePos >= IDLE_TO) { idlePos = IDLE_TO; idleDir = -1; }
+      if (idlePos <= IDLE_FROM) { idlePos = IDLE_FROM; idleDir = 1; }
+    } else if (mode === "track") {
+      // Exponential follow expressed as a time constant, so the feel is the
+      // same at 60Hz and 144Hz.
+      var k = 1 - Math.exp(-dt / TAU);
+      lookPos += (lookTarget - lookPos) * k;
+      if (inside) say(lastX < 0.36 ? MSG_LEFT : lastX > 0.64 ? MSG_RIGHT : "");
+    } else if (greetPos < GREET_TO) {
+      greetPos += dt * GREET_FPS;
+      if (greetPos > GREET_TO) greetPos = GREET_TO;
+      var el = now() - greetStart, line = MSG_GREET[0].text;
+      for (var j = 0; j < MSG_GREET.length; j++) {
+        if (el >= MSG_GREET[j].at) line = MSG_GREET[j].text;
+      }
+      say(line);
+    }
+
+    paint();
+    requestAnimationFrame(tick);
+  }
+
+  /* AVIF carries this set at 4.1MB against WebP's 6.7MB at matching quality,
+     which is what makes the source's own resolution affordable at all. Safari
+     before 16.4 and Firefox before 93 cannot read it, so both are published
+     and the choice is made once, from a 1x1 probe that is inline and so costs
+     no request. Nothing is fetched until it answers. */
+  function withFormat(go) {
+    var probe = new Image();
+    probe.onload = function () { EXT = ".avif"; go(); };
+    probe.onerror = go;
+    probe.src = AVIF_PROBE;
+  }
+
+  if (reduced) {
+    // One still, no loop, no tracking. Mid-wave, so it still reads as hello.
+    withFormat(function () { loadSeq(85); });
     say("Have a look around.");
-    pose(spine, "spine", 0, 0);
-    pose(neck, "neck", 0, 0.02);
-    pose(head, "head", 0, 0.04);
-    wave(0, 0);
-    rend.render(scene, cam);
+    greetPos = 85;
+    mode = "greet";
+    return;
   }
 
-  function onVisible() {
+  withFormat(beginLoading);
+  requestAnimationFrame(tick);
+
+  if (coarse) {
     // No pointer to follow on touch, so he greets once when scrolled to.
     var fired = false;
-    var run = function () { if (fired) return; fired = true; setTimeout(toGreet, 450); };
+    var run = function () { if (fired) return; fired = true; loadRest(); setTimeout(toGreet, 450); };
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (es) {
         for (var q = 0; q < es.length; q++) if (es[q].isIntersecting) { run(); io.disconnect(); }
       }, { threshold: 0.35 });
       io.observe(section);
     } else { run(); }
+    return;
   }
-
-  function tick(ms) {
-    if (!ready) return;
-    var n = ms / 1000;
-    var dt = last ? Math.min(0.25, n - last) : 0;   // a backgrounded tab must not fast-forward
-    last = n; t += dt;
-
-    var gx = tx, gy = ty;
-    if (mode === "idle") {
-      /* Nobody is near, so he looks about the room rather than staring out of
-         the screen. A new direction every few seconds, eased into, which is
-         what the typing loop used to be for. */
-      if (t > driftAt) {
-        driftAt = t + 2.4 + Math.random() * 3.2;
-        driftX = (Math.random() * 2 - 1) * 0.55;
-        driftY = (Math.random() * 2 - 1) * 0.30;
-      }
-      gx = driftX; gy = driftY;
-    } else if (mode === "greet") {
-      gx = 0; gy = -0.12;
-    }
-
-    // Exponential follow expressed as a time constant, so the feel is the
-    // same at 60Hz and 144Hz. Slower when he is not being followed, because
-    // an idle glance that snaps reads as a flinch.
-    var k = 1 - Math.exp(-dt / (mode === "track" ? TAU : 0.5));
-    yaw += (gx - yaw) * k;
-    pitch += (gy - pitch) * k;
-
-    var breath = Math.sin(t * 1.5) * 0.012;
-
-    // split across the column so the turn comes from more than the neck
-    pose(spine, "spine", yaw * 0.08, breath);
-    pose(neck, "neck", yaw * 0.26, pitch * 0.10, -yaw * 0.04);
-    pose(head, "head", yaw * 0.42, pitch * 0.20, -yaw * 0.05);
-    pose(eyeL, "eyeL", yaw * 0.30, pitch * 0.18);
-    pose(eyeR, "eyeR", yaw * 0.30, pitch * 0.18);
-
-    if (mode === "greet") {
-      var el = now() - greetStart;
-      /* Up over 450ms, held while the three lines are read, down by the end.
-         The hand oscillates only while the arm is up, so it does not twitch
-         on the way back down to his side. */
-      var amt = el < 450 ? el / 450
-              : el > GREET_MS - 900 ? Math.max(0, (GREET_MS - el) / 900) : 1;
-      wave(amt, Math.sin(el / 1000 * 9));
-      var line = MSG_GREET[0].text;
-      for (var j = 0; j < MSG_GREET.length; j++) if (el >= MSG_GREET[j].at) line = MSG_GREET[j].text;
-      say(line);
-      if (el > GREET_MS) { wave(0, 0); toTrack(); }
-    } else if (mode === "track" && inside) {
-      say(lastX < 0.36 ? MSG_LEFT : lastX > 0.64 ? MSG_RIGHT : "");
-    }
-
-    /* Only fires if the model carries blend shapes. The current export does
-       not, so he does not blink; a re-export that does will blink with no
-       change here. */
-    if (blinks.length) {
-      if (t > blinkAt && blinkT < 0) blinkT = 0;
-      if (blinkT >= 0) {
-        blinkT += dt;
-        var a = blinkT < 0.07 ? blinkT / 0.07 : 1 - (blinkT - 0.07) / 0.1;
-        a = Math.max(0, Math.min(1, a));
-        blinks.forEach(function (b) { b.mesh.morphTargetInfluences[b.index] = a; });
-        if (blinkT > 0.17) { blinkT = -1; blinkAt = t + 2 + Math.random() * 3.5; }
-      }
-    }
-
-    rend.render(scene, cam);
-    requestAnimationFrame(tick);
-  }
-
-  if (reduced || coarse) return;
 
   section.addEventListener("pointermove", function (e) {
     if (e.pointerType === "touch") return;
     var r = section.getBoundingClientRect();
     var x = (e.clientX - r.left) / r.width;
-    var y = (e.clientY - r.top) / r.height;
-    x = x < 0 ? 0 : x > 1 ? 1 : x;
-    y = y < 0 ? 0 : y > 1 ? 1 : y;
-    lastX = x; inside = true;
-    tx = (x - 0.5) * 2;
-    ty = (y - 0.5) * 2;
+    if (x < 0) x = 0; else if (x > 1) x = 1;
+    lastX = x;
+    inside = true;
+    lookTarget = x * (LOOK_N - 1);
 
     // Bringing the cursor to him and keeping it there is what calls him. A
     // dwell rather than a zone, so sweeping across does not set him off.
@@ -4161,7 +4087,7 @@
       if (mode !== "greet" && now() - callSince >= CALL_DWELL) { toGreet(); return; }
     } else {
       callSince = 0;
-      if (mode === "greet") { wave(0, 0); toTrack(); }
+      if (mode === "greet") toTrack();
     }
     if (mode === "idle") toTrack();
   }, { passive: true });
