@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freight Analytics on Fabric</title>
+<meta name="description" content="A Power BI report on Microsoft Fabric for a synthetic freight network, and the data problems found and fixed on the way to numbers that hold up.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Freight Analytics on Microsoft Fabric">
+<meta property="og:description" content="From eight messy ERP extracts to a report whose numbers match the brief.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://adityabothe46.github.io/opex-logistics/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  :root {
+    --bg: #0b0d0f;
+    --bg-2: #101316;
+    --panel: #14181c;
+    --panel-2: #191e23;
+    --rule: rgb(255 255 255 / 0.09);
+    --rule-2: rgb(255 255 255 / 0.16);
+    --ink: #eceef0;
+    --ink-2: #b4bcc4;
+    --ink-3: #7d8891;
+    --ink-4: #5a646d;
+    --amber: #f5a524;
+    --amber-dim: #a86f12;
+    --steel: #7aa7d9;
+    --green: #4ec9a0;
+    --display: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 15.5px;
+    line-height: 1.6;
+    padding-inline: 22px;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(48rem 22rem at 78% -6%, rgb(245 165 36 / 0.07), transparent 65%),
+      linear-gradient(rgb(255 255 255 / 0.016) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.016) 1px, transparent 1px);
+    background-size: auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+
+  .wrap { max-width: 68rem; margin: 0 auto; }
+
+  a { color: var(--amber); text-underline-offset: 3px; }
+  a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: 0;
+  }
+
+  /* ---------- masthead ---------- */
+  .back {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-3);
+    padding: 26px 0 0;
+  }
+  .back:hover { color: var(--amber); }
+
+  header { padding: 26px 0 34px; border-bottom: 1px solid var(--rule); }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(30px, 5.2vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 14px 0 10px;
+  }
+  .sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--amber);
+    margin: 0 0 16px;
+  }
+  .lede { color: var(--ink-2); max-width: 46rem; margin: 0; }
+
+  /* ---------- sections ---------- */
+  section { padding: 38px 0; border-bottom: 1px solid var(--rule); }
+  section:last-of-type { border-bottom: 0; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(21px, 3vw, 27px);
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 26px 0 8px;
+  }
+  p { color: var(--ink-2); max-width: 48rem; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  ol, ul { color: var(--ink-2); max-width: 48rem; padding-left: 20px; }
+  li { margin: 4px 0; }
+
+  /* ---------- tables ---------- */
+  /* Each table scrolls inside its own box so the page body never scrolls
+     sideways on a phone. Font size stays readable and no columns are hidden. */
+  .tscroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--panel);
+    margin: 16px 0;
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--rule);
+    white-space: normal;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--panel-2);
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td strong { color: var(--amber); }
+  /* Keep the narrow score columns from wrapping to one character per line. */
+  .score { text-align: center; font-family: var(--mono); white-space: nowrap; }
+  .wide td:first-child, .wide th:first-child { min-width: 9rem; }
+  .wide td:nth-child(2), .wide td:nth-child(3),
+  .wide td:nth-child(5), .wide td:nth-child(7) { min-width: 15rem; }
+  .scrollhint {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin: -6px 0 0;
+  }
+
+  /* ---------- download ---------- */
+  .dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--panel-2);
+    border: 1px solid var(--rule-2);
+    border-radius: 3px;
+    padding: 11px 15px;
+    margin: 14px 0 4px;
+  }
+  .dl:hover { border-color: var(--amber); color: var(--amber); }
+
+  /* ---------- callout ---------- */
+  .callout {
+    border-left: 2px solid var(--amber-dim);
+    background: var(--panel);
+    padding: 14px 18px;
+    margin: 18px 0;
+    border-radius: 0 3px 3px 0;
+  }
+  .callout p { margin: 0; max-width: none; }
+
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-4);
+    padding: 30px 0 46px;
+    border-top: 1px solid var(--rule);
+    margin-top: 10px;
+  }
+
+  @media (max-width: 640px) {
+    body { padding-inline: 16px; }
+    th, td { padding: 8px 10px; }
+  }
+</style>
+<style>
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 10px; margin: 18px 0; }
+  .kpi { background: var(--panel); border: 1px solid var(--rule); border-radius: 3px; padding: 14px 16px; }
+  .kpi b { display: block; font-family: var(--display); font-size: 24px; color: var(--ink); letter-spacing: -0.01em; }
+  .kpi span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  .flow { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); background: var(--panel); border: 1px solid var(--rule); border-radius: 3px; padding: 14px 16px; margin: 16px 0; overflow-x: auto; white-space: nowrap; }
+  .flow i { color: var(--amber); font-style: normal; padding: 0 6px; }
+  .shot { margin: 22px 0 30px; }
+  .shot a { display: block; border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; line-height: 0; }
+  .shot a:hover { border-color: var(--amber); }
+  .shot img { width: 100%; height: auto; display: block; }
+  .shot figcaption { font-size: 13.5px; color: var(--ink-3); margin-top: 8px; max-width: 48rem; }
+  .shot figcaption b { color: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../">&larr; Aditya Bothe</a>
+
+  <header>
+    <p class="eyebrow">Analytics &nbsp;/&nbsp; Case study</p>
+    <h1>Freight Analytics on<br>Microsoft Fabric</h1>
+    <p class="sub">Opex Logistics, carrier and shipment performance</p>
+    <p class="lede">
+      A Power BI report for a freight network of 200 customers, 30 carriers and 50 routes, built on
+      Microsoft Fabric from raw ERP extracts. Opex Logistics is a training case study with a
+      synthetic dataset. The work was getting from eight messy CSV files to numbers I could defend,
+      and most of this page is about what was wrong with the data and how I found it.
+    </p>
+  </header>
+
+  <section>
+    <h2>What I built</h2>
+    <div class="flow">CSV extracts<i>&rarr;</i>Lakehouse<i>&rarr;</i>Dataflow Gen2 (cleansing)<i>&rarr;</i>Direct Lake semantic model<i>&rarr;</i>Power BI report</div>
+    <ul>
+      <li><strong>Ingestion and cleansing</strong> in a Dataflow Gen2 that writes clean tables to a Fabric Lakehouse. It refreshes every morning, so every fix below holds on the next load.</li>
+      <li><strong>A star schema</strong> read in Direct Lake mode: one shipment fact table, with customer, carrier, carrier SLA, route and lane, date and fuel surcharge tables around it.</li>
+      <li><strong>A DAX measure library</strong> covering revenue, valid shipments, on time delivery, late rate, loss rate, revenue at risk and year over year growth.</li>
+      <li><strong>A four page report:</strong> an overview, delivery and delay, customer and revenue, and a shipment map, with shared slicers for year, transport mode, freight type, region and carrier group.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The numbers, after cleaning</h2>
+    <div class="kpis">
+      <div class="kpi"><b>5,562</b><span>Shipments, 2023 to 2026</span></div>
+      <div class="kpi"><b>$205.4M</b><span>Freight revenue</span></div>
+      <div class="kpi"><b>25.9%</b><span>On time, against a 92% target</span></div>
+      <div class="kpi"><b>13.2%</b><span>Of shipments lost</span></div>
+      <div class="kpi"><b>$58.9M</b><span>Revenue on lost or delayed loads</span></div>
+    </div>
+    <p>
+      Every one of these matches the validation totals in the project brief. Before the cleanup
+      they did not: the model was counting 5,611 shipments and $207.7M.
+    </p>
+    <p>
+      The service picture is the headline. About one delivered load in four arrives on time, and
+      one shipment in eight is lost. Every carrier is late on most of its deliveries, from
+      64.1% of loads at the best carrier to 85.0% at the worst, so this is a network problem
+      rather than one bad contract. Revenue is spread thin: the top ten customers bring in 8.4% of
+      it, so no single account carries the business.
+    </p>
+  </section>
+
+  <section>
+    <h2>The report</h2>
+    <p>
+      All four pages as exported from the Power BI service, with every slicer set to All. Click any
+      page to open it full size.
+    </p>
+    <figure class="shot">
+      <a href="img/overview.webp"><img src="img/overview.webp" width="1800" height="1022" loading="lazy"
+        alt="Overview page: KPI cards for revenue, valid shipments, loss rate, revenue at risk and on time delivery, a monthly revenue line against the prior year, shipments by status, and revenue by region and freight type"></a>
+      <figcaption><b>Overview.</b> The five headline measures, revenue by month against the prior year, and where shipments end up by status.</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/delivery.webp"><img src="img/delivery.webp" width="1800" height="1022" loading="lazy"
+        alt="Delivery and Delay page: late delivery rate for each of 30 carriers, on time delivery by month, shipments by acquiring company and by delay reason, and a route table"></a>
+      <figcaption><b>Delivery and delay.</b> Late rate by carrier, ranked from worst to best, on time delivery by month, and delay causes, with the 100 delayed loads that had no reason shown as &ldquo;Not recorded&rdquo; instead of dropped.</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/customers.webp"><img src="img/customers.webp" width="1800" height="1022" loading="lazy"
+        alt="Customer and Revenue page: revenue by customer with IDs on shared names, revenue by sector, a customer detail table, and a shipment map by destination city"></a>
+      <figcaption><b>Customer and revenue.</b> Shared customer names carry their ID, so each bar is one account.</figcaption>
+    </figure>
+    <figure class="shot">
+      <a href="img/map.webp"><img src="img/map.webp" width="1800" height="1022" loading="lazy"
+        alt="Locations page: map of total shipments by destination state"></a>
+      <figcaption><b>Locations.</b> Shipments by destination state, now that each route&rsquo;s state follows its city.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>What was wrong with the data</h2>
+    <p>
+      I profiled every file in Python before trusting the model, then checked the model itself
+      with DAX queries. These are the problems that changed a number on the report.
+    </p>
+    <div class="tscroll">
+      <table class="wide">
+        <thead><tr><th>Problem</th><th>What it did to the report</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>50 shipments with a blank ID</td><td>Shipment count and revenue overstated against the brief</td><td>Removed duplicates on shipment ID in the dataflow, as the brief specifies</td></tr>
+          <tr><td>Route states that did not match the city: 46 of 50 destinations wrong, Charlotte listed in six different states</td><td>The shipment map plotted volume in the wrong states</td><td>Derived each state from its city in the dataflow</td></tr>
+          <tr><td>Customer states wrong for 182 of 200 customers</td><td>Any customer geography was unusable</td><td>Same city to state rule</td></tr>
+          <tr><td>200 customer IDs sharing only 99 names</td><td>Revenue by customer merged up to six separate accounts into one bar</td><td>Added the customer ID to any name used more than once</td></tr>
+          <tr><td>The fuel surcharge key held the shipment date, not the month</td><td>Only 224 of 5,611 shipments found a fuel rate</td><td>Set the key to the first of the month; every shipment now matches except August to October 2026, where no rates exist</td></tr>
+          <tr><td>On time % and late % divided by different bases</td><td>The two did not add up to 100%</td><td>Both now use delivered shipments that have a delivery date</td></tr>
+          <tr><td>Year over year growth worked out across all years at once</td><td>A misleading +5.5% on the overview card</td><td>The card now only shows growth when a single year is selected</td></tr>
+          <tr><td>Late deliveries by carrier shown as a count</td><td>Busy carriers looked worst simply for being busy</td><td>Changed to a late rate; one carrier with almost the fewest late loads ranks among the six worst by rate</td></tr>
+          <tr><td>Placeholder weights of &minus;1 and delayed loads with no reason</td><td>Weight totals off, delay causes undercounted</td><td>Weights set to blank, missing reasons labelled &ldquo;Not recorded&rdquo;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="scrollhint">Scroll the table sideways on a phone</p>
+  </section>
+
+  <section>
+    <h2>What the data cannot tell you</h2>
+    <p>
+      Some problems are not fixable by cleaning, and the honest thing is to say so on the report
+      rather than chart around them.
+    </p>
+    <ul>
+      <li><strong>The 2025 and 2026 shipments are copies.</strong> All 611 rows in the newer extract repeat an earlier shipment with only the ID and shipment date changed, so their delivery dates still fall in 2023 and 2024. Volume drops from about 2,500 shipments a year to about 300, and any trend across those years reflects the file, not the business.</li>
+      <li><strong>Route distances contradict each other.</strong> The same city pair appears on more than one route with different mileage, so a revenue per mile measure would not mean anything.</li>
+      <li><strong>The on time rate does not reach the brief&rsquo;s figure.</strong> The brief quotes 26.6%. The most defensible definition I could find gives 25.9%, and I kept the definition I could explain rather than tune it to match.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Notes on method</h2>
+    <p>
+      I checked the raw files and the published model separately. The files told me what the
+      data should look like; the model told me what the report was actually doing with it. Two of
+      the larger problems, the fuel key and the merged customer names, only showed up on the model
+      side, because each file looked fine on its own.
+    </p>
+    <p>
+      Fixes live in the dataflow wherever possible, so they run on every refresh instead of being
+      patched in a visual.
+    </p>
+  </section>
+
+  <footer>
+    <span>Aditya Harish Bothe</span>
+    <span><a href="../iso9001/">ISO 9001 gap analysis</a> &middot; <a href="../">Back to portfolio</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
